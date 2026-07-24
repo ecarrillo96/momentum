@@ -1,0 +1,49 @@
+/*
+ * Momentum — Large image hero (Construcción, and reusable elsewhere).
+ * Enqueued only on pages that use template-parts/hero-image.php.
+ */
+
+.momentum-hero-image {
+	position: relative;
+	min-height: 560px;
+	display: flex;
+	align-items: flex-end;
+	background-color: var(--momentum-black);
+	background-size: cover;
+	background-position: center;
+	overflow: hidden;
+}
+
+.momentum-hero-image__overlay {
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(0deg, rgba(17, 17, 17, 0.88) 0%, rgba(17, 17, 17, 0.35) 55%, rgba(17, 17, 17, 0.55) 100%);
+}
+
+.momentum-hero-image__content {
+	position: relative;
+	z-index: 1;
+	padding-block: 48px 56px;
+	color: var(--momentum-white);
+}
+
+.momentum-hero-image__content h1 {
+	font-size: clamp(30px, 4vw, 46px);
+	font-weight: 700;
+	margin: 0 0 14px;
+	color: var(--momentum-white);
+	max-width: 20ch;
+}
+
+.momentum-hero-image__content p {
+	margin: 0;
+	font-size: 16px;
+	color: rgba(255, 255, 255, 0.8);
+	max-width: 56ch;
+}
+
+@media (max-width: 680px) {
+	.momentum-hero-image {
+		min-height: 420px;
+	}
+}

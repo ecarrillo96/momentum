@@ -1,0 +1,194 @@
+/*
+ * Momentum — Home page layout.
+ * Enqueued only on the front page (see inc/enqueue.php).
+ */
+
+.momentum-hero {
+	position: relative;
+	background:
+		radial-gradient(circle at 15% 20%, rgba(198, 161, 91, 0.16), transparent 45%),
+		linear-gradient(160deg, var(--momentum-black) 0%, var(--momentum-gray-dark) 100%);
+	color: var(--momentum-white);
+	padding-block: 120px 100px;
+	overflow: hidden;
+}
+
+.momentum-hero__video {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	z-index: 0;
+}
+
+.momentum-hero::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+	background:
+		linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+		linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+		radial-gradient(circle at 15% 20%, rgba(198, 161, 91, 0.16), transparent 45%),
+		linear-gradient(160deg, rgba(17, 17, 17, 0.82) 0%, rgba(45, 45, 45, 0.8) 100%);
+	background-size: 64px 64px, 64px 64px, auto, auto;
+	pointer-events: none;
+}
+
+.momentum-hero__inner {
+	position: relative;
+	z-index: 2;
+	max-width: 700px;
+}
+
+.momentum-hero__eyebrow {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 13px;
+	font-weight: 700;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+	color: var(--momentum-accent);
+	margin-bottom: 20px;
+}
+
+.momentum-hero__eyebrow::before {
+	content: "";
+	width: 28px;
+	height: 1.5px;
+	background: var(--momentum-accent);
+}
+
+.momentum-hero h1 {
+	font-size: clamp(32px, 4.4vw, 52px);
+	font-weight: 700;
+	line-height: 1.15;
+	margin: 0 0 20px;
+	color: var(--momentum-white);
+}
+
+.momentum-hero p {
+	font-size: 16.5px;
+	line-height: 1.65;
+	color: rgba(255, 255, 255, 0.75);
+	margin: 0 0 36px;
+	max-width: 54ch;
+}
+
+.momentum-hero__actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 16px;
+	margin-bottom: 48px;
+}
+
+.momentum-hero .momentum-btn--outline {
+	color: var(--momentum-white);
+	border-color: rgba(255, 255, 255, 0.4);
+}
+
+.momentum-hero .momentum-btn--outline:hover {
+	background: var(--momentum-white);
+	color: var(--momentum-black);
+	border-color: var(--momentum-white);
+}
+
+.momentum-hero__stats {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 40px;
+	padding-top: 32px;
+	border-top: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.momentum-hero__stat strong {
+	display: block;
+	font-size: 26px;
+	font-weight: 700;
+	color: var(--momentum-white);
+}
+
+.momentum-hero__stat span {
+	font-size: 12.5px;
+	color: rgba(255, 255, 255, 0.6);
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+}
+
+/* ---------- Featured properties footer link ---------- */
+
+.momentum-section-footer {
+	margin-top: 44px;
+	text-align: center;
+}
+
+/* ---------- CTA banner ---------- */
+
+.momentum-cta-banner {
+	background: var(--momentum-black);
+	color: var(--momentum-white);
+	border-radius: var(--momentum-radius);
+	padding: 64px 56px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 32px;
+	flex-wrap: wrap;
+}
+
+.momentum-cta-banner__content h2 {
+	font-size: clamp(24px, 3vw, 30px);
+	font-weight: 700;
+	margin: 0 0 12px;
+	color: var(--momentum-white);
+}
+
+.momentum-cta-banner__content p {
+	margin: 0;
+	color: rgba(255, 255, 255, 0.7);
+	max-width: 50ch;
+	line-height: 1.6;
+}
+
+.momentum-cta-banner__actions {
+	display: flex;
+	align-items: center;
+	gap: 20px;
+	flex-wrap: wrap;
+}
+
+.momentum-cta-banner__phone {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	color: var(--momentum-white);
+	text-decoration: none;
+	font-weight: 700;
+	font-size: 15px;
+}
+
+.momentum-cta-banner__phone svg {
+	color: var(--momentum-accent);
+}
+
+@media (max-width: 680px) {
+	.momentum-hero {
+		padding-block: 96px 64px;
+	}
+
+	.momentum-hero__stats {
+		gap: 24px;
+	}
+
+	.momentum-cta-banner {
+		padding: 40px 28px;
+		text-align: center;
+		justify-content: center;
+	}
+
+	.momentum-cta-banner__actions {
+		justify-content: center;
+	}
+}

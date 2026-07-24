@@ -1,0 +1,1056 @@
+/*
+ * Momentum — Design system (site-wide)
+ * Loaded on every page. Page-specific layout lives in its own stylesheet
+ * (e.g. home.css) and is enqueued only where it applies.
+ */
+
+:root {
+	--momentum-black: #111111;
+	--momentum-gray-dark: #2D2D2D;
+	--momentum-gray-light: #F5F5F5;
+	--momentum-white: #FFFFFF;
+	--momentum-accent: #C6A15B;
+	--momentum-accent-hover: #A8803A;
+	--momentum-border: #E4E4E4;
+	--momentum-text-muted: #6B6B6B;
+	--momentum-radius: 10px;
+	--momentum-radius-sm: 6px;
+	--momentum-shadow: 0 10px 30px rgba(17, 17, 17, 0.08);
+	--momentum-shadow-hover: 0 16px 40px rgba(17, 17, 17, 0.14);
+	--momentum-container: 1280px;
+	--momentum-font: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* ---------- Base ---------- */
+
+.momentum-container {
+	width: 100%;
+	max-width: var(--momentum-container);
+	margin-inline: auto;
+	padding-inline: 24px;
+}
+
+.momentum-section {
+	padding-block: 30px;
+}
+
+.momentum-section--tight {
+	padding-block: 30px;
+}
+
+.momentum-section--light {
+	background: var(--momentum-gray-light);
+}
+
+.momentum-section--dark {
+	background: var(--momentum-black);
+	color: var(--momentum-white);
+}
+
+.momentum-eyebrow {
+	display: inline-block;
+	font-size: 13px;
+	font-weight: 700;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+	color: var(--momentum-accent);
+	margin-bottom: 12px;
+}
+
+/* ---------- Prose (readable body copy blocks) ---------- */
+
+.momentum-prose {
+	max-width: 760px;
+}
+
+.momentum-prose--wide {
+	max-width: none;
+}
+
+.momentum-prose p {
+	font-size: 16px;
+	line-height: 1.75;
+	color: var(--momentum-gray-dark);
+	margin: 0 0 22px;
+}
+
+.momentum-prose p:last-child {
+	margin-bottom: 0;
+}
+
+/* ---------- Form fields (Contacto, Property detail) ---------- */
+
+.momentum-form-row {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	margin-bottom: 18px;
+}
+
+.momentum-form-row label {
+	font-size: 12.5px;
+	font-weight: 700;
+	color: var(--momentum-text-muted);
+	text-transform: uppercase;
+	letter-spacing: 0.03em;
+}
+
+.momentum-form-row input,
+.momentum-form-row textarea {
+	width: 100%;
+	border: 1px solid var(--momentum-border);
+	border-radius: var(--momentum-radius-sm);
+	padding: 12px 14px;
+	font-size: 14px;
+	font-family: inherit;
+	color: var(--momentum-black);
+	resize: vertical;
+}
+
+.momentum-form-row input:focus,
+.momentum-form-row textarea:focus {
+	outline: none;
+	border-color: var(--momentum-accent);
+}
+
+.momentum-form-message {
+	padding: 14px 16px;
+	border-radius: var(--momentum-radius-sm);
+	font-size: 13.5px;
+	margin-bottom: 20px;
+}
+
+.momentum-form-message--success {
+	background: rgba(198, 161, 91, 0.15);
+	border: 1px solid var(--momentum-accent);
+	color: #7a5f2c;
+}
+
+.momentum-form-message--error {
+	background: rgba(180, 40, 40, 0.08);
+	border: 1px solid rgba(180, 40, 40, 0.4);
+	color: #8a2222;
+}
+
+/* ---------- Map embed (Contacto, Property detail) ---------- */
+
+.momentum-map {
+	position: relative;
+	width: 100%;
+	aspect-ratio: 21 / 8;
+	border-radius: var(--momentum-radius);
+	overflow: hidden;
+	box-shadow: var(--momentum-shadow);
+}
+
+.momentum-section-heading {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-end;
+	justify-content: space-between;
+	gap: 24px;
+	margin-bottom: 40px;
+}
+
+.momentum-section-heading h2 {
+	font-size: clamp(26px, 3vw, 34px);
+	font-weight: 700;
+	margin: 0;
+	line-height: 1.2;
+	color: var(--momentum-black);
+}
+
+.momentum-section--dark .momentum-section-heading h2 {
+	color: var(--momentum-white);
+}
+
+.momentum-section-heading p {
+	margin: 8px 0 0;
+	color: var(--momentum-text-muted);
+	max-width: 46ch;
+}
+
+.momentum-section--dark .momentum-section-heading p {
+	color: rgba(255, 255, 255, 0.7);
+}
+
+/* ---------- Page hero (dark banner, used by any internal page) ---------- */
+
+.momentum-page-hero {
+	background:
+		radial-gradient(circle at 85% 30%, rgba(198, 161, 91, 0.14), transparent 45%),
+		linear-gradient(160deg, var(--momentum-black) 0%, var(--momentum-gray-dark) 100%);
+	color: var(--momentum-white);
+	padding-block: 40px 32px;
+}
+
+.momentum-page-hero h1 {
+	font-size: clamp(28px, 3.6vw, 40px);
+	font-weight: 700;
+	margin: 0 0 12px;
+	color: var(--momentum-white);
+}
+
+.momentum-page-hero p {
+	margin: 0 0 24px;
+	font-size: 15.5px;
+	color: rgba(255, 255, 255, 0.7);
+	max-width: 56ch;
+}
+
+@media (max-width: 680px) {
+	.momentum-page-hero {
+		padding-block: 32px 24px;
+	}
+}
+
+/* ---------- Teléfonos (dos números): apila los enlaces en los espacios
+   compactos tipo "pill" (header, CTAs) en vez de ensancharlos en una sola
+   línea. Ambos números de referencia tienen el mismo largo, por eso
+   align-items: center se ve bien tanto en contextos centrados como en los
+   alineados a la izquierda. ---------- */
+
+.momentum-phone-group {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	align-items: center;
+}
+
+/* ---------- Buttons ---------- */
+
+.momentum-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	padding: 14px 28px;
+	font-size: 13px;
+	font-weight: 700;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	text-decoration: none;
+	border-radius: var(--momentum-radius-sm);
+	border: 1.5px solid transparent;
+	cursor: pointer;
+	transition: background-color .2s ease, color .2s ease, border-color .2s ease, transform .15s ease;
+	white-space: nowrap;
+}
+
+.momentum-btn:active {
+	transform: translateY(1px);
+}
+
+.momentum-btn--block {
+	display: flex;
+	width: 100%;
+}
+
+.momentum-btn--primary {
+	background: var(--momentum-black);
+	color: var(--momentum-white);
+	border-color: var(--momentum-black);
+}
+
+.momentum-btn--primary:hover {
+	background: var(--momentum-accent-hover);
+	border-color: var(--momentum-accent-hover);
+	color: var(--momentum-white);
+}
+
+.momentum-btn--accent {
+	background: var(--momentum-accent);
+	color: var(--momentum-black);
+	border-color: var(--momentum-accent);
+}
+
+.momentum-btn--accent:hover {
+	background: var(--momentum-accent-hover);
+	border-color: var(--momentum-accent-hover);
+	color: var(--momentum-white);
+}
+
+.momentum-btn--outline {
+	background: transparent;
+	color: var(--momentum-black);
+	border-color: var(--momentum-black);
+}
+
+.momentum-btn--outline:hover {
+	background: var(--momentum-black);
+	color: var(--momentum-white);
+}
+
+.momentum-section--dark .momentum-btn--outline {
+	color: var(--momentum-white);
+	border-color: rgba(255, 255, 255, 0.4);
+}
+
+.momentum-section--dark .momentum-btn--outline:hover {
+	background: var(--momentum-white);
+	color: var(--momentum-black);
+	border-color: var(--momentum-white);
+}
+
+/* ---------- Property card ---------- */
+
+.momentum-property-grid {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 28px;
+}
+
+.momentum-property-card {
+	background: var(--momentum-white);
+	border-radius: var(--momentum-radius);
+	overflow: hidden;
+	box-shadow: var(--momentum-shadow);
+	transition: box-shadow .25s ease, transform .25s ease;
+	display: flex;
+	flex-direction: column;
+}
+
+.momentum-property-card:hover {
+	box-shadow: var(--momentum-shadow-hover);
+	transform: translateY(-4px);
+}
+
+.momentum-property-card__media {
+	position: relative;
+	aspect-ratio: 16 / 10;
+	overflow: hidden;
+	background: linear-gradient(135deg, var(--momentum-gray-dark), var(--momentum-black));
+}
+
+.momentum-property-card__media img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+}
+
+.momentum-property-card__badge {
+	position: absolute;
+	top: 14px;
+	left: 14px;
+	background: var(--momentum-accent);
+	color: var(--momentum-black);
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	padding: 6px 12px;
+	border-radius: 999px;
+}
+
+.momentum-property-card__body {
+	padding: 20px 22px 24px;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	flex: 1;
+}
+
+.momentum-property-card__title {
+	font-size: 17px;
+	font-weight: 700;
+	margin: 0;
+	line-height: 1.35;
+	color: var(--momentum-black);
+}
+
+.momentum-property-card__title a {
+	color: inherit;
+	text-decoration: none;
+}
+
+.momentum-property-card__location {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	font-size: 13px;
+	color: var(--momentum-text-muted);
+}
+
+.momentum-property-card__location svg {
+	flex-shrink: 0;
+	color: var(--momentum-accent);
+}
+
+.momentum-property-card__features {
+	display: grid;
+	grid-template-columns: repeat(4, max-content);
+	justify-content: space-between;
+	gap: 6px;
+	font-size: 12.5px;
+	color: var(--momentum-gray-dark);
+	padding-block: 10px;
+	border-block: 1px solid var(--momentum-border);
+}
+
+.momentum-property-card__features span {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	white-space: nowrap;
+}
+
+.momentum-property-card__features svg {
+	color: var(--momentum-accent);
+}
+
+.momentum-property-card__footer {
+	margin-top: auto;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+}
+
+.momentum-property-card__price {
+	font-size: 17px;
+	font-weight: 700;
+	color: var(--momentum-black);
+}
+
+/* ---------- Trust bar ---------- */
+
+.momentum-trust-bar {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 32px;
+}
+
+.momentum-trust-item {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.momentum-trust-item__icon {
+	color: var(--momentum-accent);
+}
+
+.momentum-trust-item h3 {
+	font-size: 15px;
+	font-weight: 700;
+	margin: 0;
+	text-transform: uppercase;
+	letter-spacing: 0.03em;
+	color: var(--momentum-black);
+}
+
+.momentum-trust-item p {
+	margin: 0;
+	font-size: 13.5px;
+	color: var(--momentum-text-muted);
+	line-height: 1.55;
+}
+
+/* ---------- Services ---------- */
+
+.momentum-services-grid {
+	display: grid;
+	grid-template-columns: repeat(5, 1fr);
+	gap: 20px;
+}
+
+.momentum-service-card {
+	background: var(--momentum-white);
+	border: 1px solid var(--momentum-border);
+	border-radius: var(--momentum-radius);
+	padding: 28px 22px;
+	text-align: left;
+	text-decoration: none;
+	color: inherit;
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+	transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+}
+
+.momentum-service-card:hover {
+	border-color: var(--momentum-accent);
+	box-shadow: var(--momentum-shadow);
+	transform: translateY(-3px);
+}
+
+.momentum-service-card__icon {
+	color: var(--momentum-accent);
+}
+
+.momentum-service-card h3 {
+	font-size: 16px;
+	font-weight: 700;
+	margin: 0;
+	color: var(--momentum-black);
+}
+
+.momentum-service-card p {
+	font-size: 13.5px;
+	color: var(--momentum-text-muted);
+	margin: 0;
+	line-height: 1.55;
+}
+
+.momentum-service-card__link {
+	margin-top: auto;
+	font-size: 12.5px;
+	font-weight: 700;
+	letter-spacing: 0.05em;
+	text-transform: uppercase;
+	color: var(--momentum-black);
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 1024px) {
+	.momentum-property-grid {
+		grid-template-columns: repeat(2, 1fr);
+	}
+
+	.momentum-services-grid {
+		grid-template-columns: repeat(3, 1fr);
+	}
+
+	.momentum-trust-bar {
+		grid-template-columns: repeat(2, 1fr);
+		gap: 28px 20px;
+	}
+}
+
+@media (max-width: 680px) {
+	.momentum-section {
+		padding-block: 30px;
+	}
+
+	.momentum-property-grid {
+		grid-template-columns: 1fr;
+	}
+
+	.momentum-services-grid {
+		grid-template-columns: 1fr 1fr;
+	}
+
+	.momentum-trust-bar {
+		grid-template-columns: 1fr;
+	}
+
+	.momentum-section-heading {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+}
+
+/* =========================================================
+   Site header
+   ========================================================= */
+
+.momentum-site-header {
+	background: var(--momentum-black);
+	position: relative;
+	z-index: 100;
+}
+
+.momentum-site-header__inner {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 32px;
+	padding-block: 16px;
+}
+
+.momentum-site-header__logo a {
+	display: block;
+	line-height: 0;
+}
+
+.momentum-site-header__logo img {
+	max-height: 84px;
+	width: auto;
+	display: block;
+}
+
+.momentum-site-header__logo-text {
+	color: var(--momentum-white);
+	font-weight: 700;
+	font-size: 20px;
+	text-decoration: none;
+}
+
+.momentum-site-header__nav {
+	flex: 1;
+	display: flex;
+	justify-content: center;
+}
+
+.momentum-nav {
+	display: flex;
+	align-items: center;
+	gap: 26px;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	flex-wrap: wrap;
+}
+
+.momentum-nav a {
+	color: var(--momentum-white);
+	text-decoration: none;
+	text-transform: uppercase;
+	font-size: 12.5px;
+	font-weight: 600;
+	letter-spacing: 0.05em;
+	transition: color .2s ease;
+}
+
+.momentum-nav a:hover,
+.momentum-nav .current-menu-item > a {
+	color: var(--momentum-accent);
+}
+
+.momentum-site-header__actions {
+	display: flex;
+	align-items: center;
+	gap: 24px;
+}
+
+.momentum-site-header__phone {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	color: var(--momentum-white);
+	text-decoration: none;
+	font-weight: 700;
+	font-size: 14px;
+	white-space: nowrap;
+}
+
+.momentum-site-header__phone svg {
+	color: var(--momentum-accent);
+}
+
+.momentum-site-header__toggle {
+	display: none;
+	flex-direction: column;
+	justify-content: center;
+	gap: 5px;
+	width: 32px;
+	height: 32px;
+	background: none;
+	border: none;
+	cursor: pointer;
+	padding: 0;
+}
+
+.momentum-site-header__toggle span {
+	width: 100%;
+	height: 2px;
+	background: var(--momentum-white);
+	display: block;
+}
+
+.momentum-mobile-nav {
+	display: none;
+	flex-direction: column;
+	background: var(--momentum-black);
+	border-top: 1px solid rgba(255, 255, 255, 0.1);
+	padding: 20px 24px 28px;
+}
+
+.momentum-mobile-nav__menu {
+	list-style: none;
+	margin: 0 0 20px;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.momentum-mobile-nav__menu a {
+	display: block;
+	color: var(--momentum-white);
+	text-decoration: none;
+	text-transform: uppercase;
+	font-size: 13px;
+	font-weight: 600;
+	letter-spacing: 0.04em;
+	padding: 12px 0;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.momentum-mobile-nav__phone {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	color: var(--momentum-accent);
+	text-decoration: none;
+	font-weight: 700;
+	font-size: 14px;
+}
+
+body.momentum-mobile-nav-open .momentum-mobile-nav {
+	display: flex;
+}
+
+@media (max-width: 1024px) {
+	.momentum-site-header__nav,
+	.momentum-site-header__phone {
+		display: none;
+	}
+
+	.momentum-site-header__toggle {
+		display: flex;
+	}
+}
+
+/* =========================================================
+   Site footer
+   ========================================================= */
+
+.momentum-site-footer {
+	background: var(--momentum-black);
+	color: rgba(255, 255, 255, 0.75);
+	padding-top: 72px;
+}
+
+.momentum-site-footer__grid {
+	display: grid;
+	grid-template-columns: 1.3fr 1fr 1fr 1.3fr;
+	gap: 40px;
+	padding-bottom: 56px;
+}
+
+.momentum-footer-logo img {
+	max-height: 46px;
+	width: auto;
+	margin-bottom: 18px;
+}
+
+.momentum-footer-brand-name {
+	color: var(--momentum-white);
+	font-size: 18px;
+	font-weight: 700;
+	margin: 0 0 18px;
+}
+
+.momentum-footer-tagline {
+	font-size: 13.5px;
+	line-height: 1.65;
+	color: rgba(255, 255, 255, 0.6);
+	max-width: 32ch;
+	margin: 0 0 22px;
+}
+
+.momentum-footer-social {
+	display: flex;
+	gap: 12px;
+}
+
+.momentum-footer-social__icon {
+	width: 36px;
+	height: 36px;
+	border-radius: 50%;
+	border: 1px solid rgba(255, 255, 255, 0.25);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: var(--momentum-white);
+	text-decoration: none;
+	transition: border-color .2s ease, color .2s ease;
+}
+
+.momentum-footer-social__icon:hover {
+	border-color: var(--momentum-accent);
+	color: var(--momentum-accent);
+}
+
+.momentum-footer-col h3 {
+	color: var(--momentum-white);
+	font-size: 13.5px;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	margin: 0 0 20px;
+}
+
+.momentum-footer-col ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 11px;
+}
+
+.momentum-footer-col a {
+	color: rgba(255, 255, 255, 0.65);
+	text-decoration: none;
+	font-size: 13.5px;
+	transition: color .2s ease;
+}
+
+.momentum-footer-col a:hover {
+	color: var(--momentum-accent);
+}
+
+.momentum-footer-contact li {
+	display: flex;
+	align-items: flex-start;
+	gap: 10px;
+	font-size: 13.5px;
+	line-height: 1.55;
+	color: rgba(255, 255, 255, 0.65);
+}
+
+.momentum-footer-contact li svg {
+	flex-shrink: 0;
+	margin-top: 3px;
+	color: var(--momentum-accent);
+}
+
+.momentum-footer-contact a {
+	color: inherit;
+	text-decoration: none;
+}
+
+.momentum-footer-contact a:hover {
+	color: var(--momentum-accent);
+}
+
+.momentum-site-footer__bottom {
+	border-top: 1px solid rgba(255, 255, 255, 0.12);
+	padding-block: 22px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 12px;
+	font-size: 12.5px;
+	color: rgba(255, 255, 255, 0.5);
+}
+
+.momentum-site-footer__bottom p {
+	margin: 0;
+}
+
+.momentum-site-footer__legal {
+	display: flex;
+	gap: 10px;
+}
+
+@media (max-width: 1024px) {
+	.momentum-site-footer__grid {
+		grid-template-columns: repeat(3, 1fr);
+	}
+
+	.momentum-footer-col--brand {
+		grid-column: 1 / -1;
+	}
+}
+
+@media (max-width: 680px) {
+	.momentum-site-footer__grid {
+		grid-template-columns: 1fr;
+		gap: 40px;
+	}
+
+	.momentum-site-footer__bottom {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+}
+
+/* =========================================================
+   Floating WhatsApp button (site-wide, fixed to viewport)
+   ========================================================= */
+
+.momentum-whatsapp-float {
+	position: fixed;
+	right: 24px;
+	bottom: 24px;
+	z-index: 1000;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 60px;
+	height: 60px;
+	border-radius: 50%;
+	background: #25D366;
+	box-shadow: var(--momentum-shadow-hover);
+	transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.momentum-whatsapp-float:hover {
+	background: #1EBE5B;
+	transform: scale(1.06);
+}
+
+.momentum-whatsapp-float svg {
+	width: 30px;
+	height: 30px;
+	color: var(--momentum-white);
+}
+
+@media (max-width: 680px) {
+	.momentum-whatsapp-float {
+		right: 16px;
+		bottom: 16px;
+		width: 52px;
+		height: 52px;
+	}
+
+	.momentum-whatsapp-float svg {
+		width: 26px;
+		height: 26px;
+	}
+}
+
+/* =========================================================
+   Blog preview grid (Home, Blog page)
+   ========================================================= */
+
+.momentum-blog-empty {
+	text-align: center;
+	color: var(--momentum-text-muted, #666);
+	padding: 40px 0;
+}
+
+.momentum-blog-grid {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 28px;
+}
+
+.momentum-blog-card {
+	background: var(--momentum-white);
+	border-radius: var(--momentum-radius);
+	box-shadow: var(--momentum-shadow);
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.momentum-blog-card:hover {
+	box-shadow: var(--momentum-shadow-hover);
+	transform: translateY(-2px);
+}
+
+.momentum-blog-card__media {
+	display: block;
+	aspect-ratio: 3 / 2;
+	overflow: hidden;
+}
+
+.momentum-blog-card__media img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+	transition: transform 0.3s ease;
+}
+
+.momentum-blog-card:hover .momentum-blog-card__media img {
+	transform: scale(1.04);
+}
+
+.momentum-blog-card__body {
+	padding: 22px 24px 26px;
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+}
+
+.momentum-blog-card__title {
+	font-size: 17px;
+	font-weight: 700;
+	margin: 0 0 10px;
+	line-height: 1.35;
+}
+
+.momentum-blog-card__title a {
+	color: var(--momentum-black);
+	text-decoration: none;
+}
+
+.momentum-blog-card__title a:hover {
+	color: var(--momentum-accent);
+}
+
+.momentum-blog-card__excerpt {
+	font-size: 13.5px;
+	color: var(--momentum-text-muted);
+	line-height: 1.6;
+	margin: 0 0 16px;
+	flex: 1;
+}
+
+.momentum-blog-card__link {
+	font-size: 13.5px;
+	font-weight: 700;
+	color: var(--momentum-accent);
+	text-decoration: none;
+	align-self: flex-start;
+}
+
+.momentum-blog-card__link:hover {
+	color: var(--momentum-accent-hover);
+}
+
+@media (max-width: 1024px) {
+	.momentum-blog-grid {
+		grid-template-columns: 1fr 1fr;
+	}
+}
+
+@media (max-width: 680px) {
+	.momentum-blog-grid {
+		grid-template-columns: 1fr;
+	}
+}
+
+/* =========================================================
+   Nosotros — large photos between text sections
+   ========================================================= */
+
+.momentum-featured-photo {
+	width: 100%;
+	height: auto;
+	display: block;
+	border-radius: var(--momentum-radius);
+	box-shadow: var(--momentum-shadow);
+}
+
+.momentum-article-prose {
+	margin-top: 36px;
+}
+
+.momentum-article-meta {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px;
+	align-items: center;
+	margin-bottom: 20px;
+	font-size: 14px;
+	color: var(--momentum-text-muted, #666);
+}
+
+.momentum-article-tags {
+	margin-top: 28px;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+.momentum-article-tags a {
+	padding: 4px 12px;
+	border-radius: 999px;
+	border: 1px solid #e2e4e9;
+	font-size: 13px;
+	text-decoration: none;
+}
+
+.momentum-article-back {
+	margin-top: 28px;
+}

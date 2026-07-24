@@ -1,0 +1,1010 @@
+/* Momentum Admin — panel administrativo. Diseño propio, sin dependencias del tema. */
+
+:root {
+	--momentum-bg: #f4f5f7;
+	--momentum-surface: #ffffff;
+	--momentum-border: #e2e4e9;
+	--momentum-text: #1f2430;
+	--momentum-text-muted: #6b7280;
+	--momentum-primary: #1f6f54;
+	--momentum-primary-hover: #185a44;
+	--momentum-danger: #b3261e;
+	--momentum-success: #1f6f54;
+	--momentum-sidebar-bg: #16211c;
+	--momentum-sidebar-text: #cfd8d3;
+	--momentum-sidebar-active: #1f6f54;
+	--momentum-radius: 8px;
+}
+
+/*
+ * Todo el reset/base vive bajo .momentum-admin (aplicado a los contenedores
+ * raíz en header.php y login.php), NUNCA en `*`, `body` ni selectores de
+ * elemento global: el modal de la Biblioteca Multimedia de WordPress se
+ * inserta como hijo directo de <body>, fuera de .momentum-admin, así que
+ * reglas globales aquí se filtran a su interior (box-sizing, font-size y
+ * line-height heredados rompen los cálculos de tamaño que el CSS nativo del
+ * modal asume) y le hacen perder sus estilos nativos.
+ */
+.momentum-admin,
+.momentum-admin *,
+.momentum-admin *::before,
+.momentum-admin *::after {
+	box-sizing: border-box;
+}
+
+.momentum-admin {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+	color: var(--momentum-text);
+	font-size: 15px;
+	line-height: 1.5;
+}
+
+body.momentum-admin-body {
+	margin: 0;
+	background: var(--momentum-bg);
+}
+
+/*
+ * .screen-reader-text: WordPress core (media-views.js) marca varios
+ * encabezados internos del modal de medios con esta clase esperando que el
+ * TEMA activo la oculte visualmente (convención de temas WP desde 4.2).
+ * Nuestro panel no carga el CSS del tema a propósito, así que sin esta
+ * regla esos encabezados quedan visibles y se encabalgan con el título real
+ * del modal. Es la causa confirmada del texto encimado reportado. Regla
+ * textual estándar de WordPress (misma que trae cualquier tema núcleo);
+ * no es un reset propio, por eso no va bajo .momentum-admin.
+ */
+.screen-reader-text {
+	border: 0;
+	clip: rect(1px, 1px, 1px, 1px);
+	clip-path: inset(50%);
+	height: 1px;
+	margin: -1px;
+	overflow: hidden;
+	padding: 0;
+	position: absolute !important;
+	width: 1px;
+	word-wrap: normal !important;
+}
+
+.screen-reader-text:focus {
+	background-color: #f1f1f1;
+	border-radius: 3px;
+	box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.6);
+	clip: auto !important;
+	clip-path: none;
+	color: #21759b;
+	display: block;
+	font-size: 14px;
+	font-weight: bold;
+	height: auto;
+	left: 5px;
+	line-height: normal;
+	padding: 15px 23px 14px;
+	text-decoration: none;
+	top: 5px;
+	width: auto;
+	z-index: 100000;
+}
+
+.momentum-admin :where(a) {
+	color: var(--momentum-primary);
+}
+
+/* Shell */
+
+.momentum-admin-shell {
+	display: flex;
+	min-height: 100vh;
+}
+
+.momentum-admin-sidebar {
+	width: 250px;
+	flex-shrink: 0;
+	background: var(--momentum-sidebar-bg);
+	color: var(--momentum-sidebar-text);
+	display: flex;
+	flex-direction: column;
+	padding: 20px 0;
+}
+
+.momentum-admin-brand {
+	padding: 0 20px 16px;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+	margin-bottom: 16px;
+}
+
+.momentum-admin-brand--center {
+	border-bottom: none;
+	text-align: center;
+	margin-bottom: 24px;
+}
+
+.momentum-admin-brand--center .custom-logo {
+	max-width: 220px;
+	max-height: 72px;
+	width: auto;
+	height: auto;
+}
+
+.momentum-admin-brand-name {
+	display: block;
+	font-weight: 700;
+	font-size: 17px;
+	color: #fff;
+}
+
+.momentum-admin-brand-tag {
+	display: block;
+	font-size: 12px;
+	color: var(--momentum-sidebar-text);
+	margin-top: 2px;
+}
+
+.momentum-admin-user {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 0 20px 16px;
+	font-size: 13px;
+	color: #fff;
+}
+
+.momentum-admin-nav {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	padding: 0 10px;
+}
+
+.momentum-admin-nav-link {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 10px 12px;
+	border-radius: var(--momentum-radius);
+	color: #fff;
+	text-decoration: none;
+	font-size: 14px;
+}
+
+.momentum-admin-nav-link:hover {
+	background: rgba(255, 255, 255, 0.06);
+	color: #fff;
+}
+
+.momentum-admin-nav-link.is-active {
+	background: var(--momentum-sidebar-active);
+	color: #fff;
+	font-weight: 600;
+}
+
+.momentum-admin-nav-link--logout {
+	margin-top: 12px;
+	border-top: 1px solid rgba(255, 255, 255, 0.1);
+	padding-top: 14px;
+}
+
+.momentum-admin-subnav {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	margin: 2px 0 6px 34px;
+}
+
+.momentum-admin-subnav-link {
+	padding: 7px 12px;
+	border-radius: var(--momentum-radius);
+	color: rgba(255, 255, 255, 0.7);
+	text-decoration: none;
+	font-size: 13px;
+}
+
+.momentum-admin-subnav-link:hover {
+	background: rgba(255, 255, 255, 0.06);
+	color: #fff;
+}
+
+.momentum-admin-subnav-link.is-active {
+	background: var(--momentum-sidebar-active);
+	color: #fff;
+	font-weight: 600;
+}
+
+.momentum-admin-menu-toggle {
+	display: none;
+	align-items: center;
+	gap: 6px;
+	position: sticky;
+	top: 0;
+	z-index: 20;
+	background: var(--momentum-sidebar-bg);
+	color: #fff;
+	border: none;
+	padding: 12px 16px;
+	font-size: 14px;
+	cursor: pointer;
+}
+
+.momentum-admin-main {
+	flex: 1;
+	padding: 28px 32px 60px;
+	min-width: 0;
+}
+
+/* Page header */
+
+.momentum-admin-page-header {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	margin-bottom: 20px;
+}
+
+.momentum-admin-page-header h1 {
+	margin: 0 0 4px;
+	font-size: 22px;
+}
+
+.momentum-admin-page-header p {
+	margin: 0;
+	color: var(--momentum-text-muted);
+}
+
+/* Alerts */
+
+.momentum-admin-alert {
+	padding: 12px 16px;
+	border-radius: var(--momentum-radius);
+	margin: 0 0 16px;
+	font-size: 14px;
+}
+
+.momentum-admin-alert--success {
+	background: #e6f4ee;
+	color: var(--momentum-success);
+	border: 1px solid #bfe3d3;
+}
+
+.momentum-admin-alert--error {
+	background: #fbe9e7;
+	color: var(--momentum-danger);
+	border: 1px solid #f3c6c1;
+}
+
+.momentum-admin-notice {
+	padding: 16px;
+	border-radius: var(--momentum-radius);
+	background: var(--momentum-surface);
+	border: 1px solid var(--momentum-border);
+}
+
+/* Buttons & links */
+
+.momentum-admin-button {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	background: var(--momentum-primary);
+	color: #fff;
+	border: none;
+	padding: 10px 18px;
+	border-radius: var(--momentum-radius);
+	font-size: 14px;
+	font-weight: 600;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.momentum-admin-button:hover {
+	background: var(--momentum-primary-hover);
+	color: #fff;
+}
+
+.momentum-admin-button--secondary {
+	background: var(--momentum-surface);
+	color: var(--momentum-text);
+	border: 1px solid var(--momentum-border);
+}
+
+.momentum-admin-button--secondary:hover {
+	background: var(--momentum-bg);
+	color: var(--momentum-text);
+}
+
+.momentum-admin-button--block {
+	width: 100%;
+	justify-content: center;
+}
+
+.momentum-admin-button--danger {
+	background: var(--momentum-danger);
+}
+
+.momentum-admin-button--danger:hover {
+	background: #8f1e18;
+	color: #fff;
+}
+
+.momentum-admin-link {
+	background: none;
+	border: none;
+	padding: 0;
+	font-family: inherit;
+	color: var(--momentum-primary);
+	font-size: 14px;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.momentum-admin-link:hover {
+	text-decoration: underline;
+}
+
+/*
+ * Dentro de .momentum-admin-field (flex-direction: column), los hijos se
+ * estiran al 100% del ancho (align-items: stretch por defecto) y un
+ * <button> centra su texto por la hoja de estilos nativa del navegador.
+ * Eso empujaba "Quitar" hacia el centro/derecha del campo. align-self
+ * evita el estiramiento así que el botón (y su texto) quedan a la
+ * izquierda, alineados con "Seleccionar imagen".
+ */
+#momentum-featured-remove {
+	align-self: flex-start;
+}
+
+.momentum-admin-link-danger {
+	background: none;
+	border: none;
+	font-family: inherit;
+	color: var(--momentum-danger);
+	font-size: 13px;
+	cursor: pointer;
+	padding: 0;
+	text-decoration: underline;
+}
+
+.momentum-admin-inline-form {
+	display: inline;
+}
+
+/* Stats */
+
+.momentum-admin-stats {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+	gap: 16px;
+	margin-bottom: 24px;
+}
+
+.momentum-admin-stat-card {
+	background: var(--momentum-surface);
+	border: 1px solid var(--momentum-border);
+	border-radius: var(--momentum-radius);
+	padding: 20px;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.momentum-admin-stat-number {
+	font-size: 30px;
+	font-weight: 700;
+}
+
+.momentum-admin-stat-label {
+	color: var(--momentum-text-muted);
+	font-size: 13px;
+}
+
+/* Placeholder */
+
+.momentum-admin-placeholder {
+	background: var(--momentum-surface);
+	border: 1px dashed var(--momentum-border);
+	border-radius: var(--momentum-radius);
+	padding: 48px 24px;
+	text-align: center;
+	color: var(--momentum-text-muted);
+	font-size: 16px;
+}
+
+/* Filters */
+
+.momentum-admin-filters {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	align-items: center;
+	margin-bottom: 18px;
+}
+
+.momentum-admin-filters-search {
+	flex: 1 1 220px;
+}
+
+.momentum-admin-filters input,
+.momentum-admin-filters select {
+	padding: 9px 12px;
+	border-radius: var(--momentum-radius);
+	border: 1px solid var(--momentum-border);
+	font-size: 14px;
+	background: var(--momentum-surface);
+}
+
+/* Table */
+
+.momentum-admin-table-wrap {
+	overflow-x: auto;
+	background: var(--momentum-surface);
+	border: 1px solid var(--momentum-border);
+	border-radius: var(--momentum-radius);
+}
+
+.momentum-admin-table {
+	width: 100%;
+	border-collapse: collapse;
+	min-width: 860px;
+}
+
+.momentum-admin-table th,
+.momentum-admin-table td {
+	padding: 12px 14px;
+	text-align: left;
+	border-bottom: 1px solid var(--momentum-border);
+	font-size: 14px;
+	vertical-align: middle;
+}
+
+.momentum-admin-table th {
+	font-size: 12px;
+	text-transform: uppercase;
+	letter-spacing: 0.03em;
+	color: var(--momentum-text-muted);
+	background: var(--momentum-bg);
+}
+
+.momentum-admin-table tr:last-child td {
+	border-bottom: none;
+}
+
+.momentum-admin-empty {
+	text-align: center;
+	color: var(--momentum-text-muted);
+	padding: 32px 0;
+}
+
+.momentum-admin-thumb {
+	width: 56px;
+	height: 56px;
+	object-fit: cover;
+	border-radius: 6px;
+	display: block;
+}
+
+.momentum-admin-thumb--empty {
+	width: 56px;
+	height: 56px;
+	border-radius: 6px;
+	background: var(--momentum-bg);
+	border: 1px dashed var(--momentum-border);
+	display: block;
+}
+
+.momentum-admin-badge {
+	display: inline-block;
+	padding: 3px 10px;
+	border-radius: 999px;
+	background: var(--momentum-bg);
+	border: 1px solid var(--momentum-border);
+	font-size: 12px;
+}
+
+.momentum-admin-tag {
+	display: inline-block;
+	margin-left: 6px;
+	padding: 2px 8px;
+	border-radius: 999px;
+	background: #fff3cd;
+	color: #7a5b00;
+	font-size: 11px;
+}
+
+.momentum-admin-badge.is-publicado {
+	background: #e3f5ee;
+	border-color: #bfe6d7;
+	color: #146c48;
+}
+
+.momentum-admin-badge.is-despublicado {
+	background: #fdecea;
+	border-color: #f6c6bf;
+	color: #a52c1e;
+}
+
+.momentum-admin-badge.is-borrador {
+	background: var(--momentum-bg);
+	border-color: var(--momentum-border);
+	color: var(--momentum-text-muted);
+}
+
+/*
+ * OJO: display:flex NO va en la propia <td>. Un <td> con display:flex deja de
+ * participar en el algoritmo de layout de tablas para estirarse a la altura
+ * de la fila (a diferencia de un table-cell normal), así que su border-bottom
+ * queda unos px por encima del de las demás celdas de la misma fila -se ve
+ * como si "Acciones" estuviera desfasado respecto al resto de la fila-. El
+ * flex se aplica al wrapper interno (.momentum-admin-actions__group) y la
+ * celda se queda como table-cell normal, estirable igual que sus hermanas.
+ */
+.momentum-admin-actions {
+	white-space: nowrap;
+}
+
+.momentum-admin-actions__group {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	align-items: center;
+}
+
+/* Pagination */
+
+.momentum-admin-pagination {
+	display: flex;
+	gap: 6px;
+	margin-top: 16px;
+}
+
+.momentum-admin-pagination a {
+	padding: 6px 12px;
+	border-radius: var(--momentum-radius);
+	border: 1px solid var(--momentum-border);
+	text-decoration: none;
+	font-size: 13px;
+	background: var(--momentum-surface);
+}
+
+.momentum-admin-pagination a.is-active {
+	background: var(--momentum-primary);
+	border-color: var(--momentum-primary);
+	color: #fff;
+}
+
+/* Form */
+
+.momentum-admin-form-grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 18px;
+	background: var(--momentum-surface);
+	border: 1px solid var(--momentum-border);
+	border-radius: var(--momentum-radius);
+	padding: 24px;
+}
+
+/*
+ * wp_editor() (Blog) trae su propio TinyMCE, que calcula su ancho en JS y a
+ * veces lo fija en px sobre su propio markup interno (mce-container,
+ * mce-toolbar-grp...). En vez de perseguir esas clases -internas de
+ * TinyMCE, pueden cambiar entre versiones-, se contiene el overflow en el
+ * campo que envuelve al editor: así nunca empuja a .momentum-admin-form-grid
+ * (ni a la página completa) fuera del viewport en pantallas angostas; si el
+ * editor necesita más ancho que su campo, se desplaza solo, en su caja.
+ */
+.momentum-admin-field--full {
+	max-width: 100%;
+	overflow-x: auto;
+}
+
+/* Red de seguridad: ningún hijo debería forzar scroll horizontal de toda la
+   página, sin importar qué widget de terceros (TinyMCE incluido) lo cause. */
+html,
+.momentum-admin-body,
+.momentum-admin-shell,
+.momentum-admin-main {
+	max-width: 100%;
+	overflow-x: hidden;
+}
+
+.momentum-admin-field {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.momentum-admin-field--full {
+	grid-column: 1 / -1;
+}
+
+.momentum-admin-field label {
+	font-weight: 600;
+	font-size: 13px;
+}
+
+.momentum-admin-field input,
+.momentum-admin-field select,
+.momentum-admin-field textarea {
+	padding: 10px 12px;
+	border-radius: var(--momentum-radius);
+	border: 1px solid var(--momentum-border);
+	font-size: 14px;
+	font-family: inherit;
+	width: 100%;
+}
+
+.momentum-admin-media-preview {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin-bottom: 4px;
+}
+
+.momentum-admin-field-hint {
+	margin: 0;
+	font-size: 12px;
+	color: var(--momentum-text-muted);
+}
+
+.momentum-admin-field-error {
+	margin: 0;
+	font-size: 12.5px;
+	font-weight: 600;
+	color: var(--momentum-danger);
+}
+
+.momentum-admin-field--has-error input,
+.momentum-admin-field--has-error textarea {
+	border-color: var(--momentum-danger);
+}
+
+.momentum-admin-field-secondary {
+	margin-top: 6px;
+}
+
+.momentum-admin-field-secondary-label {
+	margin-top: 10px;
+}
+
+.momentum-admin-char-count {
+	margin: 0;
+	font-size: 12px;
+	color: var(--momentum-text-muted);
+}
+
+.momentum-admin-char-count.is-over {
+	color: var(--momentum-danger);
+}
+
+.momentum-admin-tag-list {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+}
+
+.momentum-admin-tag-list:not(:empty) {
+	margin-bottom: 6px;
+}
+
+.momentum-admin-chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 4px 6px 4px 10px;
+	border-radius: 999px;
+	background: var(--momentum-bg);
+	border: 1px solid var(--momentum-border);
+	font-size: 13px;
+}
+
+.momentum-admin-chip-remove {
+	background: none;
+	border: none;
+	cursor: pointer;
+	font-size: 15px;
+	line-height: 1;
+	color: var(--momentum-text-muted);
+	padding: 0 2px;
+}
+
+.momentum-admin-collapse {
+	margin-top: 20px;
+	background: var(--momentum-surface);
+	border: 1px solid var(--momentum-border);
+	border-radius: var(--momentum-radius);
+	padding: 16px 24px;
+}
+
+.momentum-admin-collapse summary {
+	cursor: pointer;
+	font-weight: 600;
+	font-size: 15px;
+}
+
+.momentum-admin-collapse[open] summary {
+	margin-bottom: 16px;
+}
+
+.momentum-gallery-item {
+	position: relative;
+	display: inline-flex;
+	line-height: 0;
+}
+
+.momentum-gallery-remove {
+	position: absolute;
+	top: -6px;
+	right: -6px;
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	border: 1px solid var(--momentum-border);
+	background: #fff;
+	color: var(--momentum-danger);
+	font-size: 14px;
+	line-height: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	padding: 0;
+}
+
+.momentum-gallery-remove:hover {
+	background: var(--momentum-danger);
+	color: #fff;
+}
+
+.momentum-admin-media-preview img {
+	width: 72px;
+	height: 72px;
+	object-fit: cover;
+	border-radius: 6px;
+	border: 1px solid var(--momentum-border);
+}
+
+.momentum-admin-form-actions {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	margin-top: 20px;
+}
+
+.momentum-admin-settings-section {
+	margin-bottom: 24px;
+}
+
+.momentum-admin-settings-section h2 {
+	font-size: 16px;
+	font-weight: 700;
+	margin: 0 0 14px;
+	color: var(--momentum-black);
+}
+
+/* Login */
+
+.momentum-admin-login {
+	min-height: 100vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: var(--momentum-sidebar-bg);
+	padding: 20px;
+}
+
+.momentum-admin-login-card {
+	background: var(--momentum-surface);
+	border-radius: 12px;
+	padding: 36px 32px;
+	width: 100%;
+	max-width: 380px;
+	box-shadow: 0 20px 45px rgba(0, 0, 0, 0.25);
+}
+
+.momentum-admin-login-form {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.momentum-admin-login-form label {
+	font-size: 13px;
+	font-weight: 600;
+	margin-bottom: -6px;
+}
+
+.momentum-admin-login-form input[type="text"],
+.momentum-admin-login-form input[type="password"] {
+	padding: 11px 12px;
+	border-radius: var(--momentum-radius);
+	border: 1px solid var(--momentum-border);
+	font-size: 14px;
+}
+
+.momentum-admin-checkbox {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 13px;
+	font-weight: 400 !important;
+	margin: 0;
+}
+
+.momentum-admin-checkbox input {
+	width: auto;
+}
+
+/* Responsive */
+
+@media (max-width: 900px) {
+	.momentum-admin-menu-toggle {
+		display: flex;
+	}
+
+	.momentum-admin-shell {
+		flex-direction: column;
+	}
+
+	.momentum-admin-sidebar {
+		position: fixed;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		transform: translateX(-100%);
+		transition: transform 0.2s ease;
+		z-index: 30;
+		width: 260px;
+		overflow-y: auto;
+	}
+
+	.momentum-admin-sidebar.is-open {
+		transform: translateX(0);
+	}
+
+	.momentum-admin-main {
+		padding: 20px 16px 48px;
+	}
+
+	.momentum-admin-form-grid {
+		grid-template-columns: 1fr;
+		padding: 18px;
+	}
+}
+
+@media (max-width: 640px) {
+	.momentum-admin-table thead {
+		display: none;
+	}
+
+	.momentum-admin-table,
+	.momentum-admin-table tbody,
+	.momentum-admin-table tr,
+	.momentum-admin-table td {
+		display: block;
+		width: 100%;
+	}
+
+	.momentum-admin-table {
+		min-width: 0;
+	}
+
+	.momentum-admin-table tr {
+		border-bottom: 1px solid var(--momentum-border);
+		padding: 12px 14px;
+	}
+
+	.momentum-admin-table td {
+		border-bottom: none;
+		padding: 6px 0;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		gap: 12px;
+		text-align: right;
+	}
+
+	.momentum-admin-table td[data-label]::before {
+		content: attr(data-label);
+		font-weight: 600;
+		color: var(--momentum-text-muted);
+		text-align: left;
+	}
+
+	.momentum-admin-filters {
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	/*
+	 * .momentum-admin-filters-search trae flex: 1 1 220px para repartirse el
+	 * ancho junto a los selects en desktop (flex-direction: row). En móvil el
+	 * contenedor pasa a column, así que ese mismo 220px de flex-basis se
+	 * interpreta como ALTO (eje principal ahora vertical) y el buscador se
+	 * infla en vez de quedar del tamaño normal de un input.
+	 */
+	.momentum-admin-filters-search {
+		flex: none;
+	}
+
+	.momentum-admin-filters input,
+	.momentum-admin-filters select,
+	.momentum-admin-filters button {
+		width: 100%;
+	}
+}
+
+/* ---------- Modal (Zonas: Agregar / Confirmar eliminación) ---------- */
+
+body.momentum-admin-modal-open {
+	overflow: hidden;
+}
+
+.momentum-admin-modal {
+	position: fixed;
+	inset: 0;
+	z-index: 100010;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 20px;
+}
+
+.momentum-admin-modal[hidden] {
+	display: none;
+}
+
+.momentum-admin-modal__backdrop {
+	position: absolute;
+	inset: 0;
+	background: rgba(17, 20, 24, 0.55);
+}
+
+.momentum-admin-modal__panel {
+	position: relative;
+	z-index: 1;
+	width: 100%;
+	max-width: 420px;
+	max-height: calc(100vh - 40px);
+	overflow-y: auto;
+	background: var(--momentum-surface);
+	border-radius: var(--momentum-radius);
+	box-shadow: 0 20px 45px rgba(0, 0, 0, 0.25);
+	padding: 24px;
+}
+
+.momentum-admin-modal__panel h2 {
+	margin: 0 0 16px;
+	font-size: 18px;
+	color: var(--momentum-text);
+}
+
+.momentum-admin-modal__panel p {
+	margin: 0 0 16px;
+	color: var(--momentum-text-muted);
+	font-size: 14px;
+	line-height: 1.5;
+}
+
+.momentum-admin-modal__actions {
+	display: flex;
+	justify-content: flex-end;
+	gap: 10px;
+	margin-top: 20px;
+}
+
+@media (max-width: 480px) {
+	.momentum-admin-modal__panel {
+		padding: 20px;
+	}
+
+	.momentum-admin-modal__actions {
+		flex-direction: column-reverse;
+	}
+
+	.momentum-admin-modal__actions .momentum-admin-button {
+		width: 100%;
+		justify-content: center;
+	}
+}

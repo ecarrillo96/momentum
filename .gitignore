@@ -1,0 +1,20 @@
+# Ignorar todo por defecto
+/*
+
+# Permitir el propio .gitignore
+!.gitignore
+
+# Permitir wp-content, pero solo abrir lo necesario dentro
+!/wp-content/
+/wp-content/*
+
+!/wp-content/themes/
+/wp-content/themes/*
+!/wp-content/themes/momentum/
+
+!/wp-content/plugins/
+/wp-content/plugins/*
+!/wp-content/plugins/momentum-admin/
+
+# Basura del sistema
+.DS_Store

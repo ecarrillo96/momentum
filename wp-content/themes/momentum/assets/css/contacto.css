@@ -1,0 +1,131 @@
+/*
+ * Momentum — Contacto page.
+ * Enqueued only on that page (see inc/enqueue.php).
+ */
+
+.momentum-contact-layout {
+	display: grid;
+	grid-template-columns: 1fr 360px;
+	gap: 40px;
+	align-items: stretch;
+}
+
+/* ---------- Form ---------- */
+
+.momentum-contact-form {
+	background: var(--momentum-white);
+	border-radius: var(--momentum-radius);
+	box-shadow: var(--momentum-shadow);
+	padding: 32px;
+	box-sizing: border-box;
+	height: 100%;
+}
+
+.momentum-contact-form h3 {
+	font-size: 20px;
+	font-weight: 700;
+	margin: 0 0 22px;
+	color: var(--momentum-black);
+}
+
+/* ---------- Contact info card ---------- */
+
+.momentum-contact-info {
+	background: var(--momentum-black);
+	color: var(--momentum-white);
+	border-radius: var(--momentum-radius);
+	padding: 32px 28px;
+	box-sizing: border-box;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+}
+
+.momentum-contact-info__logo {
+	margin-bottom: 24px;
+	display: flex;
+	justify-content: center;
+}
+
+.momentum-contact-info__logo img {
+	max-height: 84px;
+	width: auto;
+	display: block;
+}
+
+.momentum-contact-info h3 {
+	font-size: 18px;
+	font-weight: 700;
+	margin: 0 0 24px;
+	color: var(--momentum-white);
+}
+
+.momentum-contact-info ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+}
+
+.momentum-contact-info li {
+	display: flex;
+	align-items: flex-start;
+	gap: 14px;
+}
+
+.momentum-contact-info li svg {
+	flex-shrink: 0;
+	margin-top: 3px;
+	color: var(--momentum-accent);
+}
+
+.momentum-contact-info strong {
+	display: block;
+	font-size: 13px;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	margin-bottom: 6px;
+	color: var(--momentum-white);
+}
+
+.momentum-contact-info span {
+	font-size: 13.5px;
+	line-height: 1.6;
+	color: rgba(255, 255, 255, 0.7);
+}
+
+.momentum-contact-info a {
+	color: rgba(255, 255, 255, 0.85);
+	text-decoration: none;
+}
+
+.momentum-contact-info a:hover {
+	color: var(--momentum-accent);
+}
+
+/* ---------- Map (page-specific aspect ratio) ---------- */
+
+.momentum-map {
+	aspect-ratio: 21 / 8;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 1024px) {
+	.momentum-contact-layout {
+		grid-template-columns: 1fr;
+	}
+}
+
+@media (max-width: 680px) {
+	.momentum-contact-form {
+		padding: 24px;
+	}
+
+	.momentum-map {
+		aspect-ratio: 4 / 5;
+	}
+}
