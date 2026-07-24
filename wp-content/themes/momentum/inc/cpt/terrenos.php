@@ -11,9 +11,10 @@
  * componentes públicos existentes (tarjeta, header/galería/video/mapa de
  * detalle) funcionan para un terreno sin ninguna modificación.
  *
- * Sin UI nativa de wp-admin (mismo criterio que 'zonas' en inc/cpt/zonas.php):
- * la gestión vive por completo en el panel propio, /admin/terrenos/
- * (Momentum_Admin_Terrenos, en el plugin momentum-admin).
+ * Además de gestionarse desde el panel propio, /admin/terrenos/
+ * (Momentum_Admin_Terrenos, en el plugin momentum-admin), también expone
+ * UI nativa de wp-admin (igual que 'propiedades') para que aparezca en el
+ * menú lateral estándar.
  *
  * has_archive es false a propósito: ya existe una Página publicada con slug
  * "terrenos" (el listado público /terrenos/, con su propio page-terrenos.php
@@ -49,8 +50,10 @@ function momentum_register_cpt_terrenos()
 		'labels'              => $labels,
 		'public'              => true,
 		'publicly_queryable'  => true,
-		'show_ui'             => false,
-		'show_in_menu'        => false,
+		'show_ui'             => true,
+		'show_in_menu'        => true,
+		'menu_icon'           => 'dashicons-palmtree',
+		'menu_position'       => 6,
 		'show_in_nav_menus'   => false,
 		'show_in_admin_bar'   => false,
 		'show_in_rest'        => false,
