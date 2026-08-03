@@ -39,8 +39,8 @@ if (! $query->have_posts()) {
 	<div class="momentum-container">
 		<div class="momentum-section-heading">
 			<div>
-				<span class="momentum-eyebrow">También te puede interesar</span>
-				<h2>Propiedades similares</h2>
+				<span class="momentum-eyebrow"><?php esc_html_e('También te puede interesar', 'momentum'); ?></span>
+				<h2><?php esc_html_e('Propiedades similares', 'momentum'); ?></h2>
 			</div>
 		</div>
 

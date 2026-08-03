@@ -14,7 +14,7 @@ if (! $caracteristicas) {
 }
 ?>
 <div class="momentum-property-block">
-	<h2>Características</h2>
+	<h2><?php esc_html_e('Características', 'momentum'); ?></h2>
 	<ul class="momentum-features-grid">
 		<?php foreach ($caracteristicas as $item) : ?>
 			<li>

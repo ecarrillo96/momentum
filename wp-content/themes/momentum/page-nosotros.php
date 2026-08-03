@@ -11,8 +11,8 @@
 get_header();
 
 get_template_part('template-parts/page-hero', null, [
-	'title'    => 'Nosotros',
-	'subtitle' => 'Más de 15 años acompañando a familias en Lomas de Cocoyoc.',
+	'title'    => __('Nosotros', 'momentum'),
+	'subtitle' => __('Más de 15 años acompañando a familias en Lomas de Cocoyoc.', 'momentum'),
 ]);
 
 get_template_part('template-parts/nosotros/content');

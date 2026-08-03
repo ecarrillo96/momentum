@@ -17,14 +17,14 @@ $email   = momentum_get_email();
 		<div class="momentum-contact-info__logo"><?php the_custom_logo(); ?></div>
 	<?php endif; ?>
 
-	<h3>Información de contacto</h3>
+	<h3><?php esc_html_e('Información de contacto', 'momentum'); ?></h3>
 
 	<ul>
 		<?php if ($address !== '') : ?>
 			<li>
 				<?php echo momentum_icon('pin'); ?>
 				<div>
-					<strong>Dirección</strong>
+					<strong><?php esc_html_e('Dirección', 'momentum'); ?></strong>
 					<span><?php echo nl2br(esc_html($address)); ?></span>
 				</div>
 			</li>
@@ -34,7 +34,7 @@ $email   = momentum_get_email();
 			<li>
 				<?php echo momentum_icon('phone'); ?>
 				<div>
-					<strong>Teléfono</strong>
+					<strong><?php esc_html_e('Teléfono', 'momentum'); ?></strong>
 					<span>
 						<?php if ($phone_1 !== '') : ?>
 							<a href="<?php echo esc_attr(momentum_phone_to_tel_link($phone_1)); ?>"><?php echo esc_html($phone_1); ?></a>
@@ -51,7 +51,7 @@ $email   = momentum_get_email();
 		<li>
 			<?php echo momentum_icon('mail'); ?>
 			<div>
-				<strong>Email</strong>
+				<strong><?php esc_html_e('Email', 'momentum'); ?></strong>
 				<span>
 					<?php if ($email !== '') : ?>
 						<a href="mailto:<?php echo esc_attr($email); ?>"><?php echo esc_html($email); ?></a><br>

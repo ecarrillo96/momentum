@@ -88,7 +88,7 @@ $action_url = $is_edit
 			<label for="momentum_terreno_status"><?php esc_html_e('Visibilidad', 'momentum-admin'); ?></label>
 			<select id="momentum_terreno_status" name="momentum_terreno_status">
 				<option value="publish" <?php selected($status, 'publish'); ?>><?php esc_html_e('Publicado', 'momentum-admin'); ?></option>
-				<option value="draft" <?php selected($status, 'draft'); ?>><?php esc_html_e('Borrador', 'momentum-admin'); ?></option>
+				<option value="draft" <?php selected($status, 'draft'); ?>><?php esc_html_e('No publicado', 'momentum-admin'); ?></option>
 			</select>
 		</div>
 

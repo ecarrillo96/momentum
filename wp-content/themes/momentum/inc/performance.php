@@ -9,31 +9,6 @@ if (! defined('ABSPATH')) {
 }
 
 /**
- * Preload the Home hero poster with fetchpriority=high.
- *
- * The hero is a <video poster="..."> (see template-parts/home/hero.php),
- * confirmed via Lighthouse as the page's LCP element. <video poster> does
- * not accept a fetchpriority attribute, so the standard way to raise its
- * priority and guarantee early discovery is a preload link in <head>.
- */
-add_action('wp_head', function () {
-	if (! is_front_page()) {
-		return;
-	}
-
-	$poster = momentum_get_hero_poster_url();
-
-	if ($poster === '') {
-		return;
-	}
-
-	printf(
-		'<link rel="preload" as="image" href="%s" fetchpriority="high">' . "\n",
-		esc_url($poster)
-	);
-}, 1);
-
-/**
  * WordPress core auto-detects the first <img> in the DOM as a likely LCP
  * candidate and adds fetchpriority="high" to it (see
  * wp_get_loading_optimization_attributes(), WP 6.3+). On every page here

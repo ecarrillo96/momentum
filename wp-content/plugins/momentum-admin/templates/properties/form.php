@@ -98,7 +98,7 @@ $action_url = $is_edit
 			<label for="momentum_property_status"><?php esc_html_e('Visibilidad', 'momentum-admin'); ?></label>
 			<select id="momentum_property_status" name="momentum_property_status">
 				<option value="publish" <?php selected($status, 'publish'); ?>><?php esc_html_e('Publicada', 'momentum-admin'); ?></option>
-				<option value="draft" <?php selected($status, 'draft'); ?>><?php esc_html_e('Borrador', 'momentum-admin'); ?></option>
+				<option value="draft" <?php selected($status, 'draft'); ?>><?php esc_html_e('No publicada', 'momentum-admin'); ?></option>
 			</select>
 		</div>
 
@@ -119,7 +119,8 @@ $action_url = $is_edit
 
 		<div class="momentum-admin-field">
 			<label for="momentum_banos"><?php esc_html_e('Baños', 'momentum-admin'); ?></label>
-			<input type="number" step="0.5" min="0" id="momentum_banos" name="momentum_banos" value="<?php echo esc_attr($values['banos']); ?>">
+			<input type="text" id="momentum_banos" name="momentum_banos" placeholder="6 2/2" value="<?php echo esc_attr($values['banos']); ?>">
+			<p class="momentum-admin-field-hint"><?php esc_html_e('Captura los baños con el formato utilizado actualmente. Ejemplo: 6 2/2.', 'momentum-admin'); ?></p>
 		</div>
 
 		<div class="momentum-admin-field">

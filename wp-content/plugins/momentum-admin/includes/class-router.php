@@ -26,6 +26,7 @@ class Momentum_Admin_Router
 		'general-about',
 		'general-construction',
 		'blog',
+		'traducciones',
 	];
 
 	public static function init(): void
@@ -123,6 +124,8 @@ class Momentum_Admin_Router
 			Momentum_Admin_Terrenos::maybe_handle_actions();
 		} elseif ($page === 'blog') {
 			Momentum_Admin_Blog::maybe_handle_actions();
+		} elseif ($page === 'traducciones') {
+			Momentum_Admin_Translations::maybe_handle_actions();
 		}
 
 		self::render_page($page);
@@ -195,6 +198,10 @@ class Momentum_Admin_Router
 
 			case 'terrenos':
 				Momentum_Admin_Terrenos::render();
+				break;
+
+			case 'traducciones':
+				Momentum_Admin_Translations::render();
 				break;
 		}
 

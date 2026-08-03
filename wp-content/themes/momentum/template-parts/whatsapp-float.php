@@ -21,7 +21,7 @@ if ($whatsapp_url === '') {
 	class="momentum-whatsapp-float"
 	target="_blank"
 	rel="noopener noreferrer"
-	aria-label="Contactar por WhatsApp"
+	aria-label="<?php esc_attr_e('Contactar por WhatsApp', 'momentum'); ?>"
 >
 	<?php echo momentum_icon('whatsapp'); ?>
 </a>

@@ -27,8 +27,8 @@ if (! $query->have_posts()) {
 	<div class="momentum-container">
 		<div class="momentum-section-heading">
 			<div>
-				<span class="momentum-eyebrow">También te puede interesar</span>
-				<h2>Artículos relacionados</h2>
+				<span class="momentum-eyebrow"><?php esc_html_e('También te puede interesar', 'momentum'); ?></span>
+				<h2><?php esc_html_e('Artículos relacionados', 'momentum'); ?></h2>
 			</div>
 		</div>
 
@@ -44,6 +44,7 @@ if (! $query->have_posts()) {
 								'large',
 								false,
 								[
+									'alt'      => momentum_attachment_alt(get_post_thumbnail_id(), get_the_title()),
 									'sizes'    => '(max-width: 680px) 100vw, (max-width: 1024px) 50vw, 392px',
 									'loading'  => 'lazy',
 									'decoding' => 'async',
@@ -60,7 +61,7 @@ if (! $query->have_posts()) {
 
 						<p class="momentum-blog-card__excerpt"><?php echo esc_html(wp_trim_words(get_the_excerpt(), 20)); ?></p>
 
-						<a class="momentum-blog-card__link" href="<?php the_permalink(); ?>">Leer más →</a>
+						<a class="momentum-blog-card__link" href="<?php the_permalink(); ?>"><?php esc_html_e('Leer más →', 'momentum'); ?></a>
 					</div>
 				</article>
 			<?php endwhile; ?>

@@ -1,6 +1,6 @@
 <?php
 /**
- * Home — Trust bar (4 pillars).
+ * Home — "¿Por qué elegirnos?" (5 diferenciadores).
  */
 
 if (! defined('ABSPATH')) {
@@ -9,29 +9,41 @@ if (! defined('ABSPATH')) {
 
 $items = [
 	[
-		'icon'  => 'compass',
-		'title' => 'Asesoría personalizada',
-		'text'  => 'Te acompañamos en cada etapa de tu compra, venta o inversión inmobiliaria.',
-	],
-	[
 		'icon'  => 'shield',
-		'title' => 'Procesos seguros',
-		'text'  => 'Gestionamos la documentación y los trámites legales con total transparencia.',
+		'title' => __('Experiencia local', 'momentum'),
+		'text'  => __('Más de 10 años en el mercado inmobiliario de Lomas de Cocoyoc.', 'momentum'),
 	],
 	[
 		'icon'  => 'map',
-		'title' => 'Experiencia local',
-		'text'  => 'Conocemos a fondo el mercado de Lomas de Cocoyoc y sus alrededores.',
+		'title' => __('Conocimiento de la zona', 'momentum'),
+		'text'  => __('Sabemos lo que hace especial a Lomas y sus alrededores.', 'momentum'),
 	],
 	[
-		'icon'  => 'headset',
-		'title' => 'Atención dedicada',
-		'text'  => 'Un asesor te acompaña y resuelve tus dudas en cada paso del proceso.',
+		'icon'  => 'handshake',
+		'title' => __('Acompañamiento total', 'momentum'),
+		'text'  => __('Te asesoramos en cada paso del proceso, de principio a fin.', 'momentum'),
+	],
+	[
+		'icon'  => 'document',
+		'title' => __('Seguridad jurídica', 'momentum'),
+		'text'  => __('Procesos transparentes y respaldo legal en todas nuestras operaciones.', 'momentum'),
+	],
+	[
+		'icon'  => 'star',
+		'title' => __('Atención personalizada', 'momentum'),
+		'text'  => __('Soluciones a la medida de tus necesidades e inversión.', 'momentum'),
 	],
 ];
 ?>
-<section class="momentum-section momentum-section--tight">
+<section class="momentum-section momentum-section--light">
 	<div class="momentum-container">
+		<div class="momentum-section-heading momentum-section-heading--center">
+			<div>
+				<span class="momentum-eyebrow"><?php esc_html_e('¿Por qué elegirnos?', 'momentum'); ?></span>
+				<h2><?php esc_html_e('Tu inversión en las mejores manos', 'momentum'); ?></h2>
+			</div>
+		</div>
+
 		<div class="momentum-trust-bar">
 			<?php foreach ($items as $item) : ?>
 				<div class="momentum-trust-item">

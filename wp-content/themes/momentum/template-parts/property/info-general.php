@@ -9,13 +9,20 @@ if (! defined('ABSPATH')) {
 
 $data = momentum_get_propiedad(get_the_ID());
 
-// Taxes no se muestra por ahora: se reserva para cuando exista la versión en
-// inglés del sitio (el dato ya se guarda en 'taxes_usd', solo se oculta aquí).
 $rows = [
-	'Clave'               => $data['codigo_propiedad'],
-	'Tipo de operación'   => $data['tipo_operacion'],
-	'Estado'              => $data['estado'],
+	__('Clave', 'momentum')             => $data['codigo_propiedad'],
+	__('Tipo de operación', 'momentum') => momentum_get_tipo_operacion_label($data['tipo_operacion']),
+	__('Estado', 'momentum')            => momentum_get_estado_label($data['estado']),
 ];
+
+// Taxes solo se muestra fuera del idioma por defecto (oculto en español,
+// visible en inglés y en cualquier otro idioma que se agregue más adelante
+// -no hardcodeado a 'en'-), y solo si hay un monto capturado.
+$show_taxes = momentum_current_language() !== momentum_default_language() && $data['taxes_usd'] > 0;
+
+if ($show_taxes) {
+	$rows[__('Annual Property Tax', 'momentum')] = '$' . number_format($data['taxes_usd'], 0, '.', ',') . ' USD';
+}
 
 $rows = array_filter($rows);
 
@@ -24,7 +31,7 @@ if (! $rows) {
 }
 ?>
 <div class="momentum-property-info-general">
-	<h3>Información general</h3>
+	<h3><?php esc_html_e('Información general', 'momentum'); ?></h3>
 	<dl>
 		<?php foreach ($rows as $label => $value) : ?>
 			<div class="momentum-property-info-general__row">
@@ -33,4 +40,8 @@ if (! $rows) {
 			</div>
 		<?php endforeach; ?>
 	</dl>
+
+	<?php if ($show_taxes) : ?>
+		<p class="momentum-property-info-general__note"><?php echo esc_html(momentum_usd_estimate_note()); ?></p>
+	<?php endif; ?>
 </div>

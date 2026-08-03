@@ -11,6 +11,7 @@
 	--momentum-white: #FFFFFF;
 	--momentum-accent: #C6A15B;
 	--momentum-accent-hover: #A8803A;
+	--momentum-slate: #3E4C5E;
 	--momentum-border: #E4E4E4;
 	--momentum-text-muted: #6B6B6B;
 	--momentum-radius: 10px;
@@ -76,6 +77,10 @@
 
 .momentum-prose p:last-child {
 	margin-bottom: 0;
+}
+
+.momentum-asesoria-cta {
+	margin-top: 32px;
 }
 
 /* ---------- Form fields (Contacto, Property detail) ---------- */
@@ -172,6 +177,43 @@
 
 .momentum-section--dark .momentum-section-heading p {
 	color: rgba(255, 255, 255, 0.7);
+}
+
+.momentum-section-heading--center {
+	justify-content: center;
+	text-align: center;
+}
+
+.momentum-section-heading--center > div {
+	max-width: 640px;
+}
+
+.momentum-section-heading--center p {
+	margin-inline: auto;
+}
+
+.momentum-section-heading__link {
+	flex-shrink: 0;
+	font-size: 12.5px;
+	font-weight: 700;
+	letter-spacing: 0.05em;
+	text-transform: uppercase;
+	color: var(--momentum-black);
+	text-decoration: none;
+	white-space: nowrap;
+	transition: color .2s ease;
+}
+
+.momentum-section-heading__link:hover {
+	color: var(--momentum-accent-hover);
+}
+
+.momentum-section--dark .momentum-section-heading__link {
+	color: var(--momentum-white);
+}
+
+.momentum-section--dark .momentum-section-heading__link:hover {
+	color: var(--momentum-accent);
 }
 
 /* ---------- Page hero (dark banner, used by any internal page) ---------- */
@@ -333,8 +375,8 @@
 	position: absolute;
 	top: 14px;
 	left: 14px;
-	background: var(--momentum-accent);
-	color: var(--momentum-black);
+	background: var(--momentum-slate);
+	color: var(--momentum-white);
 	font-size: 11px;
 	font-weight: 700;
 	letter-spacing: 0.08em;
@@ -349,6 +391,19 @@
 	flex-direction: column;
 	gap: 10px;
 	flex: 1;
+}
+
+.momentum-property-card__status {
+	display: inline-flex;
+	align-self: flex-start;
+	font-size: 10.5px;
+	font-weight: 700;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	color: var(--momentum-accent-hover);
+	background: rgba(198, 161, 91, 0.12);
+	padding: 4px 10px;
+	border-radius: 999px;
 }
 
 .momentum-property-card__title {
@@ -378,10 +433,11 @@
 }
 
 .momentum-property-card__features {
-	display: grid;
-	grid-template-columns: repeat(4, max-content);
+	display: flex;
+	flex-wrap: wrap;
 	justify-content: space-between;
-	gap: 6px;
+	row-gap: 8px;
+	column-gap: 12px;
 	font-size: 12.5px;
 	color: var(--momentum-gray-dark);
 	padding-block: 10px;
@@ -413,18 +469,26 @@
 	color: var(--momentum-black);
 }
 
+.momentum-property-card__price-note {
+	margin: 4px 0 0;
+	font-size: 11px;
+	color: var(--momentum-gray-dark);
+}
+
 /* ---------- Trust bar ---------- */
 
 .momentum-trust-bar {
 	display: grid;
-	grid-template-columns: repeat(4, 1fr);
+	grid-template-columns: repeat(5, 1fr);
 	gap: 32px;
 }
 
 .momentum-trust-item {
 	display: flex;
 	flex-direction: column;
+	align-items: center;
 	gap: 12px;
+	text-align: center;
 }
 
 .momentum-trust-item__icon {
@@ -514,7 +578,7 @@
 	}
 
 	.momentum-trust-bar {
-		grid-template-columns: repeat(2, 1fr);
+		grid-template-columns: repeat(3, 1fr);
 		gap: 28px 20px;
 	}
 }
@@ -693,6 +757,60 @@ body.momentum-mobile-nav-open .momentum-mobile-nav {
 	display: flex;
 }
 
+/* Language switcher (Polylang) — additive: no existing header rule above is
+   modified, this only adds a small "ES · EN" control that reuses the same
+   header color tokens. Rendered by momentum_language_switcher() in
+   template-parts/site-header.php; empty markup (nothing printed) if Polylang
+   isn't active, so this block has no visible effect until it is. */
+.momentum-lang-switcher__list {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.momentum-lang-switcher__item {
+	display: flex;
+	align-items: center;
+}
+
+.momentum-lang-switcher__item:not(:last-child)::after {
+	content: '';
+	width: 1px;
+	height: 12px;
+	background: rgba(255, 255, 255, 0.25);
+	margin-left: 6px;
+}
+
+.momentum-lang-switcher__link {
+	color: rgba(255, 255, 255, 0.6);
+	text-decoration: none;
+	font-size: 12px;
+	font-weight: 700;
+	letter-spacing: 0.05em;
+	transition: color .2s ease;
+}
+
+.momentum-lang-switcher__link:hover {
+	color: var(--momentum-white);
+}
+
+.momentum-lang-switcher__link.is-current {
+	color: var(--momentum-accent);
+}
+
+.momentum-lang-switcher--mobile {
+	margin-top: 4px;
+	padding-top: 16px;
+	border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.momentum-lang-switcher--mobile .momentum-lang-switcher__list {
+	justify-content: center;
+}
+
 @media (max-width: 1024px) {
 	.momentum-site-header__nav,
 	.momentum-site-header__phone {
@@ -716,13 +834,39 @@ body.momentum-mobile-nav-open .momentum-mobile-nav {
 
 .momentum-site-footer__grid {
 	display: grid;
-	grid-template-columns: 1.3fr 1fr 1fr 1.3fr;
-	gap: 40px;
+	grid-template-columns: 1fr 1.3fr 1fr;
+	align-items: center;
 	padding-bottom: 56px;
 }
 
+.momentum-footer-col {
+	padding-inline: 48px;
+	align-self: start;
+	text-align: center;
+}
+
+.momentum-footer-col:first-child {
+	padding-left: 0;
+}
+
+.momentum-footer-col:not(:first-child) {
+	border-left: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.momentum-footer-col--social {
+	align-self: stretch;
+	padding-right: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.momentum-footer-logo {
+	text-align: center;
+}
+
 .momentum-footer-logo img {
-	max-height: 46px;
+	max-height: 76px;
 	width: auto;
 	margin-bottom: 18px;
 }
@@ -738,8 +882,9 @@ body.momentum-mobile-nav-open .momentum-mobile-nav {
 	font-size: 13.5px;
 	line-height: 1.65;
 	color: rgba(255, 255, 255, 0.6);
+	text-align: center;
 	max-width: 32ch;
-	margin: 0 0 22px;
+	margin: 0 auto 22px;
 }
 
 .momentum-footer-social {
@@ -748,8 +893,8 @@ body.momentum-mobile-nav-open .momentum-mobile-nav {
 }
 
 .momentum-footer-social__icon {
-	width: 36px;
-	height: 36px;
+	width: 52px;
+	height: 52px;
 	border-radius: 50%;
 	border: 1px solid rgba(255, 255, 255, 0.25);
 	display: flex;
@@ -760,18 +905,36 @@ body.momentum-mobile-nav-open .momentum-mobile-nav {
 	transition: border-color .2s ease, color .2s ease;
 }
 
+.momentum-footer-social__icon svg {
+	width: 20px;
+	height: 20px;
+}
+
 .momentum-footer-social__icon:hover {
 	border-color: var(--momentum-accent);
 	color: var(--momentum-accent);
 }
 
 .momentum-footer-col h3 {
+	position: relative;
 	color: var(--momentum-white);
 	font-size: 13.5px;
 	font-weight: 700;
 	text-transform: uppercase;
 	letter-spacing: 0.05em;
-	margin: 0 0 20px;
+	margin: 0 0 26px;
+	padding-bottom: 14px;
+}
+
+.momentum-footer-col h3::after {
+	content: '';
+	position: absolute;
+	left: 50%;
+	bottom: 0;
+	transform: translateX(-50%);
+	width: 32px;
+	height: 2px;
+	background: var(--momentum-accent);
 }
 
 .momentum-footer-col ul {
@@ -780,6 +943,7 @@ body.momentum-mobile-nav-open .momentum-mobile-nav {
 	padding: 0;
 	display: flex;
 	flex-direction: column;
+	align-items: center;
 	gap: 11px;
 }
 
@@ -823,9 +987,10 @@ body.momentum-mobile-nav-open .momentum-mobile-nav {
 	padding-block: 22px;
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
+	justify-content: center;
 	flex-wrap: wrap;
-	gap: 12px;
+	gap: 12px 24px;
+	text-align: center;
 	font-size: 12.5px;
 	color: rgba(255, 255, 255, 0.5);
 }
@@ -839,25 +1004,27 @@ body.momentum-mobile-nav-open .momentum-mobile-nav {
 	gap: 10px;
 }
 
-@media (max-width: 1024px) {
-	.momentum-site-footer__grid {
-		grid-template-columns: repeat(3, 1fr);
-	}
-
-	.momentum-footer-col--brand {
-		grid-column: 1 / -1;
-	}
-}
-
 @media (max-width: 680px) {
 	.momentum-site-footer__grid {
 		grid-template-columns: 1fr;
-		gap: 40px;
+		gap: 36px;
+	}
+
+	.momentum-footer-col {
+		padding-inline: 0;
+	}
+
+	.momentum-footer-col:not(:first-child) {
+		border-left: 0;
+	}
+
+	.momentum-footer-col--social {
+		justify-content: center;
 	}
 
 	.momentum-site-footer__bottom {
 		flex-direction: column;
-		align-items: flex-start;
+		align-items: center;
 	}
 }
 

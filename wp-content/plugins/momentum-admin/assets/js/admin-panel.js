@@ -24,6 +24,22 @@
 
 		if (typeof wp !== 'undefined' && wp.media) {
 
+			// Restringe cualquier frame de wp.media a "Subir archivos": el
+			// admin solo debe permitir subir imagenes nuevas, nunca elegir
+			// una ya existente en la biblioteca de medios. Forzar el modo en
+			// 'open' cubre la apertura inicial; re-forzarlo en
+			// 'content:activate:browse' cubre el clic en la pestana
+			// "Biblioteca de medios" (la regresa de inmediato a "Subir").
+			function lockToUploadOnly(frame) {
+				frame.on('open', function () {
+					frame.content.mode('upload');
+				});
+
+				frame.on('content:activate:browse', function () {
+					frame.content.mode('upload');
+				});
+			}
+
 			// Selector de imagen única (destacada), reutilizado por Propiedades,
 			// Blog y la imagen de redes sociales del bloque SEO: misma lógica,
 			// distintos ids de campo, para no duplicar el bloque wp.media tres veces.
@@ -68,6 +84,8 @@
 						button: { text: 'Usar esta imagen' },
 						multiple: false,
 					});
+
+					lockToUploadOnly(frame);
 
 					frame.on('select', function () {
 						var attachment = frame.state().get('selection').first().toJSON();
@@ -211,6 +229,8 @@
 						button: { text: 'Usar estas imágenes' },
 						multiple: true,
 					});
+
+					lockToUploadOnly(galleryFrame);
 
 					// Preselecciona las imágenes ya guardadas cada vez que se abre
 					// el modal (no solo al crearlo), para reflejar eliminaciones u

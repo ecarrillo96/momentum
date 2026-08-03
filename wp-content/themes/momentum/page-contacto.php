@@ -11,8 +11,8 @@
 get_header();
 
 get_template_part('template-parts/page-hero', null, [
-	'title'    => 'Contacto',
-	'subtitle' => 'Estamos para ayudarte. Escríbenos, llámanos o visítanos.',
+	'title'    => __('Contacto', 'momentum'),
+	'subtitle' => __('Estamos para ayudarte. Escríbenos, llámanos o visítanos.', 'momentum'),
 ]);
 ?>
 

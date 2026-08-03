@@ -12,7 +12,13 @@ if (! defined('ABSPATH')) {
 
 function momentum_handle_contact_form()
 {
-	if (empty($_POST['momentum_contact_submit']) || ! is_page('contacto')) {
+	if (empty($_POST['momentum_contact_submit'])) {
+		return;
+	}
+
+	// No usa is_page('contacto'): esa comprobación por slug se rompería en la
+	// traducción en inglés de esta página (slug 'contact', no 'contacto').
+	if (! momentum_is_page_variant(['contacto'])) {
 		return;
 	}
 

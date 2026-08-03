@@ -163,6 +163,29 @@ function momentum_save_terreno_meta($post_id)
 add_action('save_post_terrenos', 'momentum_save_terreno_meta');
 
 /**
+ * Columna "Traducción EN" en el listado nativo de wp-admin — mismo criterio
+ * y misma función compartida (momentum_render_translation_status_column())
+ * que la columna equivalente en Propiedades (inc/cpt/propiedades.php).
+ */
+function momentum_terreno_admin_columns($columns)
+{
+	if (momentum_is_multilingual()) {
+		$columns['momentum_translation'] = 'Traducción EN';
+	}
+
+	return $columns;
+}
+add_filter('manage_terrenos_posts_columns', 'momentum_terreno_admin_columns');
+
+function momentum_terreno_admin_column_content($column, $post_id)
+{
+	if ($column === 'momentum_translation') {
+		momentum_render_translation_status_column($post_id);
+	}
+}
+add_action('manage_terrenos_posts_custom_column', 'momentum_terreno_admin_column_content', 10, 2);
+
+/**
  * Registrar un CPT nuevo con una estructura de 'rewrite' distinta requiere
  * un flush_rewrite_rules() para que /terrenos/{slug}/ resuelva -de lo
  * contrario WordPress sigue usando las reglas cacheadas de antes de este

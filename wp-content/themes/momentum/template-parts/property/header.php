@@ -20,7 +20,10 @@ $zona_label  = momentum_get_zona_label($data['zona']);
 		<div class="momentum-property-header__top">
 			<h1><?php the_title(); ?></h1>
 			<div class="momentum-property-header__price">
-				<?php echo esc_html(momentum_format_price($data['precio'], $data['tipo_operacion'])); ?>
+				<?php echo esc_html(momentum_get_property_price_display($data)); ?>
+				<?php if (momentum_current_language() !== momentum_default_language()) : ?>
+					<span class="momentum-property-header__price-note"><?php echo esc_html(momentum_usd_estimate_note()); ?></span>
+				<?php endif; ?>
 			</div>
 		</div>
 
@@ -32,11 +35,27 @@ $zona_label  = momentum_get_zona_label($data['zona']);
 		<?php endif; ?>
 
 		<div class="momentum-property-header__features">
-			<span><?php echo momentum_icon('land'); ?> <?php echo esc_html((string) intval($data['terreno_m2'])); ?> m² Terreno</span>
+			<span><?php echo momentum_icon('land'); ?> <?php echo esc_html(sprintf(
+				/* translators: %s: metros cuadrados de terreno */
+				__('%s m² Terreno', 'momentum'),
+				(string) intval($data['terreno_m2'])
+			)); ?></span>
 			<?php if (! $is_terreno) : ?>
-				<span><?php echo momentum_icon('ruler'); ?> <?php echo esc_html((string) intval($data['construccion_m2'])); ?> m² Construcción</span>
-				<span><?php echo momentum_icon('bed'); ?> <?php echo esc_html((string) intval($data['recamaras'])); ?> Recámaras</span>
-				<span><?php echo momentum_icon('bath'); ?> <?php echo esc_html(rtrim(rtrim(number_format($data['banos'], 1), '0'), '.')); ?> Baños</span>
+				<span><?php echo momentum_icon('ruler'); ?> <?php echo esc_html(sprintf(
+					/* translators: %s: metros cuadrados de construcción */
+					__('%s m² Construcción', 'momentum'),
+					(string) intval($data['construccion_m2'])
+				)); ?></span>
+				<span><?php echo momentum_icon('bed'); ?> <?php echo esc_html(sprintf(
+					/* translators: %s: número de recámaras */
+					__('%s Recámaras', 'momentum'),
+					(string) intval($data['recamaras'])
+				)); ?></span>
+				<span><?php echo momentum_icon('bath'); ?> <?php echo esc_html(sprintf(
+					/* translators: %s: número de baños */
+					__('%s Baños', 'momentum'),
+					$data['banos']
+				)); ?></span>
 			<?php endif; ?>
 		</div>
 	</div>

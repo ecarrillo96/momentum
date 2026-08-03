@@ -274,6 +274,12 @@ body.momentum-admin-body {
 	border: 1px solid #f3c6c1;
 }
 
+.momentum-admin-alert--warning {
+	background: #fff6e5;
+	color: #8a5a00;
+	border: 1px solid #f5dfa3;
+}
+
 .momentum-admin-notice {
 	padding: 16px;
 	border-radius: var(--momentum-radius);
@@ -528,6 +534,71 @@ body.momentum-admin-body {
 	background: var(--momentum-bg);
 	border-color: var(--momentum-border);
 	color: var(--momentum-text-muted);
+}
+
+/*
+ * Estados de traducción (Momentum_Property_Translation_Service) — mismo
+ * patrón is-* que is-publicado/is-despublicado/is-borrador arriba, usado en
+ * Momentum → Traducciones y en la columna "Traducción EN" de los listados
+ * nativos de Propiedades/Terrenos.
+ */
+.momentum-admin-badge.is-complete {
+	background: #e3f5ee;
+	border-color: #bfe6d7;
+	color: #146c48;
+}
+
+.momentum-admin-badge.is-manual {
+	background: #e8effa;
+	border-color: #c3d6f2;
+	color: #1c4f9c;
+}
+
+.momentum-admin-badge.is-pending,
+.momentum-admin-badge.is-not_configured {
+	background: var(--momentum-bg);
+	border-color: var(--momentum-border);
+	color: var(--momentum-text-muted);
+}
+
+.momentum-admin-badge.is-translating {
+	background: #fff6e5;
+	color: #8a5a00;
+	border-color: #f5dfa3;
+}
+
+.momentum-admin-badge.is-error,
+.momentum-admin-badge.is-quota_exceeded {
+	background: #fdecea;
+	border-color: #f6c6bf;
+	color: #a52c1e;
+}
+
+/* Progress bar (barra de uso mensual de DeepL) */
+
+.momentum-admin-progress {
+	width: 100%;
+	height: 10px;
+	border-radius: 999px;
+	background: var(--momentum-bg);
+	border: 1px solid var(--momentum-border);
+	overflow: hidden;
+}
+
+.momentum-admin-progress__bar {
+	height: 100%;
+	border-radius: 999px;
+	background: var(--momentum-primary);
+	transition: width 0.3s ease;
+}
+
+.momentum-admin-progress__bar.is-warning {
+	background: #d9a300;
+}
+
+.momentum-admin-progress__bar.is-critical,
+.momentum-admin-progress__bar.is-blocked {
+	background: var(--momentum-danger);
 }
 
 /*
@@ -1007,4 +1078,15 @@ body.momentum-admin-modal-open {
 		width: 100%;
 		justify-content: center;
 	}
+}
+
+/**
+ * Selectores de imagen (imagen destacada, galería, imagen OG) restringidos a
+ * solo "Subir archivos" vía admin-panel.js (lockToUploadOnly). Esa función ya
+ * bloquea funcionalmente el cambio a "Biblioteca de medios", pero la pestaña
+ * seguía siendo visible; esto la oculta del todo. id confirmado en el core
+ * de WP: wp.media.view.MenuItem pone id="menu-item-<state>" (media-views.js).
+ */
+.media-frame-router #menu-item-browse {
+	display: none !important;
 }

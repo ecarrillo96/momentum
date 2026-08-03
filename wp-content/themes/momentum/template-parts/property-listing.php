@@ -35,17 +35,17 @@ $start = $total ? (($paged - 1) * $per_page) + 1 : 0;
 $end   = min($paged * $per_page, $total);
 
 $current_url = strtok($_SERVER['REQUEST_URI'], '?');
-$has_filters = $filters['codigo'] !== '' || $filters['precio'] !== '' || $filters['recamaras'] !== '' || $filters['orden'] !== 'precio_desc';
+$has_filters = $filters['codigo'] !== '' || $filters['precio'] !== '';
 ?>
 <div class="momentum-listing">
 	<form class="momentum-filters" method="get" action="<?php echo esc_url($current_url); ?>">
 		<div class="momentum-filters__field">
-			<label for="filtro-codigo">Buscar por código</label>
-			<input type="text" id="filtro-codigo" name="codigo" value="<?php echo esc_attr($filters['codigo']); ?>" placeholder="<?php echo esc_attr($post_type === 'terrenos' ? 'Ej. MT-001' : 'Ej. MC-001'); ?>">
+			<label for="filtro-codigo"><?php esc_html_e('Buscar por código', 'momentum'); ?></label>
+			<input type="text" id="filtro-codigo" name="codigo" value="<?php echo esc_attr($filters['codigo']); ?>" placeholder="<?php echo esc_attr($post_type === 'terrenos' ? __('Ej. MT-001', 'momentum') : __('Ej. MC-001', 'momentum')); ?>">
 		</div>
 
 		<div class="momentum-filters__field">
-			<label for="filtro-precio">Rango de precio</label>
+			<label for="filtro-precio"><?php esc_html_e('Rango de precio', 'momentum'); ?></label>
 			<select id="filtro-precio" name="precio">
 				<?php foreach (momentum_price_range_options($fixed['tipo_operacion']) as $value => $label) : ?>
 					<option value="<?php echo esc_attr($value); ?>" <?php selected($filters['precio'], $value); ?>><?php echo esc_html($label); ?></option>
@@ -53,38 +53,26 @@ $has_filters = $filters['codigo'] !== '' || $filters['precio'] !== '' || $filter
 			</select>
 		</div>
 
-		<?php if ($post_type !== 'terrenos') : ?>
-			<div class="momentum-filters__field">
-				<label for="filtro-recamaras">Recámaras</label>
-				<select id="filtro-recamaras" name="recamaras">
-					<?php foreach (momentum_bedroom_options() as $value => $label) : ?>
-						<option value="<?php echo esc_attr($value); ?>" <?php selected($filters['recamaras'], $value); ?>><?php echo esc_html($label); ?></option>
-					<?php endforeach; ?>
-				</select>
-			</div>
-		<?php endif; ?>
-
-		<div class="momentum-filters__field">
-			<label for="filtro-orden">Ordenar por</label>
-			<select id="filtro-orden" name="orden">
-				<?php foreach (momentum_sort_options() as $value => $label) : ?>
-					<option value="<?php echo esc_attr($value); ?>" <?php selected($filters['orden'], $value); ?>><?php echo esc_html($label); ?></option>
-				<?php endforeach; ?>
-			</select>
-		</div>
-
-		<button type="submit" class="momentum-btn momentum-btn--primary">Filtrar</button>
+		<button type="submit" class="momentum-btn momentum-btn--primary"><?php esc_html_e('Filtrar', 'momentum'); ?></button>
 
 		<?php if ($has_filters) : ?>
-			<a class="momentum-btn momentum-btn--outline" href="<?php echo esc_url($current_url); ?>">Limpiar filtro</a>
+			<a class="momentum-btn momentum-btn--outline" href="<?php echo esc_url($current_url); ?>"><?php esc_html_e('Limpiar filtro', 'momentum'); ?></a>
 		<?php endif; ?>
 	</form>
 
 	<p class="momentum-listing__count">
 		<?php if ($total > 0) : ?>
-			Mostrando <?php echo esc_html($start); ?>–<?php echo esc_html($end); ?> de <?php echo esc_html($total); ?> propiedades
+			<?php
+			printf(
+				/* translators: 1: primer resultado mostrado, 2: último resultado mostrado, 3: total de resultados */
+				esc_html__('Mostrando %1$s–%2$s de %3$s propiedades', 'momentum'),
+				esc_html($start),
+				esc_html($end),
+				esc_html($total)
+			);
+			?>
 		<?php else : ?>
-			No se encontraron propiedades con estos filtros.
+			<?php esc_html_e('No se encontraron propiedades con estos filtros.', 'momentum'); ?>
 		<?php endif; ?>
 	</p>
 

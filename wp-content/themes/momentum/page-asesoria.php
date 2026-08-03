@@ -11,8 +11,8 @@
 get_header();
 
 get_template_part('template-parts/page-hero', null, [
-	'title'    => 'Asesoría',
-	'subtitle' => 'Acompañamiento experto para tu crédito hipotecario, con todos los bancos.',
+	'title'    => __('Asesoría', 'momentum'),
+	'subtitle' => __('Acompañamiento experto para tu crédito hipotecario, con todos los bancos.', 'momentum'),
 ]);
 
 get_template_part('template-parts/asesoria/content');

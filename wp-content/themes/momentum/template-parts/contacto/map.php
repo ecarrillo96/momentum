@@ -29,7 +29,7 @@ $map_src        = 'https://www.google.com/maps?q=' . rawurlencode($address_query
 				allowfullscreen
 				loading="lazy"
 				referrerpolicy="no-referrer-when-downgrade"
-				title="Ubicación de Momentum Cocoyoc"
+				title="<?php esc_attr_e('Ubicación de Momentum Cocoyoc', 'momentum'); ?>"
 			></iframe>
 		</div>
 	</div>

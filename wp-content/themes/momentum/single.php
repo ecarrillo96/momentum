@@ -39,6 +39,7 @@ while (have_posts()) :
 					false,
 					[
 						'class'         => 'momentum-featured-photo',
+						'alt'           => momentum_attachment_alt(get_post_thumbnail_id(), get_the_title()),
 						'sizes'         => '(max-width: 1280px) 100vw, 1232px',
 						'loading'       => 'eager',
 						'fetchpriority' => 'high',
@@ -59,7 +60,7 @@ while (have_posts()) :
 			<?php endif; ?>
 
 			<p class="momentum-article-back">
-				<a href="<?php echo esc_url(home_url('/blog/')); ?>">&larr; Volver al blog</a>
+				<a href="<?php echo esc_url(momentum_url_for_page('blog')); ?>">&larr; <?php esc_html_e('Volver al blog', 'momentum'); ?></a>
 			</p>
 		</div>
 	</section>

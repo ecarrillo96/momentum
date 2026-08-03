@@ -23,7 +23,7 @@ if (! $blog_query->have_posts()) {
 }
 ?>
 <div class="momentum-sidebar-blog">
-	<h3>Inspírate para tu próxima casa</h3>
+	<h3><?php esc_html_e('Inspírate para tu próxima casa', 'momentum'); ?></h3>
 
 	<div class="momentum-sidebar-blog__list">
 		<?php while ($blog_query->have_posts()) : $blog_query->the_post(); ?>
@@ -36,6 +36,7 @@ if (! $blog_query->have_posts()) {
 							'thumbnail',
 							false,
 							[
+								'alt'      => momentum_attachment_alt(get_post_thumbnail_id(), get_the_title()),
 								'loading'  => 'lazy',
 								'decoding' => 'async',
 							]
@@ -46,7 +47,7 @@ if (! $blog_query->have_posts()) {
 
 				<span class="momentum-sidebar-blog__info">
 					<span class="momentum-sidebar-blog__title"><?php the_title(); ?></span>
-					<span class="momentum-sidebar-blog__link">Leer más →</span>
+					<span class="momentum-sidebar-blog__link"><?php esc_html_e('Leer más →', 'momentum'); ?></span>
 				</span>
 			</a>
 		<?php endwhile; ?>

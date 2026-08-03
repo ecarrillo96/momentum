@@ -15,9 +15,9 @@ if (! defined('ABSPATH')) {
 	exit;
 }
 
-$eyebrow    = $args['eyebrow'] ?? 'Blog';
-$heading    = $args['heading'] ?? 'Artículos para tu decisión de compra';
-$subtitle   = $args['subtitle'] ?? 'Consejos y contexto sobre Lomas de Cocoyoc y la región para ayudarte a decidir mejor.';
+$eyebrow    = $args['eyebrow'] ?? __('Blog', 'momentum');
+$heading    = $args['heading'] ?? __('Artículos para tu decisión de compra', 'momentum');
+$subtitle   = $args['subtitle'] ?? __('Consejos y contexto sobre Lomas de Cocoyoc y la región para ayudarte a decidir mejor.', 'momentum');
 $per_page   = $args['posts_per_page'] ?? 3;
 
 // Only the Blog page sets this: its page-hero has no image, so the first
@@ -32,6 +32,10 @@ $image_sizes = '(max-width: 680px) 100vw, (max-width: 1024px) 50vw, 392px';
 // bloque compacto que Home ya muestra sin args.
 $paginate   = $args['paginate'] ?? false;
 
+// Fondo oscuro opt-in: solo Home lo usa (alterna con las secciones claras
+// de alrededor); la página Blog completa se queda con fondo claro.
+$dark       = $args['dark'] ?? false;
+
 $paged      = $paginate && isset($_GET['pg']) ? max(1, absint($_GET['pg'])) : 1;
 
 $query_args = [
@@ -41,16 +45,26 @@ $query_args = [
 	'paged'          => $paged,
 	'orderby'        => 'date',
 	'order'          => 'DESC',
+	// Sin esto, en un idioma sin posts traducidos WP_Query devolvía los
+	// posts en español igual (WordPress no filtra por idioma por su cuenta)
+	// -inc/property-query.php ya hace esto mismo para propiedades/terrenos,
+	// por la misma razón, ver el comentario allá-.
+	'lang'           => momentum_current_language(),
 ];
 
 $blog_query = new WP_Query($query_args);
 
-if (! $blog_query->have_posts()) {
+// En modo compacto (Home, sin paginar) no hay nada que mostrar si el
+// idioma actual no tiene posts: la sección entera se omite, igual que
+// siempre. En la página de Blog dedicada ($paginate = true) el visitante ya
+// navegó ahí a propósito, así que en vez de desaparecer sin explicación se
+// deja caer al mensaje "No se encontraron artículos" que ya existe más abajo.
+if (! $blog_query->have_posts() && ! $paginate) {
 	return;
 }
 ?>
 
-<section class="momentum-section">
+<section class="momentum-section<?php echo $dark ? ' momentum-section--dark' : ''; ?>">
 	<div class="momentum-container">
 		<div class="momentum-section-heading">
 			<div>
@@ -58,6 +72,10 @@ if (! $blog_query->have_posts()) {
 				<h2><?php echo esc_html($heading); ?></h2>
 				<p><?php echo esc_html($subtitle); ?></p>
 			</div>
+
+			<?php if (! $paginate) : ?>
+				<a class="momentum-section-heading__link" href="<?php echo esc_url(momentum_url_for_page('blog')); ?>"><?php esc_html_e('Ver todos los artículos →', 'momentum'); ?></a>
+			<?php endif; ?>
 		</div>
 
 		<?php if ($blog_query->have_posts()) : ?>
@@ -69,18 +87,23 @@ if (! $blog_query->have_posts()) {
 						<a class="momentum-blog-card__media" href="<?php the_permalink(); ?>">
 							<?php if (has_post_thumbnail()) : ?>
 								<?php
+								$thumbnail_id  = get_post_thumbnail_id();
+								$thumbnail_alt = momentum_attachment_alt($thumbnail_id, get_the_title());
+
 								echo wp_get_attachment_image(
-									get_post_thumbnail_id(),
+									$thumbnail_id,
 									'large',
 									false,
 									$is_priority
 										? [
+											'alt'           => $thumbnail_alt,
 											'sizes'         => $image_sizes,
 											'loading'       => 'eager',
 											'fetchpriority' => 'high',
 											'decoding'      => 'async',
 										]
 										: [
+											'alt'      => $thumbnail_alt,
 											'sizes'    => $image_sizes,
 											'loading'  => 'lazy',
 											'decoding' => 'async',
@@ -97,7 +120,7 @@ if (! $blog_query->have_posts()) {
 
 							<p class="momentum-blog-card__excerpt"><?php echo esc_html(wp_trim_words(get_the_excerpt(), 20)); ?></p>
 
-							<a class="momentum-blog-card__link" href="<?php the_permalink(); ?>">Leer más →</a>
+							<a class="momentum-blog-card__link" href="<?php the_permalink(); ?>"><?php esc_html_e('Leer más →', 'momentum'); ?></a>
 						</div>
 					</article>
 					<?php $card_index++; ?>
@@ -117,13 +140,13 @@ if (! $blog_query->have_posts()) {
 				]);
 				?>
 				<?php if ($pagination) : ?>
-					<nav class="momentum-pagination" aria-label="Paginación del blog">
+					<nav class="momentum-pagination" aria-label="<?php esc_attr_e('Paginación del blog', 'momentum'); ?>">
 						<?php echo wp_kses_post($pagination); ?>
 					</nav>
 				<?php endif; ?>
 			<?php endif; ?>
 		<?php else : ?>
-			<p class="momentum-blog-empty">No se encontraron artículos.</p>
+			<p class="momentum-blog-empty"><?php esc_html_e('No se encontraron artículos.', 'momentum'); ?></p>
 		<?php endif; ?>
 	</div>
 </section>

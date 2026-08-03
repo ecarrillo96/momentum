@@ -33,9 +33,24 @@ function momentum_enqueue_assets()
 			['momentum-style'],
 			$theme_version
 		);
+
+		wp_enqueue_style(
+			'momentum-intro-video',
+			get_stylesheet_directory_uri() . '/assets/css/intro-video.css',
+			['momentum-style'],
+			$theme_version
+		);
+
+		wp_enqueue_script(
+			'momentum-intro-video',
+			get_stylesheet_directory_uri() . '/assets/js/intro-video.js',
+			[],
+			$theme_version,
+			true
+		);
 	}
 
-	if (is_page(['venta', 'renta', 'terrenos'])) {
+	if (momentum_is_page_variant(['venta', 'renta', 'terrenos'])) {
 		wp_enqueue_style(
 			'momentum-listing',
 			get_stylesheet_directory_uri() . '/assets/css/listing.css',
@@ -44,7 +59,7 @@ function momentum_enqueue_assets()
 		);
 	}
 
-	if (is_page(['construccion'])) {
+	if (momentum_is_page_variant(['construccion'])) {
 		wp_enqueue_style(
 			'momentum-hero-image',
 			get_stylesheet_directory_uri() . '/assets/css/hero-image.css',
@@ -53,7 +68,7 @@ function momentum_enqueue_assets()
 		);
 	}
 
-	if (is_page(['contacto'])) {
+	if (momentum_is_page_variant(['contacto'])) {
 		wp_enqueue_style(
 			'momentum-contacto',
 			get_stylesheet_directory_uri() . '/assets/css/contacto.css',

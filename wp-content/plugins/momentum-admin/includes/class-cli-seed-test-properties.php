@@ -248,7 +248,7 @@ class Momentum_Admin_CLI_Seed_Test_Properties
 		update_post_meta($post_id, 'precio', (float) $this->precios[$idx % count($this->precios)]);
 		update_post_meta($post_id, 'tipo_operacion', 'Venta');
 		update_post_meta($post_id, 'recamaras', (float) $this->recamaras[$idx % count($this->recamaras)]);
-		update_post_meta($post_id, 'banos', (float) $this->banos[$idx % count($this->banos)]);
+		update_post_meta($post_id, 'banos', (string) $this->banos[$idx % count($this->banos)]);
 		update_post_meta($post_id, 'terreno_m2', (float) $terreno);
 		update_post_meta($post_id, 'construccion_m2', (float) $construccion);
 		update_post_meta($post_id, 'zona', $this->zonas[$idx % count($this->zonas)]);

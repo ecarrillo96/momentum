@@ -23,41 +23,20 @@ function momentum_price_range_options(string $tipo_operacion = ''): array
 {
 	if ($tipo_operacion === 'Renta') {
 		return [
-			''            => 'Cualquier precio',
-			'0-20000'     => 'Hasta $20,000/mes',
-			'20000-35000' => '$20,000 - $35,000/mes',
-			'35000-50000' => '$35,000 - $50,000/mes',
-			'50000-'      => 'Más de $50,000/mes',
+			''            => __('Cualquier precio', 'momentum'),
+			'0-20000'     => __('Hasta $20,000/mes', 'momentum'),
+			'20000-35000' => __('$20,000 - $35,000/mes', 'momentum'),
+			'35000-50000' => __('$35,000 - $50,000/mes', 'momentum'),
+			'50000-'      => __('Más de $50,000/mes', 'momentum'),
 		];
 	}
 
 	return [
-		''              => 'Cualquier precio',
-		'0-3000000'     => 'Hasta $3,000,000',
-		'3000000-6000000' => '$3,000,000 - $6,000,000',
-		'6000000-9000000' => '$6,000,000 - $9,000,000',
-		'9000000-'      => 'Más de $9,000,000',
-	];
-}
-
-function momentum_bedroom_options(): array
-{
-	return [
-		'' => 'Cualquiera',
-		'1' => '1+',
-		'2' => '2+',
-		'3' => '3+',
-		'4' => '4+',
-		'5' => '5+',
-	];
-}
-
-function momentum_sort_options(): array
-{
-	return [
-		'precio_desc' => 'Mayor precio',
-		'recientes'   => 'Más recientes',
-		'precio_asc'  => 'Menor precio',
+		''              => __('Cualquier precio', 'momentum'),
+		'0-3000000'     => __('Hasta $3,000,000', 'momentum'),
+		'3000000-6000000' => __('$3,000,000 - $6,000,000', 'momentum'),
+		'6000000-9000000' => __('$6,000,000 - $9,000,000', 'momentum'),
+		'9000000-'      => __('Más de $9,000,000', 'momentum'),
 	];
 }
 
@@ -73,10 +52,8 @@ function momentum_sort_options(): array
 function momentum_run_property_query(array $fixed = [], int $per_page = 10, ?int $paged_override = null, string $post_type = 'propiedades'): array
 {
 	$filters = [
-		'precio'    => isset($_GET['precio']) && array_key_exists($_GET['precio'], momentum_price_range_options($fixed['tipo_operacion'] ?? '')) ? $_GET['precio'] : '',
-		'recamaras' => isset($_GET['recamaras']) && array_key_exists($_GET['recamaras'], momentum_bedroom_options()) ? $_GET['recamaras'] : '',
-		'orden'     => isset($_GET['orden']) && array_key_exists($_GET['orden'], momentum_sort_options()) ? $_GET['orden'] : 'precio_desc',
-		'codigo'    => isset($_GET['codigo']) ? trim(sanitize_text_field(wp_unslash($_GET['codigo']))) : '',
+		'precio' => isset($_GET['precio']) && array_key_exists($_GET['precio'], momentum_price_range_options($fixed['tipo_operacion'] ?? '')) ? $_GET['precio'] : '',
+		'codigo' => isset($_GET['codigo']) ? trim(sanitize_text_field(wp_unslash($_GET['codigo']))) : '',
 	];
 
 	$paged = $paged_override ?? (isset($_GET['pg']) ? max(1, absint($_GET['pg'])) : 1);
@@ -100,10 +77,6 @@ function momentum_run_property_query(array $fixed = [], int $per_page = 10, ?int
 		}
 	}
 
-	if ($filters['recamaras']) {
-		$meta_query[] = ['key' => 'recamaras', 'value' => (int) $filters['recamaras'], 'compare' => '>=', 'type' => 'NUMERIC'];
-	}
-
 	if ($filters['codigo'] !== '') {
 		$meta_query[] = ['key' => 'codigo_propiedad', 'value' => $filters['codigo'], 'compare' => 'LIKE'];
 	}
@@ -114,20 +87,21 @@ function momentum_run_property_query(array $fixed = [], int $per_page = 10, ?int
 		'posts_per_page' => $per_page,
 		'paged'          => $paged,
 		'meta_query'     => $meta_query,
+		// Sin esto, esta WP_Query (no es "la query principal", así que el
+		// filtrado automático de idioma de Polylang no la alcanza) devuelve
+		// fichas de todos los idiomas mezcladas -confirmado en vivo: sin
+		// 'lang', la misma consulta ignoraba el idioma actual por completo-.
+		// momentum_current_language() ya cae a 'es' sin Polylang activo, y
+		// WP_Query simplemente ignora 'lang' si Polylang no está cargado.
+		'lang'           => momentum_current_language(),
 	];
 
-	// 'ID' => 'DESC' como criterio secundario estable: sin él, dos propiedades
-	// con el mismo precio (o la misma fecha) podrían intercalarse de forma
-	// distinta entre páginas si MySQL no garantiza el orden de los empates.
-	if ($filters['orden'] === 'precio_asc') {
-		$query_args['orderby']  = ['meta_value_num' => 'ASC', 'ID' => 'DESC'];
-		$query_args['meta_key'] = 'precio';
-	} elseif ($filters['orden'] === 'precio_desc') {
-		$query_args['orderby']  = ['meta_value_num' => 'DESC', 'ID' => 'DESC'];
-		$query_args['meta_key'] = 'precio';
-	} else {
-		$query_args['orderby'] = ['date' => 'DESC', 'ID' => 'DESC'];
-	}
+	// Siempre ordenado de mayor a menor precio. 'ID' => 'DESC' como criterio
+	// secundario estable: sin él, dos propiedades con el mismo precio podrían
+	// intercalarse de forma distinta entre páginas si MySQL no garantiza el
+	// orden de los empates.
+	$query_args['orderby']  = ['meta_value_num' => 'DESC', 'ID' => 'DESC'];
+	$query_args['meta_key'] = 'precio';
 
 	return [
 		'query'   => new WP_Query($query_args),
@@ -153,6 +127,10 @@ function momentum_filter_propiedades_archive_query(WP_Query $query): void
 
 	$query->set('meta_query', $meta_query);
 	$query->set('post_status', 'publish');
+	// Explícito por seguridad, aunque sea la query principal (donde Polylang
+	// sí suele filtrar por idioma solo): mismo motivo que en
+	// momentum_run_property_query() arriba.
+	$query->set('lang', momentum_current_language());
 }
 add_action('pre_get_posts', 'momentum_filter_propiedades_archive_query');
 
@@ -267,7 +245,11 @@ function momentum_render_property_pagination(int $current, int $total_pages): vo
 		if ($page === $current) {
 			return sprintf(
 				'<span class="momentum-pagination__number is-current" aria-current="page" aria-label="%s">%s</span>',
-				esc_attr(sprintf('Página %d, página actual', $page)),
+				esc_attr(sprintf(
+					/* translators: %d: número de página, para el aria-label de la página actual en la paginación */
+					__('Página %d, página actual', 'momentum'),
+					$page
+				)),
 				esc_html((string) $page)
 			);
 		}
@@ -275,7 +257,11 @@ function momentum_render_property_pagination(int $current, int $total_pages): vo
 		return sprintf(
 			'<a class="momentum-pagination__number" href="%s" aria-label="%s">%s</a>',
 			esc_url($url_for($page)),
-			esc_attr(sprintf('Ir a la página %d', $page)),
+			esc_attr(sprintf(
+				/* translators: %d: número de página, para el aria-label de un link de paginación */
+				__('Ir a la página %d', 'momentum'),
+				$page
+			)),
 			esc_html((string) $page)
 		);
 	};
@@ -300,9 +286,9 @@ function momentum_render_property_pagination(int $current, int $total_pages): vo
 	$desktop_window = momentum_pagination_window($current, $total_pages, 1, 2);
 	$mobile_window  = momentum_pagination_window($current, $total_pages, 1, 0);
 	?>
-	<nav class="momentum-pagination" aria-label="Paginación de propiedades">
-		<?php echo $control('«', 'Ir a la primera página', $is_first ? null : $url_for(1)); ?>
-		<?php echo $control('‹', 'Ir a la página anterior', $is_first ? null : $url_for($current - 1)); ?>
+	<nav class="momentum-pagination" aria-label="<?php esc_attr_e('Paginación de propiedades', 'momentum'); ?>">
+		<?php echo $control('«', __('Ir a la primera página', 'momentum'), $is_first ? null : $url_for(1)); ?>
+		<?php echo $control('‹', __('Ir a la página anterior', 'momentum'), $is_first ? null : $url_for($current - 1)); ?>
 
 		<div class="momentum-pagination__numbers momentum-pagination__numbers--desktop">
 			<?php echo $render_numbers($desktop_window); ?>
@@ -311,8 +297,8 @@ function momentum_render_property_pagination(int $current, int $total_pages): vo
 			<?php echo $render_numbers($mobile_window); ?>
 		</div>
 
-		<?php echo $control('›', 'Ir a la página siguiente', $is_last ? null : $url_for($current + 1)); ?>
-		<?php echo $control('»', 'Ir a la última página', $is_last ? null : $url_for($total_pages)); ?>
+		<?php echo $control('›', __('Ir a la página siguiente', 'momentum'), $is_last ? null : $url_for($current + 1)); ?>
+		<?php echo $control('»', __('Ir a la última página', 'momentum'), $is_last ? null : $url_for($total_pages)); ?>
 	</nav>
 	<?php
 }

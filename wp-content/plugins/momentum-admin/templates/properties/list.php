@@ -15,7 +15,7 @@ $error_code   = isset($_GET['error']) ? sanitize_key(wp_unslash($_GET['error']))
 $mensajes = [
 	'creada'      => __('Propiedad creada correctamente.', 'momentum-admin'),
 	'actualizada' => __('Propiedad actualizada correctamente.', 'momentum-admin'),
-	'papelera'    => __('Propiedad enviada a la papelera.', 'momentum-admin'),
+	'papelera'    => __('Propiedad eliminada.', 'momentum-admin'),
 ];
 
 $errores = [
@@ -23,7 +23,7 @@ $errores = [
 	'permisos' => __('No tienes permiso para realizar esa acción.', 'momentum-admin'),
 	'titulo'   => __('El título es obligatorio.', 'momentum-admin'),
 	'guardado' => __('Ocurrió un error al guardar la propiedad.', 'momentum-admin'),
-	'papelera' => __('No se pudo enviar la propiedad a la papelera.', 'momentum-admin'),
+	'papelera' => __('No se pudo eliminar la propiedad.', 'momentum-admin'),
 ];
 
 $has_filters = $result['search'] !== '' || $result['estado'] !== '' || $result['tipo_operacion'] !== '';
@@ -116,7 +116,7 @@ $has_filters = $result['search'] !== '' || $result['estado'] !== '' || $result['
 				<td data-label="<?php esc_attr_e('Título', 'momentum-admin'); ?>">
 					<a href="<?php echo esc_url($edit_url); ?>"><?php echo esc_html(get_the_title()); ?></a>
 					<?php if (get_post_status($id) === 'draft') : ?>
-						<span class="momentum-admin-tag"><?php esc_html_e('Borrador', 'momentum-admin'); ?></span>
+						<span class="momentum-admin-tag"><?php esc_html_e('No publicada', 'momentum-admin'); ?></span>
 					<?php endif; ?>
 				</td>
 				<td data-label="<?php esc_attr_e('Operación', 'momentum-admin'); ?>"><?php echo $tipo_operacion !== '' ? esc_html($tipo_operacion) : '—'; ?></td>
@@ -128,10 +128,10 @@ $has_filters = $result['search'] !== '' || $result['estado'] !== '' || $result['
 					<div class="momentum-admin-actions__group">
 						<a href="<?php echo esc_url($edit_url); ?>"><?php esc_html_e('Editar', 'momentum-admin'); ?></a>
 						<a href="<?php echo esc_url(get_permalink($id)); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e('Ver', 'momentum-admin'); ?></a>
-						<form method="post" action="<?php echo esc_url(home_url('/admin/propiedades/')); ?>" class="momentum-admin-inline-form" onsubmit="return confirm('<?php echo esc_js(__('¿Enviar esta propiedad a la papelera?', 'momentum-admin')); ?>');">
+						<form method="post" action="<?php echo esc_url(home_url('/admin/propiedades/')); ?>" class="momentum-admin-inline-form" onsubmit="return confirm('<?php echo esc_js(__('¿Eliminar esta propiedad?', 'momentum-admin')); ?>');">
 							<?php wp_nonce_field(Momentum_Admin_Properties::TRASH_NONCE_ACTION . '_' . $id, Momentum_Admin_Properties::TRASH_NONCE_FIELD); ?>
 							<input type="hidden" name="momentum_property_id" value="<?php echo esc_attr((string) $id); ?>">
-							<button type="submit" name="momentum_admin_property_trash" value="1" class="momentum-admin-link-danger"><?php esc_html_e('Papelera', 'momentum-admin'); ?></button>
+							<button type="submit" name="momentum_admin_property_trash" value="1" class="momentum-admin-link-danger"><?php esc_html_e('Eliminar', 'momentum-admin'); ?></button>
 						</form>
 					</div>
 				</td>

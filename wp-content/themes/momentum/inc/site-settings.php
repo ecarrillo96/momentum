@@ -41,8 +41,33 @@ function momentum_settings_defaults(): array
 		'momentum_phone_2'       => '735 166 4461',
 		'momentum_address'       => "Estación vieja #10, Centro, Oaxtepec\nC.P. 62738, Yautepec, Morelos",
 		'momentum_email'         => 'info@momentumcocoyoc.com',
+		// GA4/Search Console: sin default -a propósito, nunca se rellena un
+		// ID/código de ejemplo aquí. Vacío = integración no conectada todavía;
+		// ver inc/seo-integrations.php, que no imprime nada mientras estén así.
+		'momentum_ga_measurement_id' => '',
+		'momentum_gsc_verification'  => '',
+		'momentum_auto_publish_translations' => '0',
+		// Vacío = todavía no hay video en inglés subido; el sitio sigue
+		// mostrando el mismo video en español a los visitantes en inglés
+		// (comportamiento actual, sin cambio) hasta que se guarde una URL aquí.
+		'momentum_intro_video_url_en' => '',
 	];
 }
+
+/**
+ * La API key de DeepL vive en su propia opción, con autoload desactivado
+ * -no hace falta en cada visita pública, solo cuando
+ * Momentum_Property_Translation_Service traduce-. register_setting() no
+ * deja fijar el autoload de una opción nueva directamente, así que se
+ * precrea aquí (una sola vez, si todavía no existe) para que
+ * update_option() -lo que realmente usa options.php- conserve ese autoload
+ * en todos los guardados posteriores desde el formulario.
+ */
+add_action('after_setup_theme', function () {
+	if (get_option('momentum_translation_api_key_deepl', false) === false) {
+		add_option('momentum_translation_api_key_deepl', '', '', 'no');
+	}
+});
 
 // -----------------------------------------------------------------
 // Sanitización
@@ -113,6 +138,17 @@ function momentum_sanitize_instagram_url($value)
 function momentum_sanitize_tiktok_url($value)
 {
 	return momentum_sanitize_social_url_field('momentum_tiktok_url', 'TikTok', $value);
+}
+
+/**
+ * URL opcional del video de introducción en inglés (mismo criterio de
+ * validación que las redes sociales: http/https, o vacío para "no
+ * configurado todavía" -momentum_get_intro_video_url() cae al video en
+ * español mientras esté vacío-).
+ */
+function momentum_sanitize_intro_video_url_en($value)
+{
+	return momentum_sanitize_social_url_field('momentum_intro_video_url_en', __('Video de introducción (inglés)', 'momentum'), $value);
 }
 
 /**
@@ -189,13 +225,140 @@ function momentum_sanitize_email_setting($value)
 	return $clean;
 }
 
+/**
+ * Google Analytics 4 Measurement ID: formato 'G-' + 6 a 12 caracteres
+ * alfanuméricos (el largo real de Google varía; se deja margen sin ser
+ * laxo). Opcional -vacío significa "todavía no conectado"-, nunca se
+ * autocompleta con un ID de ejemplo.
+ */
+function momentum_sanitize_ga_measurement_id($value)
+{
+	$raw = strtoupper(trim((string) $value));
+
+	if ($raw === '') {
+		return '';
+	}
+
+	if (! preg_match('/^G-[A-Z0-9]{6,12}$/', $raw)) {
+		add_settings_error(
+			'momentum_ga_measurement_id',
+			'momentum_ga_measurement_id_invalid',
+			__('El Measurement ID debe tener el formato G-XXXXXXXXXX (lo proporciona Google Analytics 4 al crear el flujo de datos).', 'momentum-admin')
+		);
+
+		return get_option('momentum_ga_measurement_id', '');
+	}
+
+	return $raw;
+}
+
+/**
+ * Código de verificación de Google Search Console (método "etiqueta HTML").
+ * Acepta tanto el valor solo (lo que Google llama "content") como la
+ * etiqueta <meta> completa que Search Console ofrece copiar/pegar -en ese
+ * caso se extrae solo el 'content', nunca se guarda HTML crudo-, para no
+ * depender de que el administrador sepa cuál de las dos partes pegar.
+ */
+function momentum_sanitize_gsc_verification($value)
+{
+	$raw = trim((string) $value);
+
+	if ($raw === '') {
+		return '';
+	}
+
+	if (preg_match('/content=["\']([^"\']+)["\']/i', $raw, $matches)) {
+		$raw = $matches[1];
+	}
+
+	$clean = preg_replace('/[^A-Za-z0-9_\-]/', '', $raw);
+
+	if ($clean === '' || $clean !== $raw || mb_strlen($clean) < 10 || mb_strlen($clean) > 255) {
+		add_settings_error(
+			'momentum_gsc_verification',
+			'momentum_gsc_verification_invalid',
+			__('El código de verificación no es válido. Pega el valor "content" de la etiqueta HTML que te da Google Search Console (o la etiqueta completa).', 'momentum-admin')
+		);
+
+		return get_option('momentum_gsc_verification', '');
+	}
+
+	return $clean;
+}
+
+/**
+ * Casilla "publicar traducciones automáticamente". Se apoya en un input
+ * type="hidden" con el mismo name puesto ANTES de la casilla en el template
+ * -patrón estándar de WordPress para checkboxes en Settings API-: si la
+ * casilla queda sin marcar, el navegador no la envía y solo sobrevive el
+ * hidden ('0'); si se marca, el valor de la casilla ('1') llega después en
+ * $_POST y es el que PHP conserva para nombres duplicados.
+ */
+function momentum_sanitize_auto_publish_translations($value)
+{
+	return $value === '1' ? '1' : '0';
+}
+
+/**
+ * API key de DeepL: dejar el campo vacío al guardar significa "no cambiar"
+ * -nunca se borra una key ya guardada por accidente al reenviar el
+ * formulario con el campo en blanco (nunca se vuelve a mostrar completa,
+ * ver momentum_get_deepl_api_key_masked_hint())-. Se guarda recortada, sin
+ * más validación de formato: cada proveedor decide si la key es válida al
+ * intentar usarla (Momentum_DeepL_Translation_Provider::is_configured()
+ * solo confirma que no esté vacía).
+ */
+function momentum_sanitize_translation_api_key_deepl($value)
+{
+	$raw = trim((string) $value);
+
+	return $raw === '' ? get_option('momentum_translation_api_key_deepl', '') : $raw;
+}
+
+/**
+ * '' si no hay key guardada. Si hay una, un texto seguro para mostrar en el
+ * placeholder del campo -nunca la key completa- con los últimos 4
+ * caracteres, para que el administrador confirme cuál tiene guardada sin
+ * exponerla en el HTML de la página.
+ */
+function momentum_get_deepl_api_key_masked_hint(): string
+{
+	$key = (string) get_option('momentum_translation_api_key_deepl', '');
+
+	if ($key === '') {
+		return '';
+	}
+
+	return sprintf(
+		/* translators: %s: últimos 4 caracteres de la API key ya guardada */
+		__('Configurada (termina en ****%s)', 'momentum-admin'),
+		substr($key, -4)
+	);
+}
+
+function momentum_auto_publish_translations_enabled(): bool
+{
+	return get_option('momentum_auto_publish_translations', momentum_settings_defaults()['momentum_auto_publish_translations']) === '1';
+}
+
 // -----------------------------------------------------------------
 // Registro (Settings API)
 // -----------------------------------------------------------------
 
-function momentum_register_general_settings(): void
+/**
+ * Única fuente de verdad option_name => sanitize_callback para la pantalla
+ * Admin > General, usada tanto para registrar los campos
+ * (momentum_register_general_settings()) como para filtrar los errores de
+ * guardado a solo estos campos (momentum_general_settings_field_names(),
+ * consumida por Momentum_Admin_General::render() en el plugin) -sin esto,
+ * get_settings_errors() sin filtrar recoge CUALQUIER error registrado
+ * durante el mismo request por otro plugin (Polylang, Rank Math, el propio
+ * núcleo de WordPress), mostrando un aviso genérico de "no se guardó" sin
+ * que ningún campo propio esté realmente marcado en rojo-.
+ */
+function momentum_general_settings_fields(): array
 {
-	$fields = [
+	return [
 		'momentum_exchange_rate' => 'momentum_sanitize_exchange_rate',
 		'momentum_facebook_url'  => 'momentum_sanitize_facebook_url',
 		'momentum_instagram_url' => 'momentum_sanitize_instagram_url',
@@ -204,7 +367,22 @@ function momentum_register_general_settings(): void
 		'momentum_phone_2'       => 'momentum_sanitize_phone_2',
 		'momentum_address'       => 'momentum_sanitize_address',
 		'momentum_email'         => 'momentum_sanitize_email_setting',
+		'momentum_ga_measurement_id' => 'momentum_sanitize_ga_measurement_id',
+		'momentum_gsc_verification'  => 'momentum_sanitize_gsc_verification',
+		'momentum_auto_publish_translations'  => 'momentum_sanitize_auto_publish_translations',
+		'momentum_translation_api_key_deepl'  => 'momentum_sanitize_translation_api_key_deepl',
+		'momentum_intro_video_url_en'         => 'momentum_sanitize_intro_video_url_en',
 	];
+}
+
+function momentum_general_settings_field_names(): array
+{
+	return array_keys(momentum_general_settings_fields());
+}
+
+function momentum_register_general_settings(): void
+{
+	$fields = momentum_general_settings_fields();
 
 	foreach ($fields as $option_name => $callback) {
 		register_setting(MOMENTUM_SETTINGS_GROUP, $option_name, [
@@ -267,6 +445,16 @@ function momentum_get_tiktok_url(): string
 	return (string) get_option('momentum_tiktok_url', momentum_settings_defaults()['momentum_tiktok_url']);
 }
 
+/**
+ * '' mientras no se haya subido/guardado un video de introducción en
+ * inglés -ver momentum_get_intro_video_url() en inc/helpers.php, que cae al
+ * video en español mientras esto esté vacío.
+ */
+function momentum_get_intro_video_url_en(): string
+{
+	return (string) get_option('momentum_intro_video_url_en', momentum_settings_defaults()['momentum_intro_video_url_en']);
+}
+
 function momentum_get_phone_1(): string
 {
 	return (string) get_option('momentum_phone_1', momentum_settings_defaults()['momentum_phone_1']);
@@ -285,6 +473,25 @@ function momentum_get_address(): string
 function momentum_get_email(): string
 {
 	return (string) get_option('momentum_email', momentum_settings_defaults()['momentum_email']);
+}
+
+/**
+ * '' mientras nadie haya conectado Google Analytics todavía -ver
+ * inc/seo-integrations.php, que usa este getter para decidir si imprime
+ * el snippet de gtag.js o no imprime nada.
+ */
+function momentum_get_ga_measurement_id(): string
+{
+	return (string) get_option('momentum_ga_measurement_id', '');
+}
+
+/**
+ * '' mientras nadie haya conectado Google Search Console todavía -mismo
+ * criterio que momentum_get_ga_measurement_id().
+ */
+function momentum_get_gsc_verification(): string
+{
+	return (string) get_option('momentum_gsc_verification', '');
 }
 
 // -----------------------------------------------------------------

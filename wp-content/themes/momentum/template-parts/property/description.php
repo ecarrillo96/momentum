@@ -12,7 +12,7 @@ if (! get_the_content()) {
 }
 ?>
 <div class="momentum-property-block">
-	<h2>Descripción</h2>
+	<h2><?php esc_html_e('Descripción', 'momentum'); ?></h2>
 	<div class="momentum-prose">
 		<?php the_content(); ?>
 	</div>

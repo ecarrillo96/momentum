@@ -64,7 +64,11 @@ function momentum_propiedad_meta_schema()
 		// Se conserva registrado para no perder los valores históricos guardados.
 		'tipo_propiedad'   => ['type' => 'string', 'label' => 'Tipo de propiedad', 'options' => ['Casa', 'Departamento', 'Terreno'], 'deprecated' => true],
 		'recamaras'        => ['type' => 'number', 'label' => 'Recámaras'],
-		'banos'            => ['type' => 'number', 'label' => 'Baños'],
+		// Texto libre a propósito: el cliente captura formatos como "6 2/2"
+		// (baños completos + medios baños) que no se pueden representar como
+		// número. No se filtra, ordena ni calcula nada por este campo, así que
+		// no hace falta forzarlo a numérico.
+		'banos'            => ['type' => 'string', 'label' => 'Baños'],
 		'terreno_m2'       => ['type' => 'number', 'label' => 'Terreno (m²)'],
 		'construccion_m2'  => ['type' => 'number', 'label' => 'Construcción (m²)'],
 		// Deprecado: reemplazado por 'zona'. Se conserva registrado por los mismos motivos.
@@ -247,8 +251,9 @@ function momentum_render_propiedad_metabox($post)
 
 		<div class="momentum-meta-field">
 			<label for="momentum_banos">Baños</label>
-			<input type="number" step="0.5" min="0" id="momentum_banos" name="momentum_banos"
+			<input type="text" id="momentum_banos" name="momentum_banos" placeholder="6 2/2"
 				value="<?php echo esc_attr($values['banos']); ?>">
+			<p class="momentum-meta-field-hint">Captura los baños con el formato utilizado actualmente. Ejemplo: 6 2/2.</p>
 		</div>
 
 		<div class="momentum-meta-field">
@@ -455,6 +460,10 @@ function momentum_propiedad_admin_columns($columns)
 	$columns['zona']           = 'Zona';
 	$columns['estado']         = 'Estado';
 
+	if (momentum_is_multilingual()) {
+		$columns['momentum_translation'] = 'Traducción EN';
+	}
+
 	return $columns;
 }
 add_filter('manage_propiedades_posts_columns', 'momentum_propiedad_admin_columns');
@@ -480,6 +489,55 @@ function momentum_propiedad_admin_column_content($column, $post_id)
 			$value = get_post_meta($post_id, $column, true);
 			echo $value ? esc_html($value) : '—';
 			break;
+
+		case 'momentum_translation':
+			momentum_render_translation_status_column($post_id);
+			break;
 	}
 }
 add_action('manage_propiedades_posts_custom_column', 'momentum_propiedad_admin_column_content', 10, 2);
+
+/**
+ * Contenido de la columna "Traducción EN", compartido por Propiedades y
+ * Terrenos (ver inc/cpt/terrenos.php) — solo tiene sentido si Polylang está
+ * activo y la traducción a 'en' ya existe (Momentum_Property_Translation_Service
+ * la crea al guardar; si el post nunca se guardó desde que se activó
+ * Polylang, o Polylang está apagado, no hay nada que mostrar).
+ */
+function momentum_render_translation_status_column(int $post_id): void
+{
+	if (! momentum_is_multilingual()) {
+		echo '—';
+
+		return;
+	}
+
+	$translation_id = momentum_find_translation($post_id, 'en');
+
+	if (! $translation_id) {
+		echo '—';
+
+		return;
+	}
+
+	$status = (string) get_post_meta($translation_id, Momentum_Property_Translation_Service::status_meta_key(), true);
+
+	// Estilo en línea a propósito: esta columna vive en el listado NATIVO de
+	// wp-admin (wp-admin/edit.php), que no carga el CSS del panel /admin/*
+	// -las clases .momentum-admin-badge de ese panel no tendrían efecto aquí-.
+	$colors = [
+		'complete'       => ['#e3f5ee', '#146c48'],
+		'manual'         => ['#e8effa', '#1c4f9c'],
+		'translating'    => ['#fff6e5', '#8a5a00'],
+		'error'          => ['#fdecea', '#a52c1e'],
+		'quota_exceeded' => ['#fdecea', '#a52c1e'],
+	];
+	[$bg, $color] = $colors[$status] ?? ['#f1f1f1', '#555'];
+
+	printf(
+		'<span style="display:inline-block;padding:2px 10px;border-radius:999px;font-size:12px;background:%s;color:%s;">%s</span>',
+		esc_attr($bg),
+		esc_attr($color),
+		esc_html(Momentum_Property_Translation_Service::status_label($status))
+	);
+}

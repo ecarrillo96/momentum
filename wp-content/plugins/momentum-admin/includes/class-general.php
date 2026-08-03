@@ -56,14 +56,31 @@ class Momentum_Admin_General
 			'momentum_phone_2'       => momentum_get_phone_2(),
 			'momentum_address'       => momentum_get_address(),
 			'momentum_email'         => momentum_get_email(),
+			'momentum_ga_measurement_id' => momentum_get_ga_measurement_id(),
+			'momentum_gsc_verification'  => momentum_get_gsc_verification(),
+			'momentum_intro_video_url_en' => momentum_get_intro_video_url_en(),
+			'momentum_auto_publish_translations' => momentum_auto_publish_translations_enabled() ? '1' : '0',
+			// Nunca la key cruda aquí -solo una pista enmascarada para el
+			// placeholder del campo (ver momentum_get_deepl_api_key_masked_hint()).
+			// El campo siempre se renderiza vacío; dejarlo vacío al guardar
+			// significa "no cambiar" (ver momentum_sanitize_translation_api_key_deepl()).
+			'momentum_translation_api_key_deepl_hint' => momentum_get_deepl_api_key_masked_hint(),
 		];
 
-		// get_settings_errors() consume el transiente que options.php dejó
-		// tras procesar el POST anterior; se agrupa por campo para pintar
-		// cada mensaje junto a su input, no como un aviso genérico único.
-		$errors_by_field = [];
+		// get_settings_errors() sin argumento devuelve TODOS los errores
+		// registrados durante este request, de cualquier plugin -no solo los
+		// de esta pantalla-. Se filtra a los campos que este formulario
+		// realmente registra (momentum_general_settings_field_names()) para
+		// que un error ajeno (Polylang, Rank Math, el propio WordPress)
+		// nunca dispare aquí el aviso de "no se guardaron algunos campos"
+		// sin que ningún campo propio esté realmente marcado.
+		$known_fields     = momentum_general_settings_field_names();
+		$errors_by_field  = [];
+
 		foreach (get_settings_errors() as $error) {
-			$errors_by_field[$error['setting']][] = $error['message'];
+			if (in_array($error['setting'], $known_fields, true)) {
+				$errors_by_field[$error['setting']][] = $error['message'];
+			}
 		}
 
 		$saved = isset($_GET['settings-updated']) && $_GET['settings-updated'] === 'true' && empty($errors_by_field);

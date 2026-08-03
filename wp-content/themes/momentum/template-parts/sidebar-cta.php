@@ -11,9 +11,9 @@ $phone_1 = momentum_get_phone_1();
 $phone_2 = momentum_get_phone_2();
 ?>
 <div class="momentum-sidebar-cta">
-	<h3>¿Necesitas asesoría?</h3>
-	<p>Nuestro equipo está listo para ayudarte a encontrar la propiedad perfecta.</p>
-	<a class="momentum-btn momentum-btn--accent" href="<?php echo esc_url(home_url('/contacto/')); ?>">Contactar ahora</a>
+	<h3><?php esc_html_e('¿Necesitas asesoría?', 'momentum'); ?></h3>
+	<p><?php esc_html_e('Nuestro equipo está listo para ayudarte a encontrar la propiedad perfecta.', 'momentum'); ?></p>
+	<a class="momentum-btn momentum-btn--accent" href="<?php echo esc_url(momentum_url_for_page('contacto')); ?>"><?php esc_html_e('Contactar ahora', 'momentum'); ?></a>
 	<?php if ($phone_1 !== '' || $phone_2 !== '') : ?>
 		<div class="momentum-phone-group">
 			<?php if ($phone_1 !== '') : ?>

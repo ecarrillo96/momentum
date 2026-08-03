@@ -24,10 +24,8 @@ require_once MOMENTUM_ADMIN_PATH . 'includes/class-terrenos.php';
 require_once MOMENTUM_ADMIN_PATH . 'includes/class-blog.php';
 require_once MOMENTUM_ADMIN_PATH . 'includes/class-zonas.php';
 require_once MOMENTUM_ADMIN_PATH . 'includes/class-general.php';
+require_once MOMENTUM_ADMIN_PATH . 'includes/class-translations.php';
 require_once MOMENTUM_ADMIN_PATH . 'includes/class-router.php';
-
-// Aislado a propósito: ver includes/class-demo-user.php para instrucciones de eliminación.
-require_once MOMENTUM_ADMIN_PATH . 'includes/class-demo-user.php';
 
 // Comando WP-CLI de migración ciudad/ubicación -> zona (no-op fuera de WP-CLI).
 require_once MOMENTUM_ADMIN_PATH . 'includes/class-cli-migrate-zona.php';
@@ -35,12 +33,16 @@ require_once MOMENTUM_ADMIN_PATH . 'includes/class-cli-migrate-zona.php';
 // Comandos WP-CLI de datos de prueba para paginación (no-op fuera de WP-CLI).
 require_once MOMENTUM_ADMIN_PATH . 'includes/class-cli-seed-test-properties.php';
 
+// Comando WP-CLI de migración al sistema de traducción automática ES→EN
+// (no-op fuera de WP-CLI).
+require_once MOMENTUM_ADMIN_PATH . 'includes/class-cli-migrate-translations.php';
+
+// Comando WP-CLI de migración del Blog al sistema de traducción automática
+// ES→EN (no-op fuera de WP-CLI).
+require_once MOMENTUM_ADMIN_PATH . 'includes/class-cli-migrate-blog-translations.php';
+
 Momentum_Admin_Router::init();
 Momentum_Admin_Zonas::init();
 
 register_activation_hook(__FILE__, ['Momentum_Admin_Router', 'activate']);
 register_deactivation_hook(__FILE__, ['Momentum_Admin_Router', 'deactivate']);
-
-// Creación del usuario demo: SOLO se ejecuta en activación del plugin.
-// Para eliminar la creación automática, ver instrucciones en class-demo-user.php.
-register_activation_hook(__FILE__, ['Momentum_Admin_Demo_User', 'maybe_create']);

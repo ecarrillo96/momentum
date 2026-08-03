@@ -25,6 +25,7 @@ $items = [
 		],
 	],
 	'blog'        => ['label' => __('Blog', 'momentum-admin'), 'icon' => 'dashicons-admin-post', 'url' => home_url('/admin/blog/')],
+	'traducciones' => ['label' => __('Traducciones', 'momentum-admin'), 'icon' => 'dashicons-translation', 'url' => home_url('/admin/traducciones/')],
 ];
 ?>
 <button type="button" class="momentum-admin-menu-toggle" id="momentum-admin-menu-toggle" aria-controls="momentum-admin-sidebar" aria-expanded="false">

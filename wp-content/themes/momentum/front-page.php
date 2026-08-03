@@ -13,11 +13,13 @@ get_header();
 ?>
 
 <?php
+get_template_part('template-parts/home/intro-video');
 get_template_part('template-parts/home/hero');
-get_template_part('template-parts/home/trust-bar');
-get_template_part('template-parts/home/featured-properties');
+get_template_part('template-parts/home/about');
 get_template_part('template-parts/home/services');
-get_template_part('template-parts/blog-grid');
+get_template_part('template-parts/home/trust-bar');
+get_template_part('template-parts/blog-grid', null, ['dark' => true]);
+get_template_part('template-parts/home/faq');
 get_template_part('template-parts/home/cta-banner');
 ?>
 

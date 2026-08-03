@@ -26,6 +26,7 @@ $featured_photo_sizes = '(max-width: 1280px) 100vw, 1232px';
 			false,
 			[
 				'class'         => 'momentum-featured-photo',
+				'alt'           => momentum_attachment_alt(87, get_the_title()),
 				'sizes'         => $featured_photo_sizes,
 				'loading'       => 'eager',
 				'fetchpriority' => 'high',
@@ -39,32 +40,22 @@ $featured_photo_sizes = '(max-width: 1280px) 100vw, 1232px';
 <section class="momentum-section">
 	<div class="momentum-container">
 		<div class="momentum-prose momentum-prose--wide">
-			<span class="momentum-eyebrow">Quiénes somos</span>
+			<span class="momentum-eyebrow"><?php esc_html_e('Quiénes somos', 'momentum'); ?></span>
 
 			<p>
-				En Momentum Cocoyoc S.A. de C.V. somos una inmobiliaria en Lomas de Cocoyoc con
-				más de 15 años de experiencia en el mercado de bienes raíces en Morelos. Desde
-				nuestra fundación en 2008, nos especializamos en la venta y renta de casas,
-				terrenos y residencias de lujo en Lomas de Cocoyoc, ofreciendo a cada cliente un
-				servicio profesional, cercano y confiable.
+				<?php esc_html_e('En Momentum Cocoyoc S.A. de C.V. somos una inmobiliaria en Lomas de Cocoyoc con más de 15 años de experiencia en el mercado de bienes raíces en Morelos. Desde nuestra fundación en 2008, nos especializamos en la venta y renta de casas, terrenos y residencias de lujo en Lomas de Cocoyoc, ofreciendo a cada cliente un servicio profesional, cercano y confiable.', 'momentum'); ?>
 			</p>
 
 			<p>
-				Nuestro compromiso es ayudarte a encontrar la propiedad ideal, ya sea una casa en
-				venta en Lomas de Cocoyoc, un terreno para invertir o una residencia con plusvalía
-				y ubicación privilegiada cerca de la CDMX.
+				<?php esc_html_e('Nuestro compromiso es ayudarte a encontrar la propiedad ideal, ya sea una casa en venta en Lomas de Cocoyoc, un terreno para invertir o una residencia con plusvalía y ubicación privilegiada cerca de la CDMX.', 'momentum'); ?>
 			</p>
 
 			<p>
-				Gracias a nuestro crecimiento constante y la confianza de nuestros clientes, hoy
-				nos consolidamos como una opción segura para quienes buscan comprar casa en Lomas
-				de Cocoyoc con la tranquilidad de estar respaldados por asesores expertos.
+				<?php esc_html_e('Gracias a nuestro crecimiento constante y la confianza de nuestros clientes, hoy nos consolidamos como una opción segura para quienes buscan comprar casa en Lomas de Cocoyoc con la tranquilidad de estar respaldados por asesores expertos.', 'momentum'); ?>
 			</p>
 
 			<p>
-				En Momentum Cocoyoc, nuestro mayor objetivo es la satisfacción de cada cliente,
-				acompañándote en todo el proceso para que tu experiencia de compra sea clara,
-				segura y exitosa.
+				<?php esc_html_e('En Momentum Cocoyoc, nuestro mayor objetivo es la satisfacción de cada cliente, acompañándote en todo el proceso para que tu experiencia de compra sea clara, segura y exitosa.', 'momentum'); ?>
 			</p>
 		</div>
 	</div>
@@ -79,6 +70,7 @@ $featured_photo_sizes = '(max-width: 1280px) 100vw, 1232px';
 			false,
 			[
 				'class'    => 'momentum-featured-photo',
+				'alt'      => momentum_attachment_alt(88, get_the_title()),
 				'sizes'    => $featured_photo_sizes,
 				'loading'  => 'lazy',
 				'decoding' => 'async',

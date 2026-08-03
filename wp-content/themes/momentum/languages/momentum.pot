@@ -1,0 +1,881 @@
+# Copyright (C) 2026 Momentum Cocoyoc
+# This file is distributed under the same license as the Momentum theme.
+msgid ""
+msgstr ""
+"Project-Id-Version: Momentum 1.3\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/theme/momentum\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-08-02T14:33:10+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: momentum\n"
+
+#. Theme Name of the theme
+#: style.css
+msgid "Momentum"
+msgstr ""
+
+#. Theme URI of the theme
+#: style.css
+msgid "http://momentumcocoyoc.local"
+msgstr ""
+
+#. Description of the theme
+#: style.css
+msgid "Child theme de Blocksy para Momentum Cocoyoc."
+msgstr ""
+
+#. Author of the theme
+#: style.css
+msgid "Momentum Cocoyoc"
+msgstr ""
+
+#. translators: 1: título de la propiedad o terreno, 2: nombre de la zona
+#: inc/helpers.php:104
+#, php-format
+msgid "Imagen de %1$s en %2$s"
+msgstr ""
+
+#. translators: %s: título de la propiedad o terreno
+#: inc/helpers.php:111
+#, php-format
+msgid "Imagen de %s"
+msgstr ""
+
+#: inc/helpers.php:135
+msgid "MXN"
+msgstr ""
+
+#. translators: appended right after a rental price, e.g. "$12,000 MXN/mes".
+#: inc/helpers.php:139
+#: inc/helpers.php:169
+msgid "/mes"
+msgstr ""
+
+#: inc/helpers.php:189
+msgid "Disponible"
+msgstr ""
+
+#: inc/helpers.php:190
+msgid "Apartada"
+msgstr ""
+
+#: inc/helpers.php:191
+msgid "En preventa"
+msgstr ""
+
+#: inc/helpers.php:192
+msgid "Vendida"
+msgstr ""
+
+#: inc/helpers.php:193
+msgid "Rentada"
+msgstr ""
+
+#: inc/helpers.php:194
+msgid "Remate"
+msgstr ""
+
+#: inc/helpers.php:211
+#: template-parts/home/services.php:13
+msgid "Venta"
+msgstr ""
+
+#: inc/helpers.php:212
+#: template-parts/home/services.php:19
+msgid "Renta"
+msgstr ""
+
+#: inc/property-query.php:26
+#: inc/property-query.php:35
+msgid "Cualquier precio"
+msgstr ""
+
+#: inc/property-query.php:27
+msgid "Hasta $20,000/mes"
+msgstr ""
+
+#: inc/property-query.php:28
+msgid "$20,000 - $35,000/mes"
+msgstr ""
+
+#: inc/property-query.php:29
+msgid "$35,000 - $50,000/mes"
+msgstr ""
+
+#: inc/property-query.php:30
+msgid "Más de $50,000/mes"
+msgstr ""
+
+#: inc/property-query.php:36
+msgid "Hasta $3,000,000"
+msgstr ""
+
+#: inc/property-query.php:37
+msgid "$3,000,000 - $6,000,000"
+msgstr ""
+
+#: inc/property-query.php:38
+msgid "$6,000,000 - $9,000,000"
+msgstr ""
+
+#: inc/property-query.php:39
+msgid "Más de $9,000,000"
+msgstr ""
+
+#. translators: %d: número de página, para el aria-label de la página actual en la paginación
+#: inc/property-query.php:250
+#, php-format
+msgid "Página %d, página actual"
+msgstr ""
+
+#. translators: %d: número de página, para el aria-label de un link de paginación
+#: inc/property-query.php:262
+#, php-format
+msgid "Ir a la página %d"
+msgstr ""
+
+#: inc/property-query.php:289
+msgid "Paginación de propiedades"
+msgstr ""
+
+#: inc/property-query.php:290
+msgid "Ir a la primera página"
+msgstr ""
+
+#: inc/property-query.php:291
+msgid "Ir a la página anterior"
+msgstr ""
+
+#: inc/property-query.php:300
+msgid "Ir a la página siguiente"
+msgstr ""
+
+#: inc/property-query.php:301
+msgid "Ir a la última página"
+msgstr ""
+
+#: page-asesoria.php:14
+#: template-parts/home/services.php:37
+msgid "Asesoría"
+msgstr ""
+
+#: page-asesoria.php:15
+msgid "Acompañamiento experto para tu crédito hipotecario, con todos los bancos."
+msgstr ""
+
+#: page-blog.php:14
+#: page-blog.php:19
+#: template-parts/blog-grid.php:18
+msgid "Blog"
+msgstr ""
+
+#: page-blog.php:15
+msgid "Ideas, tendencias y consejos sobre bienes raíces en Lomas de Cocoyoc y Morelos."
+msgstr ""
+
+#: page-blog.php:20
+msgid "Todos los artículos"
+msgstr ""
+
+#: page-blog.php:21
+msgid "Explora nuestras publicaciones más recientes."
+msgstr ""
+
+#: page-construccion.php:15
+msgid "Construcción a la medida"
+msgstr ""
+
+#: page-construccion.php:16
+msgid "Diseño y construcción de vivienda en Lomas de Cocoyoc, de principio a fin, con acompañamiento en cada etapa del proyecto."
+msgstr ""
+
+#: page-contacto.php:14
+#: template-parts/site-footer.php:39
+msgid "Contacto"
+msgstr ""
+
+#: page-contacto.php:15
+msgid "Estamos para ayudarte. Escríbenos, llámanos o visítanos."
+msgstr ""
+
+#: page-nosotros.php:14
+msgid "Nosotros"
+msgstr ""
+
+#: page-nosotros.php:15
+msgid "Más de 15 años acompañando a familias en Lomas de Cocoyoc."
+msgstr ""
+
+#: page-renta.php:18
+msgid "Propiedades en renta"
+msgstr ""
+
+#: page-terrenos.php:20
+msgid "Terrenos en venta"
+msgstr ""
+
+#: page-venta.php:18
+msgid "Propiedades en venta"
+msgstr ""
+
+#: single.php:63
+msgid "Volver al blog"
+msgstr ""
+
+#: template-parts/asesoria/content.php:10
+msgid "Hola, me interesa tramitar mi crédito, vengo desde su sitio web."
+msgstr ""
+
+#: template-parts/asesoria/content.php:18
+msgid "Somos asesores profesionales con más de 20 años de experiencia en el ramo inmobiliario, te ayudamos a tramitar tu crédito hipotecario para la adquisición de un bien inmueble. Trabajamos con todos los bancos."
+msgstr ""
+
+#: template-parts/asesoria/content.php:51
+msgid "Si tienes dudas, con gusto podemos ayudarte y asesorarte, ya que somos especialistas en productos, procesos, requisitos y todo lo necesario para que puedas adquirir algún patrimonio; analizando las opciones y alternativas que más se acomoden a tus necesidades."
+msgstr ""
+
+#: template-parts/asesoria/content.php:57
+msgid "Tramitar mi crédito"
+msgstr ""
+
+#: template-parts/blog-grid.php:19
+msgid "Artículos para tu decisión de compra"
+msgstr ""
+
+#: template-parts/blog-grid.php:20
+msgid "Consejos y contexto sobre Lomas de Cocoyoc y la región para ayudarte a decidir mejor."
+msgstr ""
+
+#: template-parts/blog-grid.php:67
+msgid "Ver todos los artículos →"
+msgstr ""
+
+#: template-parts/blog-grid.php:113
+#: template-parts/blog-related.php:64
+#: template-parts/venta-blog.php:50
+msgid "Leer más →"
+msgstr ""
+
+#: template-parts/blog-grid.php:133
+msgid "Paginación del blog"
+msgstr ""
+
+#: template-parts/blog-grid.php:139
+msgid "No se encontraron artículos."
+msgstr ""
+
+#: template-parts/blog-related.php:30
+#: template-parts/property/similar.php:42
+msgid "También te puede interesar"
+msgstr ""
+
+#: template-parts/blog-related.php:31
+msgid "Artículos relacionados"
+msgstr ""
+
+#: template-parts/construccion/intro.php:10
+msgid "Hola, me interesa cotizar mi proyecto de construcción, vengo desde su sitio web."
+msgstr ""
+
+#: template-parts/construccion/intro.php:29
+msgid "Nuestra experiencia"
+msgstr ""
+
+#: template-parts/construccion/intro.php:32
+msgid "En Momentum Cocoyoc hacemos realidad tu proyecto con el respaldo de un equipo multidisciplinario de arquitectos, ingenieros, urbanistas y especialistas en construcción de casas en Lomas de Cocoyoc. Nuestro compromiso es ofrecer soluciones innovadoras, funcionales y de alta calidad en cada obra."
+msgstr ""
+
+#: template-parts/construccion/intro.php:36
+msgid "Con más de 15 años de experiencia en bienes raíces en Lomas de Cocoyoc, nos especializamos en el diseño y construcción de residencias modernas y casas de lujo adaptadas a las necesidades de cada cliente."
+msgstr ""
+
+#: template-parts/construccion/intro.php:40
+msgid "Ya sea que busques una casa nueva en venta en Lomas de Cocoyoc Morelos, construir la casa de tus sueños o invertir en un terreno para edificar tu patrimonio, te acompañamos en cada etapa: desde la planeación y diseño arquitectónico hasta la entrega final."
+msgstr ""
+
+#: template-parts/construccion/intro.php:44
+msgid "En Momentum Cocoyoc transformamos tus ideas en propiedades exclusivas en Lomas de Cocoyoc, garantizando calidad, estilo y plusvalía."
+msgstr ""
+
+#: template-parts/construccion/intro.php:50
+msgid "Cotizar mi proyecto"
+msgstr ""
+
+#: template-parts/contacto/form.php:13
+msgid "Envíanos un mensaje"
+msgstr ""
+
+#: template-parts/contacto/form.php:17
+msgid "Gracias, tu mensaje fue enviado correctamente. Te contactaremos pronto."
+msgstr ""
+
+#: template-parts/contacto/form.php:21
+msgid "No pudimos enviar tu mensaje. Verifica los datos e intenta de nuevo."
+msgstr ""
+
+#: template-parts/contacto/form.php:30
+msgid "Nombre completo"
+msgstr ""
+
+#: template-parts/contacto/form.php:35
+#: template-parts/contacto/info.php:37
+msgid "Teléfono"
+msgstr ""
+
+#: template-parts/contacto/form.php:40
+msgid "Correo electrónico"
+msgstr ""
+
+#: template-parts/contacto/form.php:45
+msgid "Mensaje"
+msgstr ""
+
+#: template-parts/contacto/form.php:49
+msgid "Enviar mensaje"
+msgstr ""
+
+#: template-parts/contacto/info.php:20
+msgid "Información de contacto"
+msgstr ""
+
+#: template-parts/contacto/info.php:27
+msgid "Dirección"
+msgstr ""
+
+#: template-parts/contacto/info.php:54
+msgid "Email"
+msgstr ""
+
+#: template-parts/contacto/map.php:32
+msgid "Ubicación de Momentum Cocoyoc"
+msgstr ""
+
+#: template-parts/home/about.php:12
+msgid "años de experiencia"
+msgstr ""
+
+#: template-parts/home/about.php:13
+msgid "propiedades comercializadas"
+msgstr ""
+
+#: template-parts/home/about.php:14
+msgid "compromiso con nuestros clientes"
+msgstr ""
+
+#: template-parts/home/about.php:36
+msgid "Sobre Momentum Cocoyoc"
+msgstr ""
+
+#: template-parts/home/about.php:37
+msgid "Inmobiliaria especializada en Lomas de Cocoyoc, Morelos"
+msgstr ""
+
+#: template-parts/home/about.php:40
+msgid "En Momentum Cocoyoc tenemos más de 10 años de experiencia ayudando a familias e inversionistas a comprar, vender, rentar y construir en una de las zonas con mayor plusvalía de Morelos."
+msgstr ""
+
+#: template-parts/home/about.php:44
+msgid "Conocemos el mercado local, sus fraccionamientos, servicios y regulaciones, lo que nos permite ofrecerte asesoría precisa, segura y personalizada para cada etapa del proceso."
+msgstr ""
+
+#: template-parts/home/about.php:65
+msgid "Lomas de Cocoyoc"
+msgstr ""
+
+#: template-parts/home/cta-banner.php:10
+msgid "Hola, me interesa encontrar una propiedad en Lomas de Cocoyoc, vengo desde su sitio web."
+msgstr ""
+
+#: template-parts/home/cta-banner.php:21
+msgid "¿Buscas una propiedad en Lomas de Cocoyoc?"
+msgstr ""
+
+#: template-parts/home/cta-banner.php:22
+msgid "Nuestro equipo está listo para ayudarte a encontrarla."
+msgstr ""
+
+#: template-parts/home/cta-banner.php:27
+msgid "Contáctanos"
+msgstr ""
+
+#: template-parts/home/faq.php:12
+msgid "¿Dónde se encuentra Lomas de Cocoyoc?"
+msgstr ""
+
+#: template-parts/home/faq.php:13
+msgid "Lomas de Cocoyoc es un fraccionamiento residencial ubicado en el municipio de Yautepec, Morelos, muy cerca de Oaxtepec y a poco más de una hora de la Ciudad de México."
+msgstr ""
+
+#: template-parts/home/faq.php:16
+msgid "¿Qué tipos de propiedades manejan?"
+msgstr ""
+
+#: template-parts/home/faq.php:17
+msgid "Trabajamos con casas y departamentos en venta y renta, así como terrenos residenciales dentro y alrededor de Lomas de Cocoyoc."
+msgstr ""
+
+#: template-parts/home/faq.php:20
+msgid "¿Cómo agendo una visita?"
+msgstr ""
+
+#: template-parts/home/faq.php:21
+msgid "Puedes contactarnos por WhatsApp, teléfono o el formulario de contacto del sitio y coordinamos una visita en el horario que mejor te convenga."
+msgstr ""
+
+#: template-parts/home/faq.php:24
+msgid "¿Los terrenos cuentan con servicios?"
+msgstr ""
+
+#: template-parts/home/faq.php:25
+msgid "La mayoría de los terrenos que manejamos cuentan con servicios básicos disponibles; te confirmamos el detalle específico de cada lote antes de tu visita."
+msgstr ""
+
+#: template-parts/home/faq.php:28
+msgid "¿Ofrecen financiamiento?"
+msgstr ""
+
+#: template-parts/home/faq.php:29
+msgid "Sí, trabajamos con todos los bancos y te asesoramos en todo el proceso de crédito hipotecario."
+msgstr ""
+
+#: template-parts/home/faq.php:32
+msgid "¿Pueden ayudarme a vender mi propiedad?"
+msgstr ""
+
+#: template-parts/home/faq.php:33
+msgid "Sí, ofrecemos asesoría completa para vender tu propiedad, desde la valuación hasta el cierre de la operación."
+msgstr ""
+
+#: template-parts/home/faq.php:36
+msgid "¿También construyen casas?"
+msgstr ""
+
+#: template-parts/home/faq.php:37
+msgid "Sí, contamos con un equipo de construcción para diseñar y edificar tu casa a la medida, de principio a fin."
+msgstr ""
+
+#: template-parts/home/faq.php:40
+msgid "¿Cuál es el costo de sus servicios?"
+msgstr ""
+
+#: template-parts/home/faq.php:41
+msgid "El costo depende del tipo de operación y servicio; contáctanos para darte una cotización personalizada sin compromiso."
+msgstr ""
+
+#: template-parts/home/faq.php:49
+msgid "Preguntas frecuentes"
+msgstr ""
+
+#: template-parts/home/faq.php:50
+msgid "Resolvemos tus dudas"
+msgstr ""
+
+#: template-parts/home/hero.php:12
+msgid "Asesoría personalizada en todo el proceso"
+msgstr ""
+
+#: template-parts/home/hero.php:13
+msgid "Conocimiento profundo del mercado local"
+msgstr ""
+
+#: template-parts/home/hero.php:14
+msgid "Acompañamiento legal y financiero"
+msgstr ""
+
+#: template-parts/home/hero.php:20
+msgid "Inmobiliaria especializada en Lomas de Cocoyoc"
+msgstr ""
+
+#: template-parts/home/hero.php:22
+msgid "Casas, Terrenos y Propiedades en Venta en Lomas de Cocoyoc"
+msgstr ""
+
+#: template-parts/home/hero.php:25
+msgid "Te acompañamos en cada paso para que encuentres la propiedad ideal para ti y tu familia."
+msgstr ""
+
+#: template-parts/home/hero.php:28
+msgid "Conoce más"
+msgstr ""
+
+#: template-parts/home/intro-video.php:20
+msgid "Omitir intro"
+msgstr ""
+
+#: template-parts/home/services.php:14
+msgid "Encuentra la casa, departamento o terreno ideal para comprar en Lomas de Cocoyoc."
+msgstr ""
+
+#: template-parts/home/services.php:20
+msgid "Propiedades amuebladas y sin amueblar, listas para tu siguiente etapa."
+msgstr ""
+
+#: template-parts/home/services.php:25
+msgid "Terrenos"
+msgstr ""
+
+#: template-parts/home/services.php:26
+msgid "Lotes residenciales para construir el hogar que tienes en mente."
+msgstr ""
+
+#: template-parts/home/services.php:31
+msgid "Construcción"
+msgstr ""
+
+#: template-parts/home/services.php:32
+msgid "Diseño y construcción de vivienda a la medida, de principio a fin."
+msgstr ""
+
+#: template-parts/home/services.php:38
+msgid "Acompañamiento legal, financiero e inmobiliario en cada operación."
+msgstr ""
+
+#: template-parts/home/services.php:47
+msgid "Lo que hacemos"
+msgstr ""
+
+#: template-parts/home/services.php:48
+msgid "Servicios pensados para cada etapa"
+msgstr ""
+
+#: template-parts/home/services.php:49
+msgid "Ya sea que quieras comprar, rentar, invertir o construir, tenemos un servicio dedicado para ti."
+msgstr ""
+
+#: template-parts/home/services.php:59
+msgid "Conocer más →"
+msgstr ""
+
+#: template-parts/home/trust-bar.php:13
+msgid "Experiencia local"
+msgstr ""
+
+#: template-parts/home/trust-bar.php:14
+msgid "Más de 10 años en el mercado inmobiliario de Lomas de Cocoyoc."
+msgstr ""
+
+#: template-parts/home/trust-bar.php:18
+msgid "Conocimiento de la zona"
+msgstr ""
+
+#: template-parts/home/trust-bar.php:19
+msgid "Sabemos lo que hace especial a Lomas y sus alrededores."
+msgstr ""
+
+#: template-parts/home/trust-bar.php:23
+msgid "Acompañamiento total"
+msgstr ""
+
+#: template-parts/home/trust-bar.php:24
+msgid "Te asesoramos en cada paso del proceso, de principio a fin."
+msgstr ""
+
+#: template-parts/home/trust-bar.php:28
+msgid "Seguridad jurídica"
+msgstr ""
+
+#: template-parts/home/trust-bar.php:29
+msgid "Procesos transparentes y respaldo legal en todas nuestras operaciones."
+msgstr ""
+
+#: template-parts/home/trust-bar.php:33
+msgid "Atención personalizada"
+msgstr ""
+
+#: template-parts/home/trust-bar.php:34
+msgid "Soluciones a la medida de tus necesidades e inversión."
+msgstr ""
+
+#: template-parts/home/trust-bar.php:42
+msgid "¿Por qué elegirnos?"
+msgstr ""
+
+#: template-parts/home/trust-bar.php:43
+msgid "Tu inversión en las mejores manos"
+msgstr ""
+
+#: template-parts/nosotros/content.php:43
+msgid "Quiénes somos"
+msgstr ""
+
+#: template-parts/nosotros/content.php:46
+msgid "En Momentum Cocoyoc S.A. de C.V. somos una inmobiliaria en Lomas de Cocoyoc con más de 15 años de experiencia en el mercado de bienes raíces en Morelos. Desde nuestra fundación en 2008, nos especializamos en la venta y renta de casas, terrenos y residencias de lujo en Lomas de Cocoyoc, ofreciendo a cada cliente un servicio profesional, cercano y confiable."
+msgstr ""
+
+#: template-parts/nosotros/content.php:50
+msgid "Nuestro compromiso es ayudarte a encontrar la propiedad ideal, ya sea una casa en venta en Lomas de Cocoyoc, un terreno para invertir o una residencia con plusvalía y ubicación privilegiada cerca de la CDMX."
+msgstr ""
+
+#: template-parts/nosotros/content.php:54
+msgid "Gracias a nuestro crecimiento constante y la confianza de nuestros clientes, hoy nos consolidamos como una opción segura para quienes buscan comprar casa en Lomas de Cocoyoc con la tranquilidad de estar respaldados por asesores expertos."
+msgstr ""
+
+#: template-parts/nosotros/content.php:58
+msgid "En Momentum Cocoyoc, nuestro mayor objetivo es la satisfacción de cada cliente, acompañándote en todo el proceso para que tu experiencia de compra sea clara, segura y exitosa."
+msgstr ""
+
+#. translators: %s: metros cuadrados de terreno
+#. translators: %s: metros cuadrados de construcción
+#: template-parts/property-card.php:100
+#: template-parts/property-card.php:106
+#, php-format
+msgid "%s m²"
+msgstr ""
+
+#: template-parts/property-listing.php:43
+msgid "Buscar por código"
+msgstr ""
+
+#: template-parts/property-listing.php:44
+msgid "Ej. MT-001"
+msgstr ""
+
+#: template-parts/property-listing.php:44
+msgid "Ej. MC-001"
+msgstr ""
+
+#: template-parts/property-listing.php:48
+msgid "Rango de precio"
+msgstr ""
+
+#: template-parts/property-listing.php:56
+msgid "Filtrar"
+msgstr ""
+
+#: template-parts/property-listing.php:59
+msgid "Limpiar filtro"
+msgstr ""
+
+#. translators: 1: primer resultado mostrado, 2: último resultado mostrado, 3: total de resultados
+#: template-parts/property-listing.php:68
+#, php-format
+msgid "Mostrando %1$s–%2$s de %3$s propiedades"
+msgstr ""
+
+#: template-parts/property-listing.php:75
+msgid "No se encontraron propiedades con estos filtros."
+msgstr ""
+
+#: template-parts/property/availability-notice.php:34
+#: template-parts/property/contact-form.php:37
+msgid "Esta propiedad ya no se encuentra disponible."
+msgstr ""
+
+#: template-parts/property/contact-form.php:38
+msgid "Pero seguramente tenemos otras opciones que te pueden interesar."
+msgstr ""
+
+#: template-parts/property/contact-form.php:44
+msgid "Ver propiedades disponibles"
+msgstr ""
+
+#: template-parts/property/contact-form.php:49
+#: template-parts/property/contact-form.php:108
+msgid "o llámanos"
+msgstr ""
+
+#. translators: %s: código o título del terreno, para el mensaje prellenado de WhatsApp
+#: template-parts/property/contact-form.php:80
+#, php-format
+msgid "Hola, me interesa el terreno %s visto en tu sitio web."
+msgstr ""
+
+#. translators: %s: código o título de la propiedad, para el mensaje prellenado de WhatsApp
+#: template-parts/property/contact-form.php:85
+#, php-format
+msgid "Hola, me interesa la propiedad %s vista en tu sitio web."
+msgstr ""
+
+#: template-parts/property/contact-form.php:91
+msgid "¿Interesado en esta propiedad?"
+msgstr ""
+
+#: template-parts/property/contact-form.php:92
+msgid "Contáctanos para más información o agendar una visita."
+msgstr ""
+
+#: template-parts/property/contact-form.php:102
+msgid "Me interesa"
+msgstr ""
+
+#: template-parts/property/description.php:15
+msgid "Descripción"
+msgstr ""
+
+#: template-parts/property/drone-video.php:21
+msgid "Aquí va video de dron"
+msgstr ""
+
+#: template-parts/property/features.php:17
+msgid "Características"
+msgstr ""
+
+#. translators: %s: número total de fotos de la galería
+#: template-parts/property/gallery.php:91
+#, php-format
+msgid "Abrir galería, imagen 1 de %s"
+msgstr ""
+
+#. translators: %s: número de fotos restantes que no se muestran como miniatura
+#: template-parts/property/gallery.php:122
+#, php-format
+msgid "Ver las %s fotos restantes"
+msgstr ""
+
+#. translators: 1: número de la foto, 2: número total de fotos
+#: template-parts/property/gallery.php:127
+#, php-format
+msgid "Abrir galería, imagen %1$s de %2$s"
+msgstr ""
+
+#. translators: %s: número de fotos restantes, se muestra como "+6 fotos" sobre la última miniatura
+#: template-parts/property/gallery.php:143
+#, php-format
+msgid "%s fotos"
+msgstr ""
+
+#: template-parts/property/gallery.php:153
+msgid "Galería de imágenes de la propiedad"
+msgstr ""
+
+#: template-parts/property/gallery.php:157
+msgid "Cerrar galería"
+msgstr ""
+
+#: template-parts/property/gallery.php:159
+msgid "Imagen anterior"
+msgstr ""
+
+#: template-parts/property/gallery.php:165
+msgid "Imagen siguiente"
+msgstr ""
+
+#. translators: %s: número de la foto en la tira de miniaturas del lightbox
+#: template-parts/property/gallery.php:175
+#, php-format
+msgid "Ir a la imagen %s"
+msgstr ""
+
+#. translators: %s: metros cuadrados de terreno
+#: template-parts/property/header.php:37
+#, php-format
+msgid "%s m² Terreno"
+msgstr ""
+
+#. translators: %s: metros cuadrados de construcción
+#: template-parts/property/header.php:43
+#, php-format
+msgid "%s m² Construcción"
+msgstr ""
+
+#. translators: %s: número de recámaras
+#: template-parts/property/header.php:48
+#, php-format
+msgid "%s Recámaras"
+msgstr ""
+
+#. translators: %s: número de baños
+#: template-parts/property/header.php:53
+#, php-format
+msgid "%s Baños"
+msgstr ""
+
+#: template-parts/property/info-general.php:13
+msgid "Clave"
+msgstr ""
+
+#: template-parts/property/info-general.php:14
+msgid "Tipo de operación"
+msgstr ""
+
+#: template-parts/property/info-general.php:15
+msgid "Estado"
+msgstr ""
+
+#: template-parts/property/info-general.php:22
+msgid "Annual Property Tax"
+msgstr ""
+
+#: template-parts/property/info-general.php:32
+msgid "Información general"
+msgstr ""
+
+#: template-parts/property/map.php:24
+msgid "Aquí va imagen de amenidades del fraccionamiento"
+msgstr ""
+
+#: template-parts/property/similar.php:43
+msgid "Propiedades similares"
+msgstr ""
+
+#: template-parts/property/video.php:21
+msgid "Video"
+msgstr ""
+
+#: template-parts/property/video.php:24
+msgid "Ver video"
+msgstr ""
+
+#: template-parts/sidebar-cta.php:14
+msgid "¿Necesitas asesoría?"
+msgstr ""
+
+#: template-parts/sidebar-cta.php:15
+msgid "Nuestro equipo está listo para ayudarte a encontrar la propiedad perfecta."
+msgstr ""
+
+#: template-parts/sidebar-cta.php:16
+msgid "Contactar ahora"
+msgstr ""
+
+#: template-parts/site-footer.php:34
+msgid "Inmobiliaria especializada en Lomas de Cocoyoc. Compra, venta, renta de propiedades, terrenos y construcción de viviendas."
+msgstr ""
+
+#: template-parts/site-footer.php:70
+msgid "Lun - Vie: 9:00 - 18:00"
+msgstr ""
+
+#: template-parts/site-footer.php:71
+msgid "Sáb: 9:00 - 14:00"
+msgstr ""
+
+#. translators: %s: año actual, para el aviso de derechos reservados del footer
+#: template-parts/site-footer.php:95
+#, php-format
+msgid "© %s Momentum Cocoyoc. Todos los derechos reservados."
+msgstr ""
+
+#: template-parts/site-footer.php:101
+msgid "Aviso de privacidad"
+msgstr ""
+
+#: template-parts/site-footer.php:103
+msgid "Términos y condiciones"
+msgstr ""
+
+#: template-parts/site-header.php:25
+msgid "Menú principal"
+msgstr ""
+
+#: template-parts/site-header.php:32
+#: template-parts/site-header.php:50
+msgid "Selector de idioma"
+msgstr ""
+
+#: template-parts/site-header.php:41
+msgid "Abrir menú"
+msgstr ""
+
+#: template-parts/venta-blog.php:26
+msgid "Inspírate para tu próxima casa"
+msgstr ""
+
+#: template-parts/whatsapp-float.php:24
+msgid "Contactar por WhatsApp"
+msgstr ""

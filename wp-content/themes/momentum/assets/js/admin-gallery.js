@@ -26,6 +26,16 @@
 				multiple: true,
 			});
 
+			// Solo debe permitirse subir imágenes nuevas, nunca elegir una ya
+			// existente en la biblioteca de medios.
+			frame.on('open', function () {
+				frame.content.mode('upload');
+			});
+
+			frame.on('content:activate:browse', function () {
+				frame.content.mode('upload');
+			});
+
 			frame.on('select', function () {
 				var attachments = frame.state().get('selection').toJSON();
 				var ids = attachments.map(function (a) { return a.id; });

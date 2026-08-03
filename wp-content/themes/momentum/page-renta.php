@@ -15,8 +15,7 @@ momentum_guard_property_listing_page(['tipo_operacion' => 'Renta'], 10);
 get_header();
 
 get_template_part('template-parts/page-hero', null, [
-	'title'    => 'Propiedades en renta',
-	'subtitle' => 'Encuentra la casa o terreno ideal en Lomas de Cocoyoc',
+	'title' => __('Propiedades en renta', 'momentum'),
 ]);
 ?>
 

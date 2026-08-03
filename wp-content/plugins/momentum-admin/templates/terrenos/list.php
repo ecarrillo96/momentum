@@ -15,7 +15,7 @@ $error_code   = isset($_GET['error']) ? sanitize_key(wp_unslash($_GET['error']))
 $mensajes = [
 	'creada'      => __('Terreno creado correctamente.', 'momentum-admin'),
 	'actualizada' => __('Terreno actualizado correctamente.', 'momentum-admin'),
-	'papelera'    => __('Terreno enviado a la papelera.', 'momentum-admin'),
+	'papelera'    => __('Terreno eliminado.', 'momentum-admin'),
 ];
 
 $errores = [
@@ -23,7 +23,7 @@ $errores = [
 	'permisos' => __('No tienes permiso para realizar esa acción.', 'momentum-admin'),
 	'titulo'   => __('El título es obligatorio.', 'momentum-admin'),
 	'guardado' => __('Ocurrió un error al guardar el terreno.', 'momentum-admin'),
-	'papelera' => __('No se pudo enviar el terreno a la papelera.', 'momentum-admin'),
+	'papelera' => __('No se pudo eliminar el terreno.', 'momentum-admin'),
 ];
 
 $has_filters = $result['search'] !== '' || $result['estado'] !== '';
@@ -109,7 +109,7 @@ $has_filters = $result['search'] !== '' || $result['estado'] !== '';
 				<td data-label="<?php esc_attr_e('Título', 'momentum-admin'); ?>">
 					<a href="<?php echo esc_url($edit_url); ?>"><?php echo esc_html(get_the_title()); ?></a>
 					<?php if (get_post_status($id) === 'draft') : ?>
-						<span class="momentum-admin-tag"><?php esc_html_e('Borrador', 'momentum-admin'); ?></span>
+						<span class="momentum-admin-tag"><?php esc_html_e('No publicado', 'momentum-admin'); ?></span>
 					<?php endif; ?>
 				</td>
 				<td data-label="<?php esc_attr_e('Zona', 'momentum-admin'); ?>"><?php echo $zona_label !== '' ? esc_html($zona_label) : '—'; ?></td>
@@ -121,10 +121,10 @@ $has_filters = $result['search'] !== '' || $result['estado'] !== '';
 					<div class="momentum-admin-actions__group">
 						<a href="<?php echo esc_url($edit_url); ?>"><?php esc_html_e('Editar', 'momentum-admin'); ?></a>
 						<a href="<?php echo esc_url(get_permalink($id)); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e('Ver', 'momentum-admin'); ?></a>
-						<form method="post" action="<?php echo esc_url(home_url('/admin/terrenos/')); ?>" class="momentum-admin-inline-form" onsubmit="return confirm('<?php echo esc_js(__('¿Enviar este terreno a la papelera?', 'momentum-admin')); ?>');">
+						<form method="post" action="<?php echo esc_url(home_url('/admin/terrenos/')); ?>" class="momentum-admin-inline-form" onsubmit="return confirm('<?php echo esc_js(__('¿Eliminar este terreno?', 'momentum-admin')); ?>');">
 							<?php wp_nonce_field(Momentum_Admin_Terrenos::TRASH_NONCE_ACTION . '_' . $id, Momentum_Admin_Terrenos::TRASH_NONCE_FIELD); ?>
 							<input type="hidden" name="momentum_terreno_id" value="<?php echo esc_attr((string) $id); ?>">
-							<button type="submit" name="momentum_admin_terreno_trash" value="1" class="momentum-admin-link-danger"><?php esc_html_e('Papelera', 'momentum-admin'); ?></button>
+							<button type="submit" name="momentum_admin_terreno_trash" value="1" class="momentum-admin-link-danger"><?php esc_html_e('Eliminar', 'momentum-admin'); ?></button>
 						</form>
 					</div>
 				</td>

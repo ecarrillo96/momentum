@@ -161,6 +161,15 @@ class Momentum_Admin_Blog
 			}
 		}
 
+		// El guardado de meta/etiquetas/imagen de este método es procedural
+		// (líneas de abajo), no vía hook -a diferencia de Propiedades/Terrenos-,
+		// así que se difiere el disparo automático de la traducción
+		// (enganchado a 'save_post_post' en el tema) hasta después de que todo
+		// eso termine de guardarse; ver Momentum_Blog_Translation_Service::defer_auto_trigger().
+		if (class_exists('Momentum_Blog_Translation_Service')) {
+			Momentum_Blog_Translation_Service::defer_auto_trigger();
+		}
+
 		if ($is_new) {
 			$result = wp_insert_post($postarr, true);
 		} else {
@@ -190,6 +199,15 @@ class Momentum_Admin_Blog
 		self::save_tags($post_id);
 		self::save_featured_image($post_id, $featured_id);
 		self::save_meta_schema($post_id);
+
+		// Ahora sí, con imagen/etiquetas/meta ya guardadas: dispara la
+		// traducción automática explícitamente (mismo método que ya usa el
+		// hook normal para guardados nativos de wp-admin) y reactiva ese hook
+		// para la siguiente petición.
+		if (class_exists('Momentum_Blog_Translation_Service')) {
+			Momentum_Blog_Translation_Service::handle_save($post_id, get_post($post_id), ! $is_new);
+			Momentum_Blog_Translation_Service::resume_auto_trigger();
+		}
 
 		$mensaje = $is_new ? 'creado' : 'actualizado';
 		$error   = '';

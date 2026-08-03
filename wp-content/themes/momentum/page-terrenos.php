@@ -17,8 +17,7 @@ momentum_guard_property_listing_page([], 10, 'terrenos');
 get_header();
 
 get_template_part('template-parts/page-hero', null, [
-	'title'    => 'Terrenos en venta',
-	'subtitle' => 'Encuentra el terreno ideal para construir en Lomas de Cocoyoc',
+	'title' => __('Terrenos en venta', 'momentum'),
 ]);
 ?>
 

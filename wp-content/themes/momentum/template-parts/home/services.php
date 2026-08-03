@@ -10,53 +10,53 @@ if (! defined('ABSPATH')) {
 $services = [
 	[
 		'icon'  => 'key',
-		'title' => 'Venta',
-		'text'  => 'Encuentra la casa, departamento o terreno ideal para comprar en Lomas de Cocoyoc.',
-		'url'   => '/venta/',
+		'title' => __('Venta', 'momentum'),
+		'text'  => __('Encuentra la casa, departamento o terreno ideal para comprar en Lomas de Cocoyoc.', 'momentum'),
+		'slug'  => 'venta',
 	],
 	[
 		'icon'  => 'home',
-		'title' => 'Renta',
-		'text'  => 'Propiedades amuebladas y sin amueblar, listas para tu siguiente etapa.',
-		'url'   => '/renta/',
+		'title' => __('Renta', 'momentum'),
+		'text'  => __('Propiedades amuebladas y sin amueblar, listas para tu siguiente etapa.', 'momentum'),
+		'slug'  => 'renta',
 	],
 	[
 		'icon'  => 'land',
-		'title' => 'Terrenos',
-		'text'  => 'Lotes residenciales para construir el hogar que tienes en mente.',
-		'url'   => '/terrenos/',
+		'title' => __('Terrenos', 'momentum'),
+		'text'  => __('Lotes residenciales para construir el hogar que tienes en mente.', 'momentum'),
+		'slug'  => 'terrenos',
 	],
 	[
 		'icon'  => 'tool',
-		'title' => 'Construcción',
-		'text'  => 'Diseño y construcción de vivienda a la medida, de principio a fin.',
-		'url'   => '/construccion/',
+		'title' => __('Construcción', 'momentum'),
+		'text'  => __('Diseño y construcción de vivienda a la medida, de principio a fin.', 'momentum'),
+		'slug'  => 'construccion',
 	],
 	[
 		'icon'  => 'compass',
-		'title' => 'Asesoría',
-		'text'  => 'Acompañamiento legal, financiero e inmobiliario en cada operación.',
-		'url'   => '/asesoria/',
+		'title' => __('Asesoría', 'momentum'),
+		'text'  => __('Acompañamiento legal, financiero e inmobiliario en cada operación.', 'momentum'),
+		'slug'  => 'asesoria',
 	],
 ];
 ?>
-<section class="momentum-section momentum-section--light">
+<section class="momentum-section momentum-section--dark">
 	<div class="momentum-container">
 		<div class="momentum-section-heading">
 			<div>
-				<span class="momentum-eyebrow">Lo que hacemos</span>
-				<h2>Servicios pensados para cada etapa</h2>
-				<p>Ya sea que quieras comprar, rentar, invertir o construir, tenemos un servicio dedicado para ti.</p>
+				<span class="momentum-eyebrow"><?php esc_html_e('Lo que hacemos', 'momentum'); ?></span>
+				<h2><?php esc_html_e('Servicios pensados para cada etapa', 'momentum'); ?></h2>
+				<p><?php esc_html_e('Ya sea que quieras comprar, rentar, invertir o construir, tenemos un servicio dedicado para ti.', 'momentum'); ?></p>
 			</div>
 		</div>
 
 		<div class="momentum-services-grid">
 			<?php foreach ($services as $service) : ?>
-				<a class="momentum-service-card" href="<?php echo esc_url(home_url($service['url'])); ?>">
+				<a class="momentum-service-card" href="<?php echo esc_url(momentum_url_for_page($service['slug'])); ?>">
 					<div class="momentum-service-card__icon"><?php echo momentum_icon($service['icon']); ?></div>
 					<h3><?php echo esc_html($service['title']); ?></h3>
 					<p><?php echo esc_html($service['text']); ?></p>
-					<span class="momentum-service-card__link">Conocer más →</span>
+					<span class="momentum-service-card__link"><?php esc_html_e('Conocer más →', 'momentum'); ?></span>
 				</a>
 			<?php endforeach; ?>
 		</div>

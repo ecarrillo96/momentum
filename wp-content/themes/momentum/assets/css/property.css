@@ -35,6 +35,14 @@
 	white-space: nowrap;
 }
 
+.momentum-property-header__price-note {
+	display: block;
+	white-space: normal;
+	font-size: 12px;
+	font-weight: 400;
+	color: rgba(255, 255, 255, 0.6);
+}
+
 .momentum-property-header__location {
 	display: flex;
 	align-items: center;
@@ -205,6 +213,22 @@
 	color: var(--momentum-accent);
 }
 
+/* ---------- Amenities placeholder ---------- */
+
+.momentum-amenities-placeholder {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	width: 100%;
+	aspect-ratio: 21 / 8;
+	border-radius: var(--momentum-radius);
+	background: var(--momentum-gray-light);
+	color: var(--momentum-text-muted);
+	font-size: 14px;
+	padding: 24px;
+}
+
 /* ---------- Map footer row ---------- */
 
 .momentum-property-map__footer {
@@ -322,6 +346,12 @@
 	font-weight: 700;
 	color: var(--momentum-black);
 	text-align: right;
+}
+
+.momentum-property-info-general__note {
+	margin: 12px 0 0;
+	font-size: 11.5px;
+	color: var(--momentum-text-muted);
 }
 
 /* ---------- Lightbox ---------- */
@@ -532,5 +562,48 @@ body.momentum-lightbox-open {
 
 	.momentum-lightbox__thumbs {
 		display: none;
+	}
+}
+
+/* ---------- Aviso de disponibilidad ---------- */
+
+.momentum-availability-notice {
+	background: #FBEFEA;
+	border-bottom: 1px solid #E8C7B8;
+	color: var(--momentum-gray-dark);
+}
+
+.momentum-availability-notice__inner {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding-block: 14px;
+}
+
+.momentum-availability-notice__inner svg {
+	flex-shrink: 0;
+	color: #B5502E;
+}
+
+.momentum-availability-notice__inner p {
+	margin: 0;
+	font-size: 15px;
+	font-weight: 600;
+}
+
+/* ---------- CTA alterno (propiedad no disponible) ---------- */
+
+.momentum-property-contact-card--unavailable p {
+	color: var(--momentum-text-muted);
+}
+
+@media (max-width: 680px) {
+	.momentum-availability-notice__inner {
+		padding-block: 12px;
+		gap: 8px;
+	}
+
+	.momentum-availability-notice__inner p {
+		font-size: 14px;
 	}
 }

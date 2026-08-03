@@ -1,0 +1,79 @@
+/*
+ * Momentum — Home intro video overlay.
+ * Enqueued only on the front page.
+ */
+
+body.momentum-intro-video-open {
+	overflow: hidden;
+}
+
+.momentum-intro-video {
+	position: fixed;
+	inset: 0;
+	z-index: 9999;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 24px;
+	background: rgba(17, 17, 17, 0.9);
+}
+
+.momentum-intro-video[hidden] {
+	display: none;
+}
+
+.momentum-intro-video__frame {
+	position: relative;
+	width: 100%;
+	max-width: 960px;
+	aspect-ratio: 16 / 9;
+	border-radius: var(--momentum-radius);
+	overflow: hidden;
+	box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+	background: var(--momentum-black);
+}
+
+.momentum-intro-video__player {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+	background: var(--momentum-black);
+}
+
+.momentum-intro-video__skip {
+	position: absolute;
+	top: 16px;
+	right: 16px;
+	z-index: 1;
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 10px 18px;
+	background: rgba(17, 17, 17, 0.85);
+	color: var(--momentum-white);
+	border: 1px solid rgba(255, 255, 255, 0.25);
+	border-radius: var(--momentum-radius-sm);
+	font-size: 12.5px;
+	font-weight: 700;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	cursor: pointer;
+	transition: border-color .2s ease, background-color .2s ease;
+}
+
+.momentum-intro-video__skip:hover {
+	background: rgba(17, 17, 17, 1);
+	border-color: var(--momentum-accent);
+}
+
+@media (max-width: 680px) {
+	.momentum-intro-video {
+		padding: 0;
+	}
+
+	.momentum-intro-video__frame {
+		max-width: 100%;
+		border-radius: 0;
+	}
+}
