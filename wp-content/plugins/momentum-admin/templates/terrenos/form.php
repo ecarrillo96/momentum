@@ -39,6 +39,17 @@ $action_url = $is_edit
 	<a class="momentum-admin-link" href="<?php echo esc_url(home_url('/admin/terrenos/')); ?>">&larr; <?php esc_html_e('Volver al listado', 'momentum-admin'); ?></a>
 </div>
 
+<?php
+/**
+ * Ver el mismo bloque en templates/properties/form.php: único punto de
+ * integración con wp-content/plugins/momentum-property-media-organizer/,
+ * no-op si ese plugin no está activo.
+ */
+if ($is_edit) {
+	do_action('momentum_admin_after_page_header', $post_id);
+}
+?>
+
 <?php if ($mensaje_code && isset($mensajes[$mensaje_code])) : ?>
 	<p class="momentum-admin-alert momentum-admin-alert--success"><?php echo esc_html($mensajes[$mensaje_code]); ?></p>
 <?php endif; ?>
@@ -71,7 +82,7 @@ $action_url = $is_edit
 
 		<div class="momentum-admin-field">
 			<label for="momentum_precio"><?php esc_html_e('Precio (MXN)', 'momentum-admin'); ?></label>
-			<input type="number" step="0.01" min="0" id="momentum_precio" name="momentum_precio" value="<?php echo esc_attr($values['precio']); ?>">
+			<input type="number" step="1" min="0" id="momentum_precio" name="momentum_precio" value="<?php echo esc_attr($values['precio']); ?>">
 		</div>
 
 		<div class="momentum-admin-field">

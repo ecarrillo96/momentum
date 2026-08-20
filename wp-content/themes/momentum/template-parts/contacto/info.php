@@ -54,9 +54,8 @@ $email   = momentum_get_email();
 				<strong><?php esc_html_e('Email', 'momentum'); ?></strong>
 				<span>
 					<?php if ($email !== '') : ?>
-						<a href="mailto:<?php echo esc_attr($email); ?>"><?php echo esc_html($email); ?></a><br>
+						<a href="mailto:<?php echo esc_attr($email); ?>"><?php echo esc_html($email); ?></a>
 					<?php endif; ?>
-					<a href="mailto:momentumcocoyoc.ventas@gmail.com">momentumcocoyoc.ventas@gmail.com</a>
 				</span>
 			</div>
 		</li>

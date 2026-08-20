@@ -11,12 +11,12 @@ $items = [
 	[
 		'icon'  => 'shield',
 		'title' => __('Experiencia local', 'momentum'),
-		'text'  => __('Más de 10 años en el mercado inmobiliario de Lomas de Cocoyoc.', 'momentum'),
+		'text'  => __('Más de 20 años en el mercado inmobiliario de Lomas de Cocoyoc.', 'momentum'),
 	],
 	[
 		'icon'  => 'map',
 		'title' => __('Conocimiento de la zona', 'momentum'),
-		'text'  => __('Sabemos lo que hace especial a Lomas y sus alrededores.', 'momentum'),
+		'text'  => __('Sabemos lo que hace especial a Lomas de Cocoyoc y sus alrededores.', 'momentum'),
 	],
 	[
 		'icon'  => 'handshake',

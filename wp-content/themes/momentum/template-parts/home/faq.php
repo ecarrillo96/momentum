@@ -10,11 +10,11 @@ if (! defined('ABSPATH')) {
 $faqs = [
 	[
 		'q' => __('¿Dónde se encuentra Lomas de Cocoyoc?', 'momentum'),
-		'a' => __('Lomas de Cocoyoc es un fraccionamiento residencial ubicado en el municipio de Yautepec, Morelos, muy cerca de Oaxtepec y a poco más de una hora de la Ciudad de México.', 'momentum'),
+		'a' => __('Lomas de Cocoyoc es un fraccionamiento ubicado en el municipio de Atlatlahucan, Morelos, a solo 90 minutos de la Ciudad de México. Es único en su tipo y de los más grandes del país, una mini-ciudad en crecimiento planeada para tener calidad de vida, en un medio en equilibrio con la naturaleza, sin sacrificar las comodidades de la urbanización.', 'momentum'),
 	],
 	[
 		'q' => __('¿Qué tipos de propiedades manejan?', 'momentum'),
-		'a' => __('Trabajamos con casas y departamentos en venta y renta, así como terrenos residenciales dentro y alrededor de Lomas de Cocoyoc.', 'momentum'),
+		'a' => __('Trabajamos con casas en venta y renta, así como terrenos residenciales dentro y alrededor de Lomas de Cocoyoc.', 'momentum'),
 	],
 	[
 		'q' => __('¿Cómo agendo una visita?', 'momentum'),

@@ -33,66 +33,44 @@ add_filter('rank_math/frontend/canonical', function (string $canonical): string 
 });
 
 /**
- * Título y meta description de fichas de Propiedades/Terrenos: las
- * plantillas configuradas en Rank Math (Admin > SEO > Títulos y Meta) son un
- * único valor global en español ("%title% | %customfield(tipo_operacion)%
- * en Lomas de Cocoyoc | Momentum Cocoyoc", etc.) y %customfield() siempre
- * imprime el valor crudo guardado (ej. 'tipo_operacion' = "Venta", nunca
- * traducido) -el resultado final que le llega a este filtro ya trae ese
- * texto en español sustituido, así que no hay nada que "traducir" del
- * string: se reconstruye desde cero con los mismos datos reales de la
- * ficha, usando los getters ya traducidos del tema
- * (momentum_get_tipo_operacion_label()) en vez del valor crudo de postmeta.
- * 'caracteristicas' en una ficha en inglés ya viene en inglés -es uno de los
- * campos que Momentum_Property_Translation_Service traduce con DeepL al
- * crear la traducción-, así que aquí solo se reutiliza tal cual.
+ * Título y meta description de fichas de Propiedades/Terrenos, en español
+ * e inglés: ver inc/seo-listing-meta.php. Se movieron ahí porque dejaron
+ * de ser una corrección "solo para inglés" -el problema de usar texto fijo
+ * en vez de la zona real de cada ficha también afectaba a la plantilla en
+ * español configurada en Rank Math-, así que ya no encajaban en un archivo
+ * pensado específicamente para diferencias de idioma.
  */
-add_filter('rank_math/frontend/title', 'momentum_translate_listing_seo_title');
-add_filter('rank_math/frontend/description', 'momentum_translate_listing_seo_description');
 
-function momentum_translate_listing_seo_title(string $title): string
-{
-	if (momentum_current_language() === momentum_default_language() || ! is_singular(['propiedades', 'terrenos'])) {
-		return $title;
+/**
+ * Nodo raíz del breadcrumb estructurado (JSON-LD BreadcrumbList): Rank Math
+ * solo tiene UNA etiqueta de "inicio" para todo el sitio (Ajustes generales
+ * > Breadcrumbs > "Home"), sin distinguir idioma -confirmado en vivo: toda
+ * página en español mostraba igualmente "Home" en su BreadcrumbList-. Se
+ * traduce aquí, en el único punto donde Rank Math expone ese nodo antes de
+ * agregarlo al grafo (rank_math/snippet/breadcrumb, ver
+ * includes/modules/schema/snippets/class-breadcrumbs.php del plugin), sin
+ * duplicar el BreadcrumbList ni tocar la opción global -que sigue siendo
+ * correcta para inglés, así que ese idioma no se toca-.
+ *
+ * Se compara contra el valor de la opción real de Rank Math (no un "Home"
+ * fijo aquí) para seguir funcionando aunque un administrador cambie esa
+ * etiqueta en el futuro.
+ */
+add_filter('rank_math/snippet/breadcrumb', function (array $entity): array {
+	if (momentum_current_language() !== momentum_default_language()) {
+		return $entity;
 	}
 
-	$post_id = get_queried_object_id();
-	$name    = get_the_title($post_id);
-
-	if (is_singular('terrenos')) {
-		return sprintf('%s | Land for Sale in Lomas de Cocoyoc | Momentum Cocoyoc', $name);
+	if (empty($entity['itemListElement'][0]['item']['name'])) {
+		return $entity;
 	}
 
-	$tipo = momentum_get_tipo_operacion_label(momentum_get_propiedad($post_id)['tipo_operacion']);
+	$general              = get_option('rank-math-options-general');
+	$configured_home_label = is_array($general) ? (string) ($general['breadcrumbs_home_label'] ?? '') : '';
 
-	return sprintf('%s | %s in Lomas de Cocoyoc | Momentum Cocoyoc', $name, $tipo);
-}
-
-function momentum_translate_listing_seo_description(string $description): string
-{
-	if (momentum_current_language() === momentum_default_language() || ! is_singular(['propiedades', 'terrenos'])) {
-		return $description;
+	if ($configured_home_label !== '' && $entity['itemListElement'][0]['item']['name'] === $configured_home_label) {
+		$entity['itemListElement'][0]['item']['name'] = __('Inicio', 'momentum');
 	}
 
-	$post_id = get_queried_object_id();
-	$data    = momentum_get_propiedad($post_id);
-	$name    = get_the_title($post_id);
-	$codigo  = $data['codigo_propiedad'];
-
-	if (is_singular('terrenos')) {
-		$caracteristicas = trim((string) get_post_meta($post_id, 'caracteristicas', true));
-
-		return trim(sprintf('%s · %s in Lomas de Cocoyoc. %s', $codigo, $name, $caracteristicas));
-	}
-
-	$tipo = momentum_get_tipo_operacion_label($data['tipo_operacion']);
-
-	return sprintf(
-		'%s · %s, %s in Lomas de Cocoyoc. %d bedrooms, %d m² built.',
-		$codigo,
-		$name,
-		$tipo,
-		(int) $data['recamaras'],
-		(int) $data['construccion_m2']
-	);
-}
+	return $entity;
+});

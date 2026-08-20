@@ -68,7 +68,7 @@ class Momentum_Admin_Properties
 		$accion = isset($_GET['accion']) ? sanitize_key(wp_unslash($_GET['accion'])) : 'listar';
 
 		if ($accion === 'nueva') {
-			self::render_form(0);
+			self::start_new_draft();
 
 			return;
 		}
@@ -80,6 +80,49 @@ class Momentum_Admin_Properties
 		}
 
 		self::render_list();
+	}
+
+	/**
+	 * Antes, "Nueva propiedad" mostraba el formulario sin crear el post
+	 * hasta el primer guardado. Eso dejaba sin post_id real cualquier
+	 * imagen subida ANTES de guardar por primera vez: el filtro upload_dir
+	 * del plugin momentum-property-media-organizer no tenía nada que
+	 * resolver todavía, así que esas imágenes caían en año/mes en vez de
+	 * propiedades/{codigo}/ -detectado en pruebas QA: crear una propiedad y
+	 * subir su imagen destacada + galería en la misma sesión, antes de
+	 * guardar, las dejaba en wp-content/uploads/2026/08/ en vez de
+	 * propiedades/MC-TEST-001/-.
+	 *
+	 * Se replica aquí el mismo patrón que WordPress ya usa de fábrica en
+	 * post-new.php: crear un auto-draft y redirigir a la pantalla de
+	 * edición real, para que exista un ID de verdad desde el primer
+	 * momento en que se abre el selector de medios. Los auto-draft
+	 * abandonados (el usuario nunca guarda) los limpia WordPress solo
+	 * -cron nativo wp_scheduled_auto_draft_delete, purga a los 7 días-,
+	 * sin necesidad de nada adicional aquí.
+	 */
+	private static function start_new_draft(): void
+	{
+		$redirect_base = self::base_url();
+
+		if (! current_user_can(Momentum_Admin_Permissions::CAPABILITY)) {
+			wp_safe_redirect(add_query_arg('error', 'permisos', $redirect_base));
+			exit;
+		}
+
+		$new_id = wp_insert_post([
+			'post_type'   => self::POST_TYPE,
+			'post_status' => 'auto-draft',
+			'post_title'  => __('Auto Draft'),
+		], true);
+
+		if (is_wp_error($new_id)) {
+			wp_safe_redirect(add_query_arg('error', 'guardado', $redirect_base));
+			exit;
+		}
+
+		wp_safe_redirect(add_query_arg(['accion' => 'editar', 'id' => (int) $new_id], $redirect_base));
+		exit;
 	}
 
 	// -----------------------------------------------------------------
@@ -105,17 +148,37 @@ class Momentum_Admin_Properties
 
 		$post_id = isset($_POST['momentum_property_id']) ? absint($_POST['momentum_property_id']) : 0;
 		$is_new  = $post_id === 0;
+		// Ver start_new_draft(): con el flujo actual, $post_id ya viene de un
+		// auto-draft real (nunca 0) en el caso normal de "primer guardado" de
+		// una ficha nueva. Se trata igual que $is_new para el mensaje de
+		// redirección y para la sincronización de traducción -sigue siendo,
+		// en la práctica, la primera vez que esta ficha se guarda con datos-.
+		$was_auto_draft = false;
 
-		if (! $is_new && (get_post_type($post_id) !== self::POST_TYPE || ! current_user_can('edit_post', $post_id))) {
-			wp_safe_redirect(add_query_arg('error', 'permisos', $redirect_base));
-			exit;
+		if (! $is_new) {
+			if (get_post_type($post_id) !== self::POST_TYPE || ! current_user_can('edit_post', $post_id)) {
+				wp_safe_redirect(add_query_arg('error', 'permisos', $redirect_base));
+				exit;
+			}
+
+			$existing_post  = get_post($post_id);
+			$was_auto_draft = $existing_post instanceof WP_Post && $existing_post->post_status === 'auto-draft';
 		}
 
 		$title  = isset($_POST['momentum_property_title']) ? sanitize_text_field(wp_unslash($_POST['momentum_property_title'])) : '';
 		$status = (isset($_POST['momentum_property_status']) && in_array($_POST['momentum_property_status'], ['publish', 'draft'], true))
 			? sanitize_key($_POST['momentum_property_status'])
 			: 'draft';
-		$content = isset($_POST['momentum_property_content']) ? wp_kses_post(wp_unslash($_POST['momentum_property_content'])) : '';
+		// momentum_normalize_line_endings(): un <textarea> real de navegador
+		// envía '\r\n', mientras que Momentum_Property_Translation_Service
+		// escribe '\n' puro -sin normalizar, un segundo guardado normal desde
+		// este formulario dejaba el contenido con bytes distintos a los que
+		// esa huella (_momentum_sync_snapshot) esperaba, y el campo quedaba
+		// protegido para siempre como si se hubiera editado a mano. Ver
+		// wp-content/themes/momentum/inc/cpt/propiedades.php.
+		$content = isset($_POST['momentum_property_content'])
+			? wp_kses_post(momentum_normalize_line_endings(wp_unslash($_POST['momentum_property_content'])))
+			: '';
 
 		$form_target = $is_new
 			? add_query_arg('accion', 'nueva', $redirect_base)
@@ -151,6 +214,16 @@ class Momentum_Admin_Properties
 			'post_type'    => self::POST_TYPE,
 		];
 
+		// La imagen destacada se guarda de forma procedural MÁS ABAJO, después
+		// de wp_insert_post()/wp_update_post() -que ya dispara la sincronización
+		// de traducción vía el hook 'save_post_propiedades'-. Sin diferir ese
+		// disparo automático, la traducción copiaría la imagen ANTERIOR (o
+		// ninguna, en una ficha nueva) en vez de la que se está guardando en
+		// este mismo formulario. Ver Momentum_Property_Translation_Service::$external_trigger_pending.
+		if (class_exists('Momentum_Property_Translation_Service')) {
+			Momentum_Property_Translation_Service::defer_auto_trigger();
+		}
+
 		if ($is_new) {
 			$result = wp_insert_post($postarr, true);
 		} else {
@@ -171,8 +244,31 @@ class Momentum_Admin_Properties
 
 		self::save_featured_image($post_id);
 
+		// El código (codigo_propiedad) ya quedó guardado por
+		// momentum_save_propiedad_meta() dentro del wp_insert_post()/
+		// wp_update_post() de arriba. Si esta ficha subió imágenes ANTES de
+		// tener código (ver Momentum_Admin_Properties::start_new_draft()),
+		// esas imágenes cayeron en el respaldo propiedades/pendiente-{ID}/;
+		// ahora que el código ya se conoce, se promueven a su carpeta final
+		// propiedades/{CODIGO}/. No-op si el plugin no está activo o si no
+		// hay nada pendiente que promover.
+		if (class_exists('Momentum_PMO_Upload_Directory')) {
+			Momentum_PMO_Upload_Directory::promote_pending_uploads($post_id);
+		}
+
+		$treated_as_new = $is_new || $was_auto_draft;
+
+		// Ahora sí, con la imagen destacada ya guardada: dispara la
+		// sincronización de traducción explícitamente (mismo método que ya usa
+		// el hook normal para guardados nativos de wp-admin) y reactiva ese
+		// hook para la siguiente petición.
+		if (class_exists('Momentum_Property_Translation_Service')) {
+			Momentum_Property_Translation_Service::handle_save($post_id, get_post($post_id), ! $treated_as_new);
+			Momentum_Property_Translation_Service::resume_auto_trigger();
+		}
+
 		wp_safe_redirect(add_query_arg(
-			['accion' => 'editar', 'id' => $post_id, 'mensaje' => $is_new ? 'creada' : 'actualizada'],
+			['accion' => 'editar', 'id' => $post_id, 'mensaje' => $treated_as_new ? 'creada' : 'actualizada'],
 			$redirect_base
 		));
 		exit;

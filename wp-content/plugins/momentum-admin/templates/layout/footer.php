@@ -14,7 +14,7 @@ if (! defined('ABSPATH')) {
  * ANTES de wp_print_scripts() para que esos handles ya estén encolados
  * cuando se imprime la cola.
  */
-if (($page ?? '') === 'blog') {
+if (in_array($page ?? '', ['blog', 'general-about', 'general-construction'], true)) {
 	wp_print_footer_scripts();
 }
 
@@ -26,7 +26,7 @@ if (($page ?? '') === 'blog') {
  */
 wp_print_scripts();
 
-if (in_array($page ?? '', ['propiedades', 'terrenos', 'blog'], true)) {
+if (in_array($page ?? '', ['propiedades', 'terrenos', 'blog', 'general-home-images', 'general-about', 'general-construction'], true)) {
 	wp_print_media_templates();
 }
 ?>

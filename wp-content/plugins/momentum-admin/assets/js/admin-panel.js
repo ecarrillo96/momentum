@@ -2,6 +2,21 @@
 	'use strict';
 
 	$(function () {
+		// Evita que el scroll del mouse sobre un <input type="number">
+		// enfocado (precio, taxes_usd, recámaras, etc.) cambie su valor sin
+		// que el usuario se dé cuenta -comportamiento nativo del navegador,
+		// no un bug de este formulario-. Detectado en MC-393: el precio
+		// pasó de 48,000,000 a 47,999,999.88, una diferencia de exactamente
+		// 12 × el step (0.01) del campo, consistente con 12 "clics" de
+		// scroll accidental mientras el campo tenía el foco. document, no
+		// el input directo: cubre también los campos que se agregan
+		// dinámicamente (galería, etc.) sin tener que re-enganchar nada.
+		$(document).on('wheel', 'input[type="number"]', function () {
+			if (document.activeElement === this) {
+				$(this).blur();
+			}
+		});
+
 		// Menú móvil.
 		var $menuToggle = $('#momentum-admin-menu-toggle');
 		var $sidebar = $('#momentum-admin-sidebar');
@@ -133,6 +148,126 @@
 				title: 'Seleccionar imagen para redes sociales',
 			});
 
+			// Inicio (Admin > General > Inicio): imagen de "Sobre Momentum Cocoyoc".
+			initSingleImagePicker({
+				buttonId: 'home-about-image-select',
+				inputId: 'home_about_image',
+				previewId: 'home-about-image-preview',
+				title: 'Seleccionar imagen',
+			});
+
+			// Nosotros (Admin > General > Nosotros): imagen principal y secundaria.
+			initSingleImagePicker({
+				buttonId: 'nosotros-main-image-select',
+				inputId: 'nosotros_main_image',
+				previewId: 'nosotros-main-image-preview',
+				title: 'Seleccionar imagen principal',
+			});
+
+			initSingleImagePicker({
+				buttonId: 'nosotros-secondary-image-select',
+				inputId: 'nosotros_secondary_image',
+				previewId: 'nosotros-secondary-image-preview',
+				title: 'Seleccionar imagen secundaria',
+			});
+
+			// Construcción (Admin > General > Construcción): portada del video.
+			initSingleImagePicker({
+				buttonId: 'construccion-video-poster-select',
+				inputId: 'construccion_video_poster',
+				previewId: 'construccion-video-poster-preview',
+				title: 'Seleccionar imagen de portada',
+			});
+
+			// Selector de archivo de VIDEO único (Construcción): mismo patrón que
+			// initSingleImagePicker(), pero el preview es un chip con ícono +
+			// nombre de archivo en vez de una miniatura -un adjunto de video no
+			// tiene 'sizes.thumbnail'-.
+			function initSingleVideoPicker(config) {
+				var $button = $('#' + config.buttonId);
+				var $input = $('#' + config.inputId);
+				var $preview = $('#' + config.previewId);
+				var frame;
+
+				if (!$button.length) {
+					return;
+				}
+
+				function renderPreview(filename) {
+					var $item = $('<div>', { 'class': 'momentum-gallery-item momentum-gallery-item--file' });
+
+					$('<span>', { 'class': 'dashicons dashicons-format-video' }).appendTo($item);
+					$('<span>', { 'class': 'momentum-admin-file-name' }).text(filename).appendTo($item);
+
+					$('<button>', {
+						type: 'button',
+						'class': 'momentum-gallery-remove',
+						'aria-label': 'Quitar video',
+					}).html('&times;').appendTo($item);
+
+					$preview.empty().append($item);
+				}
+
+				$button.on('click', function (e) {
+					e.preventDefault();
+
+					if (frame) {
+						frame.open();
+						return;
+					}
+
+					frame = wp.media({
+						title: config.title,
+						button: { text: 'Usar este video' },
+						multiple: false,
+						library: { type: 'video' },
+					});
+
+					lockToUploadOnly(frame);
+
+					frame.on('select', function () {
+						var attachment = frame.state().get('selection').first().toJSON();
+
+						$input.val(attachment.id);
+						renderPreview(attachment.filename || attachment.title || ('#' + attachment.id));
+					});
+
+					frame.open();
+				});
+
+				$preview.on('click', '.momentum-gallery-remove', function (e) {
+					e.preventDefault();
+					$input.val('');
+					$preview.empty();
+				});
+			}
+
+			initSingleVideoPicker({
+				buttonId: 'construccion-video-file-select',
+				inputId: 'construccion_video_file',
+				previewId: 'construccion-video-file-preview',
+				title: 'Seleccionar video',
+			});
+
+			// Construcción: muestra solo el panel (archivo o URL) que corresponde
+			// a la fuente elegida -ambos campos existen siempre en el formulario,
+			// así que cambiar la fuente nunca borra lo ya capturado en el otro-.
+			var $videoSourceSelect = $('#construccion_video_source');
+			var $videoSourcePanels = $('[data-momentum-video-source-panel]');
+
+			function syncVideoSourcePanels() {
+				var current = $videoSourceSelect.val();
+				$videoSourcePanels.each(function () {
+					var $panel = $(this);
+					$panel.toggle($panel.data('momentum-video-source-panel') === current);
+				});
+			}
+
+			if ($videoSourceSelect.length) {
+				$videoSourceSelect.on('change', syncVideoSourcePanels);
+				syncVideoSourcePanels();
+			}
+
 			// Galería (selección múltiple, acumulativa, sin duplicados).
 			var $galleryButton = $('#momentum-galeria-select');
 			var $galleryInput = $('#momentum_galeria');
@@ -154,13 +289,48 @@
 				$galleryInput.val(galleryItems.map(function (item) { return item.id; }).join(','));
 			}
 
+			// El markup que imprime PHP al cargar (form.php) no trae los botones
+			// de reordenar/eliminar en el formato que espera este script -se
+			// vuelve a pintar una vez, aquí mismo, para que aparezcan sin
+			// depender de que el usuario agregue o quite algo primero-.
+			if (galleryItems.length) {
+				renderGalleryPreview();
+			}
+
 			function renderGalleryPreview() {
 				$galleryPreview.empty();
 
-				galleryItems.forEach(function (item) {
+				galleryItems.forEach(function (item, index) {
 					var $item = $('<div>', { 'class': 'momentum-gallery-item' }).attr('data-id', item.id);
 
 					$('<img>').attr('src', item.url).appendTo($item);
+
+					// Botones de orden -sin librería de arrastrar y soltar: solo
+					// intercambian este elemento con su vecino en galleryItems y
+					// vuelven a pintar-. El primero no tiene "◀" y el último no
+					// tiene "▶", para que el límite de la lista sea obvio sin
+					// necesidad de deshabilitar botones.
+					var $order = $('<span>', { 'class': 'momentum-gallery-order' });
+
+					if (index > 0) {
+						$('<button>', {
+							type: 'button',
+							'class': 'momentum-gallery-move momentum-gallery-move--left',
+							'aria-label': 'Mover imagen a la izquierda',
+							title: 'Mover a la izquierda',
+						}).html('&#9664;').appendTo($order);
+					}
+
+					if (index < galleryItems.length - 1) {
+						$('<button>', {
+							type: 'button',
+							'class': 'momentum-gallery-move momentum-gallery-move--right',
+							'aria-label': 'Mover imagen a la derecha',
+							title: 'Mover a la derecha',
+						}).html('&#9654;').appendTo($order);
+					}
+
+					$order.appendTo($item);
 
 					$('<button>', {
 						type: 'button',
@@ -170,6 +340,26 @@
 
 					$galleryPreview.append($item);
 				});
+			}
+
+			function moveGalleryItem(id, direction) {
+				var index = galleryItems.findIndex(function (item) { return item.id === id; });
+
+				if (index === -1) {
+					return;
+				}
+
+				var target = index + direction;
+
+				if (target < 0 || target >= galleryItems.length) {
+					return;
+				}
+
+				var moved = galleryItems.splice(index, 1)[0];
+				galleryItems.splice(target, 0, moved);
+
+				renderGalleryPreview();
+				syncGalleryInput();
 			}
 
 			// Combina lo ya existente con lo recién seleccionado; nunca reemplaza.
@@ -218,6 +408,14 @@
 
 				var id = parseInt($(this).closest('.momentum-gallery-item').data('id'), 10);
 				removeGalleryItem(id);
+			});
+
+			$galleryPreview.on('click', '.momentum-gallery-move', function (e) {
+				e.preventDefault();
+
+				var id = parseInt($(this).closest('.momentum-gallery-item').data('id'), 10);
+				var direction = $(this).hasClass('momentum-gallery-move--left') ? -1 : 1;
+				moveGalleryItem(id, direction);
 			});
 
 			$galleryButton.on('click', function (e) {

@@ -6,8 +6,8 @@
 .momentum-hero {
 	position: relative;
 	background:
-		radial-gradient(circle at 15% 20%, rgba(198, 161, 91, 0.16), transparent 45%),
-		linear-gradient(160deg, var(--momentum-black) 0%, var(--momentum-gray-dark) 100%);
+		linear-gradient(160deg, rgba(17, 17, 17, 0.28) 0%, rgba(45, 45, 45, 0.2) 100%),
+		url('../images/fondo.jpg') center / cover no-repeat;
 	color: var(--momentum-white);
 	padding-block: 100px 56px;
 	overflow: hidden;
@@ -18,12 +18,7 @@
 	position: absolute;
 	inset: 0;
 	z-index: 0;
-	background:
-		linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
-		linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px),
-		radial-gradient(circle at 15% 20%, rgba(198, 161, 91, 0.16), transparent 45%),
-		linear-gradient(160deg, rgba(17, 17, 17, 0.82) 0%, rgba(45, 45, 45, 0.8) 100%);
-	background-size: 64px 64px, 64px 64px, auto, auto;
+	background: linear-gradient(160deg, rgba(17, 17, 17, 0.3) 0%, rgba(45, 45, 45, 0.25) 100%);
 	pointer-events: none;
 }
 
@@ -254,7 +249,7 @@
 /* ---------- CTA banner ---------- */
 
 .momentum-cta-banner {
-	background: var(--momentum-black);
+	background: #07100d;
 	color: var(--momentum-white);
 	border-radius: var(--momentum-radius);
 	padding: 64px 56px;

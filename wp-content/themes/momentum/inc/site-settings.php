@@ -37,10 +37,13 @@ function momentum_settings_defaults(): array
 		'momentum_facebook_url'  => 'https://www.facebook.com/MomentumCocoyocMx',
 		'momentum_instagram_url' => 'https://www.instagram.com/momentumcocoyoc/',
 		'momentum_tiktok_url'    => 'https://www.tiktok.com/@momentumcocoyocmr',
+		// Cuenta de TikTok en inglés. Cuando esté vacía, el footer cae al
+		// link en español (mismo criterio que momentum_intro_video_url_en).
+		'momentum_tiktok_url_en' => 'https://www.tiktok.com/@momentumcocoyocmx',
 		'momentum_phone_1'       => '735 379 7781',
 		'momentum_phone_2'       => '735 166 4461',
-		'momentum_address'       => "Estación vieja #10, Centro, Oaxtepec\nC.P. 62738, Yautepec, Morelos",
-		'momentum_email'         => 'info@momentumcocoyoc.com',
+		'momentum_address'       => "Estación vieja #10, Int. 3, Centro, Oaxtepec\nC.P. 62738, Yautepec, Morelos",
+		'momentum_email'         => 'momentumcocoyoc.ventas@gmail.com',
 		// GA4/Search Console: sin default -a propósito, nunca se rellena un
 		// ID/código de ejemplo aquí. Vacío = integración no conectada todavía;
 		// ver inc/seo-integrations.php, que no imprime nada mientras estén así.
@@ -138,6 +141,11 @@ function momentum_sanitize_instagram_url($value)
 function momentum_sanitize_tiktok_url($value)
 {
 	return momentum_sanitize_social_url_field('momentum_tiktok_url', 'TikTok', $value);
+}
+
+function momentum_sanitize_tiktok_url_en($value)
+{
+	return momentum_sanitize_social_url_field('momentum_tiktok_url_en', __('TikTok (inglés)', 'momentum'), $value);
 }
 
 /**
@@ -363,6 +371,7 @@ function momentum_general_settings_fields(): array
 		'momentum_facebook_url'  => 'momentum_sanitize_facebook_url',
 		'momentum_instagram_url' => 'momentum_sanitize_instagram_url',
 		'momentum_tiktok_url'    => 'momentum_sanitize_tiktok_url',
+		'momentum_tiktok_url_en' => 'momentum_sanitize_tiktok_url_en',
 		'momentum_phone_1'       => 'momentum_sanitize_phone_1',
 		'momentum_phone_2'       => 'momentum_sanitize_phone_2',
 		'momentum_address'       => 'momentum_sanitize_address',
@@ -443,6 +452,11 @@ function momentum_get_instagram_url(): string
 function momentum_get_tiktok_url(): string
 {
 	return (string) get_option('momentum_tiktok_url', momentum_settings_defaults()['momentum_tiktok_url']);
+}
+
+function momentum_get_tiktok_url_en(): string
+{
+	return (string) get_option('momentum_tiktok_url_en', momentum_settings_defaults()['momentum_tiktok_url_en']);
 }
 
 /**

@@ -11,7 +11,7 @@
 	--momentum-white: #FFFFFF;
 	--momentum-accent: #C6A15B;
 	--momentum-accent-hover: #A8803A;
-	--momentum-slate: #3E4C5E;
+	--momentum-slate: #07100D;
 	--momentum-border: #E4E4E4;
 	--momentum-text-muted: #6B6B6B;
 	--momentum-radius: 10px;
@@ -44,7 +44,7 @@
 }
 
 .momentum-section--dark {
-	background: var(--momentum-black);
+	background: #07100d;
 	color: var(--momentum-white);
 }
 
@@ -220,8 +220,8 @@
 
 .momentum-page-hero {
 	background:
-		radial-gradient(circle at 85% 30%, rgba(198, 161, 91, 0.14), transparent 45%),
-		linear-gradient(160deg, var(--momentum-black) 0%, var(--momentum-gray-dark) 100%);
+		linear-gradient(160deg, rgba(17, 17, 17, 0.55) 0%, rgba(45, 45, 45, 0.48) 100%),
+		url('../images/fondo.jpg') center / cover no-repeat;
 	color: var(--momentum-white);
 	padding-block: 40px 32px;
 }
@@ -611,7 +611,7 @@
    ========================================================= */
 
 .momentum-site-header {
-	background: var(--momentum-black);
+	background: #07100d;
 	position: relative;
 	z-index: 100;
 }
@@ -717,7 +717,7 @@
 .momentum-mobile-nav {
 	display: none;
 	flex-direction: column;
-	background: var(--momentum-black);
+	background: #07100d;
 	border-top: 1px solid rgba(255, 255, 255, 0.1);
 	padding: 20px 24px 28px;
 }
@@ -758,57 +758,118 @@ body.momentum-mobile-nav-open .momentum-mobile-nav {
 }
 
 /* Language switcher (Polylang) — additive: no existing header rule above is
-   modified, this only adds a small "ES · EN" control that reuses the same
-   header color tokens. Rendered by momentum_language_switcher() in
-   template-parts/site-header.php; empty markup (nothing printed) if Polylang
-   isn't active, so this block has no visible effect until it is. */
-.momentum-lang-switcher__list {
-	display: flex;
+   modified, this only adds a flag+name dropdown control that reuses the
+   same header color tokens. Rendered by momentum_language_switcher() in
+   inc/language.php; empty markup (nothing printed) if Polylang isn't
+   active, so this block has no visible effect until it is.
+   Toggle open/close lives in assets/js/header.js (data-momentum-lang-*);
+   .is-open below is what that script adds/removes. */
+.momentum-lang-switcher__inner {
+	position: relative;
+}
+
+.momentum-lang-switcher__toggle {
+	display: inline-flex;
 	align-items: center;
-	gap: 6px;
-	list-style: none;
-	margin: 0;
-	padding: 0;
-}
-
-.momentum-lang-switcher__item {
-	display: flex;
-	align-items: center;
-}
-
-.momentum-lang-switcher__item:not(:last-child)::after {
-	content: '';
-	width: 1px;
-	height: 12px;
-	background: rgba(255, 255, 255, 0.25);
-	margin-left: 6px;
-}
-
-.momentum-lang-switcher__link {
-	color: rgba(255, 255, 255, 0.6);
-	text-decoration: none;
-	font-size: 12px;
-	font-weight: 700;
-	letter-spacing: 0.05em;
-	transition: color .2s ease;
-}
-
-.momentum-lang-switcher__link:hover {
+	gap: 8px;
+	padding: 7px 14px;
+	background: transparent;
+	border: 1px solid rgba(255, 255, 255, 0.28);
+	border-radius: 999px;
 	color: var(--momentum-white);
+	font-family: inherit;
+	font-size: 13px;
+	font-weight: 600;
+	line-height: 1;
+	cursor: pointer;
+	transition: border-color .2s ease, background-color .2s ease;
 }
 
-.momentum-lang-switcher__link.is-current {
-	color: var(--momentum-accent);
+.momentum-lang-switcher__toggle:hover {
+	border-color: var(--momentum-accent);
+	background: rgba(255, 255, 255, 0.05);
+}
+
+.momentum-lang-switcher__flag {
+	font-size: 16px;
+	line-height: 1;
+}
+
+.momentum-lang-switcher__chevron {
+	color: rgba(255, 255, 255, 0.6);
+	transition: transform .2s ease;
+}
+
+.momentum-lang-switcher__inner.is-open .momentum-lang-switcher__chevron {
+	transform: rotate(180deg);
+}
+
+.momentum-lang-switcher__menu {
+	position: absolute;
+	top: calc(100% + 8px);
+	right: 0;
+	z-index: 200;
+	min-width: 160px;
+	margin: 0;
+	padding: 6px;
+	list-style: none;
+	background: #07100d;
+	border: 1px solid rgba(255, 255, 255, 0.15);
+	border-radius: 12px;
+	box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45);
+	opacity: 0;
+	visibility: hidden;
+	transform: translateY(-6px);
+	transition: opacity .15s ease, transform .15s ease, visibility .15s ease;
+}
+
+.momentum-lang-switcher__inner.is-open .momentum-lang-switcher__menu,
+.momentum-lang-switcher__inner:hover .momentum-lang-switcher__menu,
+.momentum-lang-switcher__inner:focus-within .momentum-lang-switcher__menu {
+	opacity: 1;
+	visibility: visible;
+	transform: translateY(0);
+}
+
+.momentum-lang-switcher__option {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 9px 10px;
+	border-radius: 8px;
+	color: rgba(255, 255, 255, 0.85);
+	text-decoration: none;
+	font-size: 13px;
+	font-weight: 600;
+	transition: background-color .15s ease, color .15s ease;
+}
+
+.momentum-lang-switcher__option:hover {
+	background: rgba(255, 255, 255, 0.08);
+	color: var(--momentum-white);
 }
 
 .momentum-lang-switcher--mobile {
 	margin-top: 4px;
 	padding-top: 16px;
 	border-top: 1px solid rgba(255, 255, 255, 0.08);
+	display: flex;
+	justify-content: center;
 }
 
-.momentum-lang-switcher--mobile .momentum-lang-switcher__list {
-	justify-content: center;
+/* En el panel móvil el botón queda centrado, así que el menú se centra bajo
+   él en vez de alinearse a la derecha (que en un panel angosto lo cortaría
+   contra el borde). */
+.momentum-lang-switcher--mobile .momentum-lang-switcher__menu {
+	right: auto;
+	left: 50%;
+	transform: translate(-50%, -6px);
+}
+
+.momentum-lang-switcher--mobile .momentum-lang-switcher__inner.is-open .momentum-lang-switcher__menu,
+.momentum-lang-switcher--mobile .momentum-lang-switcher__inner:hover .momentum-lang-switcher__menu,
+.momentum-lang-switcher--mobile .momentum-lang-switcher__inner:focus-within .momentum-lang-switcher__menu {
+	transform: translate(-50%, 0);
 }
 
 @media (max-width: 1024px) {
@@ -827,7 +888,7 @@ body.momentum-mobile-nav-open .momentum-mobile-nav {
    ========================================================= */
 
 .momentum-site-footer {
-	background: var(--momentum-black);
+	background: #07100d;
 	color: rgba(255, 255, 255, 0.75);
 	padding-top: 72px;
 }

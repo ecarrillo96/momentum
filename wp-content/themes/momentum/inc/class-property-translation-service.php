@@ -41,6 +41,30 @@ class Momentum_Property_Translation_Service
 
 	private static bool $syncing = false;
 
+	/**
+	 * Bandera para el problema de temporización del guardado desde
+	 * /admin/propiedades y /admin/terrenos: Momentum_Admin_Properties::handle_save()
+	 * y Momentum_Admin_Terrenos::handle_save() guardan la imagen destacada
+	 * (self::save_featured_image()) DESPUÉS de wp_insert_post()/wp_update_post()
+	 * -de forma procedural, no vía hook-. Si el hook automático de este
+	 * servicio (enganchado a 'save_post_propiedades'/'save_post_terrenos')
+	 * corriera durante ese wp_insert_post()/wp_update_post(), sync_image()
+	 * copiaría la imagen destacada ANTERIOR (o ninguna, en una ficha nueva)
+	 * en vez de la que se acaba de seleccionar en el mismo formulario -bug
+	 * real detectado en la ficha MC-124: una propiedad nueva creada con
+	 * imagen quedaba sin imagen en su traducción-.
+	 *
+	 * Momentum_Admin_Properties/Terrenos activan esta bandera justo antes de
+	 * guardar el post, y llaman a handle_save() explícitamente ellos mismos
+	 * una vez que la imagen destacada ya quedó guardada -mismo patrón que
+	 * Momentum_Blog_Translation_Service::defer_auto_trigger() ya usa para el
+	 * mismo problema en el Blog-. Para guardados nativos de wp-admin (donde
+	 * la imagen destacada se guarda vía AJAX del metabox core ANTES del
+	 * guardado principal, sin este problema de orden), esta bandera nunca se
+	 * activa y el hook automático funciona sin cambios.
+	 */
+	private static bool $external_trigger_pending = false;
+
 	private int $source_id;
 	private string $post_type;
 	private array $schema;
@@ -53,10 +77,56 @@ class Momentum_Property_Translation_Service
 	 */
 	private array $newly_created_translation_ids = [];
 
+	public static function defer_auto_trigger(): void
+	{
+		self::$external_trigger_pending = true;
+	}
+
+	public static function resume_auto_trigger(): void
+	{
+		self::$external_trigger_pending = false;
+	}
+
 	/**
-	 * Único punto de entrada, enganchado directamente a save_post_propiedades
-	 * y save_post_terrenos (ver functions.php). Aplica todas las guardas y,
-	 * si corresponde, delega el trabajo real a una instancia de esta clase.
+	 * true mientras run() está en ejecución -incluye el momento en que
+	 * sync_textual_fields() llama wp_update_post() sobre la TRADUCCIÓN, lo
+	 * que dispara 'save_post_propiedades'/'save_post_terrenos' otra vez sobre
+	 * ese post-. Consultado por momentum_save_propiedad_meta()/
+	 * momentum_save_terreno_meta() (inc/cpt/*.php) para no reprocesar
+	 * $_POST -que todavía contiene los campos del formulario de la ficha en
+	 * ESPAÑOL que originó la sincronización- como si fuera un guardado
+	 * legítimo de la traducción. Sin esta guarda, ese reprocesamiento
+	 * sobreescribía 'video_url' de la traducción con el valor en español
+	 * justo después de que sync_shared_fields() ya lo hubiera puesto en el
+	 * valor correcto en inglés -bug real detectado en la ficha MC-124-.
+	 */
+	public static function is_syncing(): bool
+	{
+		return self::$syncing;
+	}
+
+	/**
+	 * Enganchada a 'save_post_propiedades'/'save_post_terrenos' (ver
+	 * functions.php). No llama a handle_save() si el guardado ya va a
+	 * disparar la sincronización de forma explícita (ver defer_auto_trigger()
+	 * arriba) -evita sincronizar con la imagen destacada todavía sin guardar-.
+	 */
+	public static function handle_save_hook(int $post_id, WP_Post $post, bool $update): void
+	{
+		if (self::$external_trigger_pending) {
+			return;
+		}
+
+		self::handle_save($post_id, $post, $update);
+	}
+
+	/**
+	 * Punto de entrada real -llamado por el hook (handle_save_hook()),
+	 * explícitamente por Momentum_Admin_Properties/Terrenos::handle_save()
+	 * (plugin momentum-admin) después de guardar la imagen destacada, por
+	 * retry_translation(), y por Momentum_Admin_CLI_Migrate_Translations-.
+	 * Aplica todas las guardas y, si corresponde, delega el trabajo real a
+	 * una instancia de esta clase.
 	 */
 	public static function handle_save(int $post_id, WP_Post $post, bool $update): void
 	{
@@ -400,17 +470,32 @@ class Momentum_Property_Translation_Service
 		}
 	}
 
+	/**
+	 * momentum_normalize_line_endings() sobre cada campo: un guardado real
+	 * desde un <textarea> de navegador (panel propio o editor clásico
+	 * nativo, usado por Terrenos) puede introducir '\r\n' donde este
+	 * servicio siempre escribió '\n' puro. Sin normalizar AQUÍ -en el único
+	 * punto que tanto calcula la huella de origen como decide si un campo
+	 * de la traducción "sigue igual a lo último que este servicio escribió"-
+	 * esa diferencia de bytes, invisible en pantalla, hacía que un campo
+	 * nunca tocado a mano se marcara como editado y dejara de traducirse
+	 * automáticamente para siempre -bug real detectado en pruebas QA-.
+	 * Defensivo a propósito: además de sanear la entrada en los formularios
+	 * (ver class-properties.php/class-terrenos.php), normalizar también acá
+	 * cubre cualquier otra vía de guardado (editor nativo de bloques o
+	 * clásico) sin depender de parchear cada una por separado.
+	 */
 	private function get_textual_fields(int $post_id): array
 	{
 		$post = get_post($post_id);
 
 		return [
-			'title'            => $post->post_title,
-			'description'      => $post->post_content,
-			'excerpt'          => $post->post_excerpt,
-			'caracteristicas'  => (string) get_post_meta($post_id, 'caracteristicas', true),
-			'meta_title'       => (string) get_post_meta($post_id, 'rank_math_title', true),
-			'meta_description' => (string) get_post_meta($post_id, 'rank_math_description', true),
+			'title'            => momentum_normalize_line_endings($post->post_title),
+			'description'      => momentum_normalize_line_endings($post->post_content),
+			'excerpt'          => momentum_normalize_line_endings($post->post_excerpt),
+			'caracteristicas'  => momentum_normalize_line_endings((string) get_post_meta($post_id, 'caracteristicas', true)),
+			'meta_title'       => momentum_normalize_line_endings((string) get_post_meta($post_id, 'rank_math_title', true)),
+			'meta_description' => momentum_normalize_line_endings((string) get_post_meta($post_id, 'rank_math_description', true)),
 		];
 	}
 

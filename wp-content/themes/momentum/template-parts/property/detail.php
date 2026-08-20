@@ -23,7 +23,6 @@ get_template_part('template-parts/property/gallery');
 			get_template_part('template-parts/property/features');
 			get_template_part('template-parts/property/drone-video');
 			get_template_part('template-parts/property/video');
-			get_template_part('template-parts/property/map');
 			?>
 		</div>
 

@@ -95,8 +95,15 @@ function momentum_attachment_alt(int $attachment_id, string $fallback = ''): str
  */
 function momentum_property_image_alt(int $attachment_id, int $property_id): string
 {
-	$title      = get_the_title($property_id);
-	$zona_label = momentum_get_zona_label((string) get_post_meta($property_id, 'zona', true));
+	$title = get_the_title($property_id);
+	// momentum_seo_zona_for_suffix() (inc/seo-listing-meta.php) evita repetir
+	// la zona cuando el propio título de la ficha ya la menciona (ej. "Casa
+	// con alberca y jardín en Lomas de Cocoyoc") -sin esto, este alt
+	// terminaba en "... en Lomas de Cocoyoc en Lomas de Cocoyoc"-.
+	$zona_label = momentum_seo_zona_for_suffix(
+		$title,
+		momentum_get_zona_label((string) get_post_meta($property_id, 'zona', true))
+	);
 
 	if ($zona_label !== '') {
 		$fallback = sprintf(
@@ -175,14 +182,30 @@ function momentum_get_property_price_display(array $data): string
 /**
  * Aviso mostrado junto a cualquier monto en USD de una ficha (precio
  * convertido en momentum_get_property_price_display(), o taxes_usd en
- * property/info-general.php) -ambos son aproximados frente al tipo de
- * cambio real al momento de una operación, de ahí el aviso-. Imprimir solo
- * cuando ya se decidió mostrar un monto en USD; este helper no repite esa
- * condición (momentum_current_language() !== momentum_default_language()).
+ * property/header.php) -ambos son aproximados frente al tipo de cambio real
+ * al momento de una operación, de ahí el aviso-. Imprimir solo cuando ya se
+ * decidió mostrar un monto en USD; este helper no repite esa condición
+ * (momentum_current_language() !== momentum_default_language()).
+ *
+ * Versión singular: usada donde solo se muestra UN monto en USD (el precio),
+ * ej. property-card.php, o property/header.php cuando esa ficha no tiene
+ * taxes_usd capturado. Ver momentum_usd_estimate_note_plural() para cuando
+ * precio Y Annual Property Tax se muestran juntos.
  */
 function momentum_usd_estimate_note(): string
 {
 	return __('Estimated amount in USD.', 'momentum');
+}
+
+/**
+ * Misma nota que momentum_usd_estimate_note(), en plural: usada en
+ * property/header.php cuando el precio Y el Annual Property Tax se muestran
+ * juntos arriba de esta leyenda, para dejar claro que "estimado" aplica a
+ * ambos montos y no solo al primero.
+ */
+function momentum_usd_estimate_note_plural(): string
+{
+	return __('Estimated amounts in USD.', 'momentum');
 }
 
 /**
@@ -193,6 +216,13 @@ function momentum_usd_estimate_note(): string
  * General (momentum_get_intro_video_url_en(), inc/site-settings.php), cae
  * al video en español de siempre, así que un visitante en inglés nunca ve
  * una URL vacía o rota mientras nadie haya subido la versión en inglés.
+ *
+ * Sirve 'intro-optimized.mp4' (960x540, ~3.5 MB) en vez del archivo original
+ * 'intro.mp4' (1280x720, ~31 MB, conservado en el tema sin usarse en ningún
+ * template): mismo contenido, mucho más liviano tanto aquí como en el
+ * overlay del Home. Si algún día se sube un video en inglés desde el panel,
+ * ese archivo se sirve tal cual se subió -no hay una versión optimizada
+ * generada para él-.
  */
 function momentum_get_intro_video_url(): string
 {
@@ -204,7 +234,60 @@ function momentum_get_intro_video_url(): string
 		}
 	}
 
-	return get_stylesheet_directory_uri() . '/assets/video/intro.mp4';
+	return get_stylesheet_directory_uri() . '/assets/video/intro-optimized.mp4';
+}
+
+/**
+ * Versión WebM del mismo video (más liviana que el MP4 para los navegadores
+ * que la soportan). Solo existe para el archivo propio del tema: un video en
+ * inglés subido desde el panel (momentum_get_intro_video_url_en()) es un
+ * único archivo MP4 tal cual lo sube el administrador, sin un WebM generado
+ * para él, así que en ese caso se devuelve '' y el <video> se queda solo con
+ * la fuente MP4 -nunca se referencia un archivo WebM que no existe-.
+ */
+function momentum_get_intro_video_webm_url(): string
+{
+	if (momentum_current_language() !== momentum_default_language() && momentum_get_intro_video_url_en() !== '') {
+		return '';
+	}
+
+	return get_stylesheet_directory_uri() . '/assets/video/intro-optimized.webm';
+}
+
+/**
+ * Poster del video de introducción: primer fotograma visible antes de que
+ * el navegador tenga que descargar un solo byte del video en sí (con
+ * preload="none"/"metadata"). Igual que el WebM, solo aplica al video propio
+ * del tema -un video en inglés subido por el administrador no tiene un
+ * poster generado para él-.
+ */
+function momentum_get_intro_video_poster_url(): string
+{
+	if (momentum_current_language() !== momentum_default_language() && momentum_get_intro_video_url_en() !== '') {
+		return '';
+	}
+
+	return get_stylesheet_directory_uri() . '/assets/images/intro-poster.webp';
+}
+
+/**
+ * URL de TikTok para el idioma actual. Usado por el footer
+ * (template-parts/site-footer.php). Sin una cuenta en inglés guardada en
+ * Admin > General (momentum_get_tiktok_url_en(), inc/site-settings.php), cae
+ * a la cuenta en español de siempre -mismo criterio que
+ * momentum_get_intro_video_url()-.
+ */
+function momentum_get_tiktok_url_for_current_language(): string
+{
+	if (momentum_current_language() !== momentum_default_language()) {
+		$en_url = momentum_get_tiktok_url_en();
+
+		if ($en_url !== '') {
+			return $en_url;
+		}
+	}
+
+	return momentum_get_tiktok_url();
 }
 
 /**
@@ -263,6 +346,25 @@ function momentum_get_zona_label(string $zona): string
 	$schema = momentum_propiedad_meta_schema();
 
 	return $schema['zona']['options_map'][$zona] ?? '';
+}
+
+/**
+ * Evita repetir la zona si un texto (título de ficha, etc.) ya la
+ * menciona (ej. "Casa con alberca y jardín en Lomas de Cocoyoc", un
+ * título que el administrador escribió incluyendo la ubicación) -sin
+ * esto, titles, descriptions y alt text terminaban con el nombre de la
+ * zona dos veces-. Reutilizada por inc/seo-listing-meta.php (title/
+ * description SEO) y momentum_property_image_alt() más abajo (alt de
+ * imágenes), para no repetir esta regla en cada lugar que arma texto a
+ * partir del título + la zona de un inmueble.
+ */
+function momentum_seo_zona_for_suffix(string $name, string $zona): string
+{
+	if ($zona === '' || $name === '') {
+		return $zona;
+	}
+
+	return mb_stripos($name, $zona) !== false ? '' : $zona;
 }
 
 /**

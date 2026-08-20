@@ -5,6 +5,17 @@
  * Meta fields are stored as native post meta (no ACF) using field keys
  * that map 1:1 to ACF field names, so the data can be migrated to
  * ACF Pro later without renaming anything.
+ *
+ * has_archive es false a propósito (mismo criterio que 'terrenos' en
+ * inc/cpt/terrenos.php): el archivo nativo del CPT en /propiedades/
+ * competía por SEO con /venta/ y /renta/ -las páginas reales que muestran
+ * este catálogo filtrado por operación, cada una con su propio título y
+ * descripción-, generando contenido duplicado e indexable sin metadatos
+ * propios. Con has_archive=false, el slug del CPT solo sigue generando
+ * las rutas de detalle (/propiedades/{slug-de-la-propiedad}/), sin tocar
+ * las fichas individuales ni /venta//renta/. Las visitas a /propiedades/
+ * que queden de antes de este cambio se redirigen 301 a /venta/ (ver
+ * inc/legacy-redirects.php).
  */
 
 if (! defined('ABSPATH')) {
@@ -38,7 +49,7 @@ function momentum_register_cpt_propiedades()
 	register_post_type('propiedades', [
 		'labels'          => $labels,
 		'public'          => true,
-		'has_archive'     => true,
+		'has_archive'     => false,
 		'show_in_rest'    => true,
 		'menu_icon'       => 'dashicons-admin-home',
 		'menu_position'   => 5,
@@ -91,6 +102,27 @@ function momentum_propiedad_meta_schema()
 function momentum_sanitize_meta_number($value)
 {
 	return is_numeric($value) ? floatval($value) : 0;
+}
+
+/**
+ * Normaliza saltos de línea a '\n' puro. Un <textarea> real de navegador
+ * envía '\r\n' en el POST -por especificación HTML-, mientras que el texto
+ * que Momentum_Property_Translation_Service escribe (título/descripción/
+ * características ya traducidos por DeepL) siempre usa '\n' puro. Sin este
+ * paso, volver a guardar una ficha desde un formulario real -aunque el
+ * usuario solo haya tocado OTRO campo, como el precio- deja el contenido de
+ * texto con '\r\n', que ya no coincide en bytes con la huella md5 guardada
+ * en '_momentum_sync_snapshot' -eso hacía que el campo pareciera "editado a
+ * mano" y quedara protegido para siempre, aunque nadie lo hubiera tocado
+ * -bug real detectado en pruebas QA: una propiedad de prueba dejó de
+ * re-traducirse por completo (0 caracteres enviados a DeepL) después de un
+ * segundo guardado normal-. Aplicar esto ANTES de sanear/guardar hace que
+ * el contenido quede en el mismo formato sin importar si vino de PHP o de
+ * un navegador real, así el snapshot deja de dar falsos positivos.
+ */
+function momentum_normalize_line_endings(string $value): string
+{
+	return str_replace(["\r\n", "\r"], "\n", $value);
 }
 
 /**
@@ -227,7 +259,7 @@ function momentum_render_propiedad_metabox($post)
 
 		<div class="momentum-meta-field">
 			<label for="momentum_precio">Precio (MXN)</label>
-			<input type="number" step="0.01" min="0" id="momentum_precio" name="momentum_precio"
+			<input type="number" step="1" min="0" id="momentum_precio" name="momentum_precio"
 				value="<?php echo esc_attr($values['precio']); ?>">
 		</div>
 
@@ -361,6 +393,31 @@ function momentum_enqueue_propiedad_admin_assets($hook)
 add_action('admin_enqueue_scripts', 'momentum_enqueue_propiedad_admin_assets');
 
 /**
+ * Evita que el scroll del mouse sobre un <input type="number"> con foco
+ * (precio, taxes_usd, etc.) cambie su valor sin que el usuario se dé
+ * cuenta -comportamiento nativo del navegador en Chrome/Firefox, no un bug
+ * de este metabox-. Mismo campo, mismo mecanismo que ya se protege en el
+ * panel de administración propio (assets/js/admin-panel.js): detectado en
+ * MC-393, donde el precio bajó de 48,000,000 a 47,999,999.88 -una
+ * diferencia de exactamente 12 × el step del campo-.
+ *
+ * Cubre tanto Propiedades como Terrenos porque ambos comparten este mismo
+ * metabox nativo (ver momentum_render_propiedad_metabox()).
+ */
+function momentum_guard_number_inputs_from_wheel_scroll($hook)
+{
+	if (! in_array($hook, ['post.php', 'post-new.php'], true) || ! in_array(get_post_type(), ['propiedades', 'terrenos'], true)) {
+		return;
+	}
+
+	wp_add_inline_script(
+		'jquery-core',
+		"jQuery(document).on('wheel', 'input[type=\"number\"]', function () { if (document.activeElement === this) { jQuery(this).blur(); } });"
+	);
+}
+add_action('admin_enqueue_scripts', 'momentum_guard_number_inputs_from_wheel_scroll');
+
+/**
  * Guarda en post meta los campos de $schema presentes en $_POST (nombre
  * esperado: "momentum_{key}"), aplicando el sanitizador correspondiente al
  * tipo de cada campo. Compartida por Propiedades (momentum_save_propiedad_meta())
@@ -416,7 +473,7 @@ function momentum_save_meta_fields(int $post_id, array $schema, array $skip_keys
 		}
 
 		if (! empty($field['textarea'])) {
-			update_post_meta($post_id, $key, sanitize_textarea_field($raw));
+			update_post_meta($post_id, $key, sanitize_textarea_field(momentum_normalize_line_endings($raw)));
 			continue;
 		}
 
@@ -431,6 +488,19 @@ function momentum_save_meta_fields(int $post_id, array $schema, array $skip_keys
 
 function momentum_save_propiedad_meta($post_id)
 {
+	// Momentum_Property_Translation_Service::sync_textual_fields() llama
+	// wp_update_post() sobre la TRADUCCIÓN en inglés, lo que dispara este
+	// mismo hook otra vez para ese post -con $_POST todavía lleno con los
+	// campos del formulario de la ficha en ESPAÑOL que originó la
+	// sincronización-. Sin esta guarda, esa segunda ejecución reprocesaba
+	// $_POST como si fuera un guardado legítimo de la traducción y
+	// sobreescribía su meta (en particular 'video_url') con los valores en
+	// español, deshaciendo lo que sync_shared_fields() ya había sincronizado
+	// correctamente -bug real detectado en la ficha MC-124-.
+	if (class_exists('Momentum_Property_Translation_Service') && Momentum_Property_Translation_Service::is_syncing()) {
+		return;
+	}
+
 	if (
 		! isset($_POST['momentum_propiedad_meta_nonce'])
 		|| ! wp_verify_nonce($_POST['momentum_propiedad_meta_nonce'], 'momentum_propiedad_meta_save')
@@ -449,6 +519,92 @@ function momentum_save_propiedad_meta($post_id)
 	momentum_save_meta_fields($post_id, momentum_propiedad_meta_schema());
 }
 add_action('save_post_propiedades', 'momentum_save_propiedad_meta');
+
+/**
+ * Elimina la imagen destacada y las de galería (post_parent = $post_id)
+ * cuando una Propiedad o Terreno se elimina PERMANENTEMENTE -no al enviarla
+ * a la papelera-. Sin esto, `wp_delete_post($id, true)` deja huérfanos
+ * tanto el registro en la Biblioteca de medios como el archivo físico en
+ * wp-content/uploads/{propiedades|terrenos}/{CODIGO}/ -confirmado en
+ * pruebas QA con un caso de un solo adjunto: WordPress NO cascada el
+ * borrado de adjuntos hijos por sí solo para un post type que no sea
+ * 'attachment' (esa limpieza solo ocurre, de fábrica, desde la pantalla
+ * "Vaciar papelera" del listado nativo de wp-admin, no desde una llamada
+ * directa a wp_delete_post())-.
+ *
+ * `before_delete_post`, no `deleted_post`: corre ANTES de que el post
+ * mismo se borre, para poder seguir leyendo sus adjuntos con
+ * get_children() con normalidad.
+ */
+function momentum_delete_child_attachments_on_permanent_delete(int $post_id): void
+{
+	if (! in_array(get_post_type($post_id), ['propiedades', 'terrenos'], true)) {
+		return;
+	}
+
+	$attachments = get_children([
+		'post_parent' => $post_id,
+		'post_type'   => 'attachment',
+		'numberposts' => -1,
+		'fields'      => 'ids',
+	]);
+
+	foreach ($attachments as $attachment_id) {
+		// Salvaguarda: el plugin momentum-property-media-organizer permite
+		// reutilizar un adjunto ya existente en OTRA Propiedad/Terreno (misma
+		// imagen en dos galerías, por ejemplo) sin duplicarlo ni reasignar su
+		// post_parent -sigue apuntando al inmueble donde se subió
+		// originalmente-. Si ese inmueble "dueño" es justo el que se está
+		// borrando ahora, no se borra el adjunto sin antes confirmar que
+		// ningún OTRO inmueble lo siga usando como destacada o en su galería.
+		if (momentum_attachment_used_elsewhere($attachment_id, $post_id)) {
+			continue;
+		}
+
+		wp_delete_attachment($attachment_id, true);
+	}
+}
+add_action('before_delete_post', 'momentum_delete_child_attachments_on_permanent_delete');
+
+/**
+ * true si $attachment_id aparece como imagen destacada o en la galería de
+ * alguna Propiedad/Terreno DISTINTA de $exclude_post_id. Consulta directa
+ * (sin WP_Query) porque 'galeria' guarda una lista de IDs separada por
+ * coma, no comparable con un meta_query normal.
+ */
+function momentum_attachment_used_elsewhere(int $attachment_id, int $exclude_post_id): bool
+{
+	global $wpdb;
+
+	$thumbnail_owner = $wpdb->get_var($wpdb->prepare(
+		"SELECT post_id FROM {$wpdb->postmeta}
+		WHERE meta_key = '_thumbnail_id' AND meta_value = %d AND post_id != %d
+		LIMIT 1",
+		$attachment_id,
+		$exclude_post_id
+	));
+
+	if ($thumbnail_owner) {
+		return true;
+	}
+
+	$gallery_rows = $wpdb->get_col($wpdb->prepare(
+		"SELECT post_id FROM {$wpdb->postmeta}
+		WHERE meta_key = 'galeria' AND post_id != %d AND meta_value LIKE %s",
+		$exclude_post_id,
+		'%' . $wpdb->esc_like((string) $attachment_id) . '%'
+	));
+
+	foreach ($gallery_rows as $other_post_id) {
+		$ids = array_map('trim', explode(',', (string) get_post_meta((int) $other_post_id, 'galeria', true)));
+
+		if (in_array((string) $attachment_id, $ids, true)) {
+			return true;
+		}
+	}
+
+	return false;
+}
 
 /**
  * Admin list table columns so listings can be scanned without opening each post.
@@ -541,3 +697,23 @@ function momentum_render_translation_status_column(int $post_id): void
 		esc_html(Momentum_Property_Translation_Service::status_label($status))
 	);
 }
+
+/**
+ * Desactivar has_archive requiere un flush_rewrite_rules() para que
+ * WordPress deje de reconocer /propiedades/ como el archivo del CPT -de lo
+ * contrario sigue resolviendo con las reglas cacheadas de antes de este
+ * cambio-. Mismo patrón que momentum_maybe_flush_terrenos_rewrite_rules()
+ * en inc/cpt/terrenos.php: una opción persistente como guardia, para que el
+ * flush ocurra una sola vez (en el primer request tras desplegar este
+ * cambio) y no en cada carga.
+ */
+function momentum_maybe_flush_propiedades_rewrite_rules(): void
+{
+	if (get_option('momentum_propiedades_archive_disabled_flushed')) {
+		return;
+	}
+
+	flush_rewrite_rules();
+	update_option('momentum_propiedades_archive_disabled_flushed', 1);
+}
+add_action('init', 'momentum_maybe_flush_propiedades_rewrite_rules', 20);

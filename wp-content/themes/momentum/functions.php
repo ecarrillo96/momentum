@@ -20,6 +20,8 @@ require get_stylesheet_directory() . '/inc/cpt/zonas.php';
 require get_stylesheet_directory() . '/inc/cpt/propiedades.php';
 require get_stylesheet_directory() . '/inc/cpt/terrenos.php';
 require get_stylesheet_directory() . '/inc/cpt/blog.php';
+require get_stylesheet_directory() . '/inc/legacy-redirects.php';
+require get_stylesheet_directory() . '/inc/page-content-fields.php';
 require get_stylesheet_directory() . '/inc/admin-media-restrict.php';
 require get_stylesheet_directory() . '/inc/translation-provider.php';
 require get_stylesheet_directory() . '/inc/translation-usage.php';
@@ -29,15 +31,22 @@ require get_stylesheet_directory() . '/inc/class-blog-translation-service.php';
 
 /*
  * Único punto donde se enganchan estos hooks: toda la lógica vive en
- * Momentum_Property_Translation_Service::handle_save() (ver el archivo
- * requerido arriba), esto es solo la delegación. Prioridad 30, después de
+ * Momentum_Property_Translation_Service (ver el archivo requerido arriba),
+ * esto es solo la delegación. Prioridad 30, después de
  * momentum_save_propiedad_meta()/momentum_save_terreno_meta() (prioridad
  * 10, en inc/cpt/*.php) para leer la meta ya guardada de la ficha en
  * español, y después de momentum_invalidate_rank_math_sitemap_cache()
  * (prioridad 20, en inc/rank-math-availability.php).
+ *
+ * 'handle_save_hook' (no 'handle_save' directo): ese wrapper no hace nada
+ * si Momentum_Admin_Properties/Terrenos (plugin momentum-admin) ya avisó
+ * que disparará la sincronización él mismo, después de guardar la imagen
+ * destacada -que ahí se guarda de forma procedural, después de este mismo
+ * hook, no antes-. Ver el comentario de
+ * Momentum_Property_Translation_Service::$external_trigger_pending.
  */
-add_action('save_post_propiedades', ['Momentum_Property_Translation_Service', 'handle_save'], 30, 3);
-add_action('save_post_terrenos', ['Momentum_Property_Translation_Service', 'handle_save'], 30, 3);
+add_action('save_post_propiedades', ['Momentum_Property_Translation_Service', 'handle_save_hook'], 30, 3);
+add_action('save_post_terrenos', ['Momentum_Property_Translation_Service', 'handle_save_hook'], 30, 3);
 
 /*
  * Misma prioridad (30) y mismo criterio que los dos hooks de arriba: debe
@@ -62,6 +71,9 @@ add_action('save_post_post', ['Momentum_Blog_Translation_Service', 'handle_save_
 require get_stylesheet_directory() . '/inc/rank-math-schema.php';
 require get_stylesheet_directory() . '/inc/rank-math-availability.php';
 require get_stylesheet_directory() . '/inc/rank-math-i18n.php';
+require get_stylesheet_directory() . '/inc/rank-math-blog-category.php';
+require get_stylesheet_directory() . '/inc/rank-math-pagination.php';
+require get_stylesheet_directory() . '/inc/seo-listing-meta.php';
 
 add_action('after_setup_theme', function () {
 	add_theme_support('post-thumbnails');

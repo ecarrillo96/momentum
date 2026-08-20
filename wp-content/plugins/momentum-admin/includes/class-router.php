@@ -25,8 +25,10 @@ class Momentum_Admin_Router
 		'general-home-images',
 		'general-about',
 		'general-construction',
+		'general-seo',
 		'blog',
 		'traducciones',
+		'estadisticas',
 	];
 
 	public static function init(): void
@@ -126,6 +128,8 @@ class Momentum_Admin_Router
 			Momentum_Admin_Blog::maybe_handle_actions();
 		} elseif ($page === 'traducciones') {
 			Momentum_Admin_Translations::maybe_handle_actions();
+		} elseif (in_array($page, ['general-home-images', 'general-about', 'general-construction'], true)) {
+			Momentum_Admin_Content_Pages::maybe_handle_actions();
 		}
 
 		self::render_page($page);
@@ -155,7 +159,7 @@ class Momentum_Admin_Router
 	{
 		Momentum_Admin_Assets::enqueue_common();
 
-		if (in_array($page, ['propiedades', 'terrenos', 'blog'], true)) {
+		if (in_array($page, ['propiedades', 'terrenos', 'blog', 'general-home-images', 'general-about', 'general-construction'], true)) {
 			Momentum_Admin_Assets::enqueue_media();
 		}
 
@@ -179,21 +183,19 @@ class Momentum_Admin_Router
 				break;
 
 			case 'general-home-images':
-				$page_title           = __('Editar imágenes de inicio', 'momentum-admin');
-				$placeholder_message  = __('Esta sección está preparada para su implementación. Los campos se agregarán cuando la estructura del sitio esté finalizada.', 'momentum-admin');
-				include MOMENTUM_ADMIN_PATH . 'templates/placeholder.php';
+				Momentum_Admin_Content_Pages::render_home();
 				break;
 
 			case 'general-about':
-				$page_title           = __('Editar sección Nosotros', 'momentum-admin');
-				$placeholder_message  = __('Esta sección está preparada para su implementación. Los campos se agregarán cuando la estructura del sitio esté finalizada.', 'momentum-admin');
-				include MOMENTUM_ADMIN_PATH . 'templates/placeholder.php';
+				Momentum_Admin_Content_Pages::render_nosotros();
 				break;
 
 			case 'general-construction':
-				$page_title           = __('Editar sección Construcción', 'momentum-admin');
-				$placeholder_message  = __('Esta sección está preparada para su implementación. Los campos se agregarán cuando la estructura del sitio esté finalizada.', 'momentum-admin');
-				include MOMENTUM_ADMIN_PATH . 'templates/placeholder.php';
+				Momentum_Admin_Content_Pages::render_construccion();
+				break;
+
+			case 'general-seo':
+				Momentum_Admin_General::render_seo();
 				break;
 
 			case 'terrenos':
@@ -202,6 +204,10 @@ class Momentum_Admin_Router
 
 			case 'traducciones':
 				Momentum_Admin_Translations::render();
+				break;
+
+			case 'estadisticas':
+				Momentum_GA4_Admin::render();
 				break;
 		}
 

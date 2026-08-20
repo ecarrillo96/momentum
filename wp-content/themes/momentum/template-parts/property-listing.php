@@ -47,7 +47,7 @@ $has_filters = $filters['codigo'] !== '' || $filters['precio'] !== '';
 		<div class="momentum-filters__field">
 			<label for="filtro-precio"><?php esc_html_e('Rango de precio', 'momentum'); ?></label>
 			<select id="filtro-precio" name="precio">
-				<?php foreach (momentum_price_range_options($fixed['tipo_operacion']) as $value => $label) : ?>
+				<?php foreach (momentum_price_range_options($fixed['tipo_operacion'], $post_type) as $value => $label) : ?>
 					<option value="<?php echo esc_attr($value); ?>" <?php selected($filters['precio'], $value); ?>><?php echo esc_html($label); ?></option>
 				<?php endforeach; ?>
 			</select>

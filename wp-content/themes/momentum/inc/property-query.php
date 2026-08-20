@@ -19,24 +19,41 @@ function momentum_public_estado_values(): array
 	return ['Disponible', 'Preventa', 'Remate'];
 }
 
-function momentum_price_range_options(string $tipo_operacion = ''): array
+function momentum_price_range_options(string $tipo_operacion = '', string $post_type = 'propiedades'): array
 {
+	if ($post_type === 'terrenos') {
+		return [
+			''                => __('Cualquier precio', 'momentum'),
+			'0-1000000'       => __('Hasta $1,000,000', 'momentum'),
+			'1000000-2000000' => __('$1,000,000 - $2,000,000', 'momentum'),
+			'2000000-3000000' => __('$2,000,000 - $3,000,000', 'momentum'),
+			'3000000-4000000' => __('$3,000,000 - $4,000,000', 'momentum'),
+			'4000000-5000000' => __('$4,000,000 - $5,000,000', 'momentum'),
+			'5000000-'        => __('Más de $5,000,000', 'momentum'),
+		];
+	}
+
 	if ($tipo_operacion === 'Renta') {
 		return [
 			''            => __('Cualquier precio', 'momentum'),
 			'0-20000'     => __('Hasta $20,000/mes', 'momentum'),
-			'20000-35000' => __('$20,000 - $35,000/mes', 'momentum'),
-			'35000-50000' => __('$35,000 - $50,000/mes', 'momentum'),
-			'50000-'      => __('Más de $50,000/mes', 'momentum'),
+			'20000-30000' => __('$20,000 - $30,000/mes', 'momentum'),
+			'30000-40000' => __('$30,000 - $40,000/mes', 'momentum'),
+			'40000-50000' => __('$40,000 - $50,000/mes', 'momentum'),
+			'50000-60000' => __('$50,000 - $60,000/mes', 'momentum'),
+			'60000-'      => __('Más de $60,000/mes', 'momentum'),
 		];
 	}
 
 	return [
-		''              => __('Cualquier precio', 'momentum'),
-		'0-3000000'     => __('Hasta $3,000,000', 'momentum'),
-		'3000000-6000000' => __('$3,000,000 - $6,000,000', 'momentum'),
-		'6000000-9000000' => __('$6,000,000 - $9,000,000', 'momentum'),
-		'9000000-'      => __('Más de $9,000,000', 'momentum'),
+		''                  => __('Cualquier precio', 'momentum'),
+		'0-6000000'         => __('Hasta $6,000,000', 'momentum'),
+		'6000000-9000000'   => __('$6,000,000 - $9,000,000', 'momentum'),
+		'9000000-12000000'  => __('$9,000,000 - $12,000,000', 'momentum'),
+		'12000000-15000000' => __('$12,000,000 - $15,000,000', 'momentum'),
+		'15000000-18000000' => __('$15,000,000 - $18,000,000', 'momentum'),
+		'18000000-21000000' => __('$18,000,000 - $21,000,000', 'momentum'),
+		'21000000-'         => __('Más de $21,000,000', 'momentum'),
 	];
 }
 
@@ -52,7 +69,7 @@ function momentum_price_range_options(string $tipo_operacion = ''): array
 function momentum_run_property_query(array $fixed = [], int $per_page = 10, ?int $paged_override = null, string $post_type = 'propiedades'): array
 {
 	$filters = [
-		'precio' => isset($_GET['precio']) && array_key_exists($_GET['precio'], momentum_price_range_options($fixed['tipo_operacion'] ?? '')) ? $_GET['precio'] : '',
+		'precio' => isset($_GET['precio']) && array_key_exists($_GET['precio'], momentum_price_range_options($fixed['tipo_operacion'] ?? '', $post_type)) ? $_GET['precio'] : '',
 		'codigo' => isset($_GET['codigo']) ? trim(sanitize_text_field(wp_unslash($_GET['codigo']))) : '',
 	];
 

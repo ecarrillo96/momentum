@@ -12,7 +12,7 @@ get_header();
 
 get_template_part('template-parts/page-hero', null, [
 	'title'    => __('Blog', 'momentum'),
-	'subtitle' => __('Ideas, tendencias y consejos sobre bienes raíces en Lomas de Cocoyoc y Morelos.', 'momentum'),
+	'subtitle' => __('Ideas, tendencias y consejos sobre bienes raíces en Lomas de Cocoyoc.', 'momentum'),
 ]);
 
 get_template_part('template-parts/blog-grid', null, [

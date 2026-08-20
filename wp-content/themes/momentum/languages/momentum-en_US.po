@@ -13,6 +13,7 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "Language: en_US\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Domain: momentum\n"
 
 #. Theme Name of the theme
@@ -101,32 +102,52 @@ msgid "Hasta $20,000/mes"
 msgstr "Up to $20,000/mo"
 
 #: inc/property-query.php:28
-msgid "$20,000 - $35,000/mes"
-msgstr "$20,000 - $35,000/mo"
+msgid "$20,000 - $30,000/mes"
+msgstr "$20,000 - $30,000/mo"
 
 #: inc/property-query.php:29
-msgid "$35,000 - $50,000/mes"
-msgstr "$35,000 - $50,000/mo"
+msgid "$30,000 - $40,000/mes"
+msgstr "$30,000 - $40,000/mo"
 
 #: inc/property-query.php:30
-msgid "Más de $50,000/mes"
-msgstr "Over $50,000/mo"
+msgid "$40,000 - $50,000/mes"
+msgstr "$40,000 - $50,000/mo"
+
+#: inc/property-query.php:31
+msgid "$50,000 - $60,000/mes"
+msgstr "$50,000 - $60,000/mo"
+
+#: inc/property-query.php:32
+msgid "Más de $60,000/mes"
+msgstr "Over $60,000/mo"
 
 #: inc/property-query.php:36
-msgid "Hasta $3,000,000"
-msgstr "Up to $3,000,000"
+msgid "Hasta $6,000,000"
+msgstr "Up to $6,000,000"
 
 #: inc/property-query.php:37
-msgid "$3,000,000 - $6,000,000"
-msgstr "$3,000,000 - $6,000,000"
-
-#: inc/property-query.php:38
 msgid "$6,000,000 - $9,000,000"
 msgstr "$6,000,000 - $9,000,000"
 
+#: inc/property-query.php:38
+msgid "$9,000,000 - $12,000,000"
+msgstr "$9,000,000 - $12,000,000"
+
 #: inc/property-query.php:39
-msgid "Más de $9,000,000"
-msgstr "Over $9,000,000"
+msgid "$12,000,000 - $15,000,000"
+msgstr "$12,000,000 - $15,000,000"
+
+#: inc/property-query.php:40
+msgid "$15,000,000 - $18,000,000"
+msgstr "$15,000,000 - $18,000,000"
+
+#: inc/property-query.php:41
+msgid "$18,000,000 - $21,000,000"
+msgstr "$18,000,000 - $21,000,000"
+
+#: inc/property-query.php:42
+msgid "Más de $21,000,000"
+msgstr "Over $21,000,000"
 
 #. translators: %d: número de página, para el aria-label de la página actual en la paginación
 #: inc/property-query.php:250
@@ -161,9 +182,12 @@ msgid "Ir a la última página"
 msgstr "Go to last page"
 
 #: page-asesoria.php:14
-#: template-parts/home/services.php:37
 msgid "Asesoría"
 msgstr "Financing"
+
+#: template-parts/home/services.php:37
+msgid "Seguros"
+msgstr "Insurance"
 
 #: page-asesoria.php:15
 msgid "Acompañamiento experto para tu crédito hipotecario, con todos los bancos."
@@ -176,8 +200,8 @@ msgid "Blog"
 msgstr "Blog"
 
 #: page-blog.php:15
-msgid "Ideas, tendencias y consejos sobre bienes raíces en Lomas de Cocoyoc y Morelos."
-msgstr "Ideas, trends, and tips about real estate in Lomas de Cocoyoc and Morelos."
+msgid "Ideas, tendencias y consejos sobre bienes raíces en Lomas de Cocoyoc."
+msgstr "Ideas, trends, and tips about real estate in Lomas de Cocoyoc."
 
 #: page-blog.php:20
 msgid "Todos los artículos"
@@ -377,8 +401,8 @@ msgid "Inmobiliaria especializada en Lomas de Cocoyoc, Morelos"
 msgstr "Real estate agency specialized in Lomas de Cocoyoc, Morelos"
 
 #: template-parts/home/about.php:40
-msgid "En Momentum Cocoyoc tenemos más de 10 años de experiencia ayudando a familias e inversionistas a comprar, vender, rentar y construir en una de las zonas con mayor plusvalía de Morelos."
-msgstr "At Momentum Cocoyoc, we have over 10 years of experience helping families and investors buy, sell, rent, and build in one of the highest-value areas of Morelos."
+msgid "En Momentum Cocoyoc tenemos más de 20 años de experiencia ayudando a familias e inversionistas a comprar, vender, rentar y construir en una de las zonas con mayor plusvalía del país."
+msgstr "At Momentum Cocoyoc, we have over 20 years of experience helping families and investors buy, sell, rent, and build in one of the highest-value areas in the country."
 
 #: template-parts/home/about.php:44
 msgid "Conocemos el mercado local, sus fraccionamientos, servicios y regulaciones, lo que nos permite ofrecerte asesoría precisa, segura y personalizada para cada etapa del proceso."
@@ -409,16 +433,16 @@ msgid "¿Dónde se encuentra Lomas de Cocoyoc?"
 msgstr "Where is Lomas de Cocoyoc located?"
 
 #: template-parts/home/faq.php:13
-msgid "Lomas de Cocoyoc es un fraccionamiento residencial ubicado en el municipio de Yautepec, Morelos, muy cerca de Oaxtepec y a poco más de una hora de la Ciudad de México."
-msgstr "Lomas de Cocoyoc is a residential community located in the municipality of Yautepec, Morelos, very close to Oaxtepec and just over an hour from Mexico City."
+msgid "Lomas de Cocoyoc es un fraccionamiento ubicado en el municipio de Atlatlahucan, Morelos, a solo 90 minutos de la Ciudad de México. Es único en su tipo y de los más grandes del país, una mini-ciudad en crecimiento planeada para tener calidad de vida, en un medio en equilibrio con la naturaleza, sin sacrificar las comodidades de la urbanización."
+msgstr "Lomas de Cocoyoc is a community located in the municipality of Atlatlahucan, Morelos, just 90 minutes from Mexico City. It is unique of its kind and one of the largest in the country, a growing mini-city planned for quality of life, in an environment balanced with nature, without sacrificing the comforts of urbanization."
 
 #: template-parts/home/faq.php:16
 msgid "¿Qué tipos de propiedades manejan?"
 msgstr "What types of properties do you handle?"
 
 #: template-parts/home/faq.php:17
-msgid "Trabajamos con casas y departamentos en venta y renta, así como terrenos residenciales dentro y alrededor de Lomas de Cocoyoc."
-msgstr "We work with houses and apartments for sale and rent, as well as residential land in and around Lomas de Cocoyoc."
+msgid "Trabajamos con casas en venta y renta, así como terrenos residenciales dentro y alrededor de Lomas de Cocoyoc."
+msgstr "We work with houses for sale and rent, as well as residential land in and around Lomas de Cocoyoc."
 
 #: template-parts/home/faq.php:20
 msgid "¿Cómo agendo una visita?"
@@ -493,16 +517,12 @@ msgid "Inmobiliaria especializada en Lomas de Cocoyoc"
 msgstr "Real estate agency specialized in Lomas de Cocoyoc"
 
 #: template-parts/home/hero.php:22
-msgid "Casas, Terrenos y Propiedades en Venta en Lomas de Cocoyoc"
-msgstr "Houses, Land, and Properties for Sale in Lomas de Cocoyoc"
+msgid "Casas y Terrenos en Venta en Lomas de Cocoyoc"
+msgstr "Houses and Land for Sale in Lomas de Cocoyoc"
 
 #: template-parts/home/hero.php:25
 msgid "Te acompañamos en cada paso para que encuentres la propiedad ideal para ti y tu familia."
 msgstr "We support you every step of the way so you find the ideal property for you and your family."
-
-#: template-parts/home/hero.php:28
-msgid "Conoce más"
-msgstr "Learn More"
 
 #: template-parts/home/intro-video.php:20
 msgid "Omitir intro"
@@ -557,16 +577,16 @@ msgid "Experiencia local"
 msgstr "Local Experience"
 
 #: template-parts/home/trust-bar.php:14
-msgid "Más de 10 años en el mercado inmobiliario de Lomas de Cocoyoc."
-msgstr "Over 10 years in the Lomas de Cocoyoc real estate market."
+msgid "Más de 20 años en el mercado inmobiliario de Lomas de Cocoyoc."
+msgstr "Over 20 years in the Lomas de Cocoyoc real estate market."
 
 #: template-parts/home/trust-bar.php:18
 msgid "Conocimiento de la zona"
 msgstr "Area Knowledge"
 
 #: template-parts/home/trust-bar.php:19
-msgid "Sabemos lo que hace especial a Lomas y sus alrededores."
-msgstr "We know what makes Lomas and its surroundings special."
+msgid "Sabemos lo que hace especial a Lomas de Cocoyoc y sus alrededores."
+msgstr "We know what makes Lomas de Cocoyoc and its surroundings special."
 
 #: template-parts/home/trust-bar.php:23
 msgid "Acompañamiento total"
@@ -798,17 +818,18 @@ msgstr "Transaction Type"
 msgid "Estado"
 msgstr "Status"
 
-#: template-parts/property/info-general.php:22
-msgid "Annual Property Tax"
-msgstr "Annual Property Tax"
+#: template-parts/property/header.php:31
+msgid "Annual Property Tax: %s"
+msgstr "Annual Property Tax: %s"
+
+#: inc/helpers.php
+msgid "Estimated amounts in USD."
+msgstr "Estimated amounts in USD."
 
 #: template-parts/property/info-general.php:32
 msgid "Información general"
 msgstr "General Information"
 
-#: template-parts/property/map.php:24
-msgid "Aquí va imagen de amenidades del fraccionamiento"
-msgstr "Neighborhood amenities image goes here"
 
 #: template-parts/property/similar.php:43
 msgid "Propiedades similares"
@@ -835,16 +856,16 @@ msgid "Contactar ahora"
 msgstr "Contact Now"
 
 #: template-parts/site-footer.php:34
-msgid "Inmobiliaria especializada en Lomas de Cocoyoc. Compra, venta, renta de propiedades, terrenos y construcción de viviendas."
-msgstr "Real estate agency specialized in Lomas de Cocoyoc. Buying, selling, renting properties and land, and home construction."
+msgid "Inmobiliaria especializada en Lomas de Cocoyoc. Compra, venta, renta de propiedades, terrenos y construcción de casas residenciales."
+msgstr "Real estate agency specialized in Lomas de Cocoyoc. Buying, selling, renting properties and land, and residential home construction."
 
 #: template-parts/site-footer.php:70
 msgid "Lun - Vie: 9:00 - 18:00"
 msgstr "Mon - Fri: 9:00 AM - 6:00 PM"
 
 #: template-parts/site-footer.php:71
-msgid "Sáb: 9:00 - 14:00"
-msgstr "Sat: 9:00 AM - 2:00 PM"
+msgid "Sáb: 10:00 - 15:00"
+msgstr "Sat: 10:00 AM - 3:00 PM"
 
 #. translators: %s: año actual, para el aviso de derechos reservados del footer
 #: template-parts/site-footer.php:95
@@ -880,3 +901,23 @@ msgstr "Get Inspired for Your Next Home"
 #: template-parts/whatsapp-float.php:24
 msgid "Contactar por WhatsApp"
 msgstr "Contact via WhatsApp"
+
+#: inc/seo-listing-meta.php:109
+msgctxt "operación y zona del inmueble"
+msgid "%1$s en %2$s"
+msgstr "%1$s in %2$s"
+
+#: inc/seo-listing-meta.php:162
+msgctxt "nombre del inmueble y su operación/zona"
+msgid "%1$s en %2$s"
+msgstr "%1$s, %2$s"
+
+#: inc/seo-listing-meta.php:181
+msgid "%d recámara"
+msgid_plural "%d recámaras"
+msgstr[0] "%d bedroom"
+msgstr[1] "%d bedrooms"
+
+#: inc/seo-listing-meta.php:186
+msgid "%d m² construcción"
+msgstr "%d m² built"

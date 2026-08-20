@@ -14,6 +14,13 @@ $data        = momentum_get_propiedad($property_id);
 // registros reales con tipo 'Terreno' (construccion_m2 = 0).
 $is_terreno  = $data['construccion_m2'] <= 0;
 $zona_label  = momentum_get_zona_label($data['zona']);
+
+// Igual que la nota de precio estimado: solo fuera del idioma por defecto
+// (oculto en español, visible en inglés y en cualquier otro idioma que se
+// agregue más adelante -no hardcodeado a 'en'-), y solo si hay un monto
+// capturado. Vive aquí, junto al precio, en vez de en la tabla de
+// "Información general" (template-parts/property/info-general.php).
+$show_taxes = momentum_current_language() !== momentum_default_language() && $data['taxes_usd'] > 0;
 ?>
 <section class="momentum-property-header">
 	<div class="momentum-container">
@@ -21,8 +28,19 @@ $zona_label  = momentum_get_zona_label($data['zona']);
 			<h1><?php the_title(); ?></h1>
 			<div class="momentum-property-header__price">
 				<?php echo esc_html(momentum_get_property_price_display($data)); ?>
+				<?php if ($show_taxes) : ?>
+					<span class="momentum-property-header__tax-note">
+						<?php echo esc_html(sprintf(
+							/* translators: %s: monto anual de impuesto predial en USD, ya formateado (ej. "$420 USD") */
+							__('Annual Property Tax: %s', 'momentum'),
+							'$' . number_format($data['taxes_usd'], 0, '.', ',') . ' USD'
+						)); ?>
+					</span>
+				<?php endif; ?>
 				<?php if (momentum_current_language() !== momentum_default_language()) : ?>
-					<span class="momentum-property-header__price-note"><?php echo esc_html(momentum_usd_estimate_note()); ?></span>
+					<span class="momentum-property-header__price-note">
+						<?php echo esc_html($show_taxes ? momentum_usd_estimate_note_plural() : momentum_usd_estimate_note()); ?>
+					</span>
 				<?php endif; ?>
 			</div>
 		</div>

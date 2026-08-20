@@ -12,7 +12,7 @@ if (! defined('ABSPATH')) {
 $social_links = array_filter([
 	'facebook'  => momentum_get_facebook_url(),
 	'instagram' => momentum_get_instagram_url(),
-	'tiktok'    => momentum_get_tiktok_url(),
+	'tiktok'    => momentum_get_tiktok_url_for_current_language(),
 ]);
 
 $phone_1 = momentum_get_phone_1();
@@ -31,7 +31,7 @@ $email   = momentum_get_email();
 				<?php endif; ?>
 
 				<p class="momentum-footer-tagline">
-					<?php esc_html_e('Inmobiliaria especializada en Lomas de Cocoyoc. Compra, venta, renta de propiedades, terrenos y construcción de viviendas.', 'momentum'); ?>
+					<?php esc_html_e('Inmobiliaria especializada en Lomas de Cocoyoc. Compra, venta, renta de propiedades, terrenos y construcción de casas residenciales.', 'momentum'); ?>
 				</p>
 			</div>
 
@@ -68,7 +68,7 @@ $email   = momentum_get_email();
 						<?php echo momentum_icon('clock'); ?>
 						<span>
 							<?php esc_html_e('Lun - Vie: 9:00 - 18:00', 'momentum'); ?><br>
-							<?php esc_html_e('Sáb: 9:00 - 14:00', 'momentum'); ?>
+							<?php esc_html_e('Sáb: 10:00 - 15:00', 'momentum'); ?>
 						</span>
 					</li>
 				</ul>

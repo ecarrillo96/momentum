@@ -158,9 +158,35 @@ function momentum_home_url(?string $lang = null): string
 }
 
 /**
- * HTML del selector de idioma para el header (lista de <li><a>, sin JS).
- * Devuelve '' si Polylang no está activo o solo hay un idioma -el llamador
- * simplemente no imprime nada, no necesita revisar nada él mismo-.
+ * Emoji de bandera para el botón/menú del selector de idioma, por slug de
+ * idioma de Polylang. Fijo a propósito -MX para 'es' y US para 'en'- en vez
+ * de derivarlo del locale (es-MX ya apunta a México, pero en-US podría
+ * confundirse con "bandera del idioma" en vez de "bandera del público al
+ * que se dirige cada versión", que es lo que se pidió: la version en inglés
+ * de este sitio mexicano se dirige a compradores de EE. UU.-. Un idioma sin
+ * entrada aquí simplemente no muestra bandera (el nombre solo sigue
+ * funcionando), así que agregar un tercer idioma en Polylang no rompe nada.
+ */
+function momentum_language_switcher_flag(string $slug): string
+{
+	$flags = [
+		'es' => '🇲🇽',
+		'en' => '🇺🇸',
+	];
+
+	return $flags[$slug] ?? '';
+}
+
+/**
+ * HTML del selector de idioma para el header: un botón con la bandera y el
+ * nombre del idioma actual que despliega un menú con la(s) otra(s)
+ * opción(es) (bandera + nombre completo, ej. "English"). Devuelve '' si
+ * Polylang no está activo o solo hay un idioma -el llamador simplemente no
+ * imprime nada, no necesita revisar nada él mismo-.
+ *
+ * El toggle de apertura/cierre vive en assets/js/header.js (data-momentum-lang-*);
+ * sin JS, el menú desplegable queda siempre visible (ver .momentum-lang-switcher
+ * en momentum.css) en vez de inaccesible detrás de un botón que no reacciona.
  */
 function momentum_language_switcher(): string
 {
@@ -179,24 +205,53 @@ function momentum_language_switcher(): string
 		return '';
 	}
 
-	$items = '';
+	$current = null;
+	$others  = '';
 
 	foreach ($languages as $language) {
-		$is_current = ! empty($language['current_lang']);
-		$classes    = 'momentum-lang-switcher__link' . ($is_current ? ' is-current' : '');
-		$locale     = isset($language['locale']) ? str_replace('_', '-', $language['locale']) : $language['slug'];
+		$locale = isset($language['locale']) ? str_replace('_', '-', $language['locale']) : $language['slug'];
+		$flag   = momentum_language_switcher_flag($language['slug']);
 
-		$items .= sprintf(
-			'<li class="momentum-lang-switcher__item"><a href="%1$s" class="%2$s" lang="%3$s" hreflang="%3$s"%4$s>%5$s</a></li>',
+		if (! empty($language['current_lang'])) {
+			$current = $language;
+			continue;
+		}
+
+		$others .= sprintf(
+			'<li class="momentum-lang-switcher__item">
+				<a href="%1$s" class="momentum-lang-switcher__option" lang="%2$s" hreflang="%2$s">
+					<span class="momentum-lang-switcher__flag" aria-hidden="true">%3$s</span>
+					<span>%4$s</span>
+				</a>
+			</li>',
 			esc_url($language['url']),
-			esc_attr($classes),
 			esc_attr($locale),
-			$is_current ? ' aria-current="true"' : '',
-			esc_html(strtoupper($language['slug']))
+			esc_html($flag),
+			esc_html($language['name'])
 		);
 	}
 
-	return '<ul class="momentum-lang-switcher__list">' . $items . '</ul>';
+	// Sin idioma actual detectado (no debería pasar con Polylang activo, pero
+	// evita imprimir un botón vacío si alguna vez ocurre).
+	if ($current === null) {
+		return '';
+	}
+
+	$current_flag = momentum_language_switcher_flag($current['slug']);
+
+	return sprintf(
+		'<div class="momentum-lang-switcher__inner" data-momentum-lang-switcher>
+			<button type="button" class="momentum-lang-switcher__toggle" data-momentum-lang-toggle aria-haspopup="true" aria-expanded="false">
+				<span class="momentum-lang-switcher__flag" aria-hidden="true">%1$s</span>
+				<span class="momentum-lang-switcher__label">%2$s</span>
+				<svg class="momentum-lang-switcher__chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+			</button>
+			<ul class="momentum-lang-switcher__menu" data-momentum-lang-menu>%3$s</ul>
+		</div>',
+		esc_html($current_flag),
+		esc_html($current['name']),
+		$others
+	);
 }
 
 /**

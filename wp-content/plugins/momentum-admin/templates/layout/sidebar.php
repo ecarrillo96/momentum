@@ -19,13 +19,15 @@ $items = [
 		// pantalla ("Ajustes" > "General").
 		'children' => [
 			'general'               => ['label' => __('Configuración general', 'momentum-admin'), 'url' => home_url('/admin/general/')],
-			'general-home-images'   => ['label' => __('Imágenes de inicio', 'momentum-admin'), 'url' => home_url('/admin/general-home-images/')],
+			'general-home-images'   => ['label' => __('Inicio', 'momentum-admin'), 'url' => home_url('/admin/general-home-images/')],
 			'general-about'         => ['label' => __('Nosotros', 'momentum-admin'), 'url' => home_url('/admin/general-about/')],
 			'general-construction'  => ['label' => __('Construcción', 'momentum-admin'), 'url' => home_url('/admin/general-construction/')],
+			'general-seo'           => ['label' => __('SEO y traducción', 'momentum-admin'), 'url' => home_url('/admin/general-seo/')],
 		],
 	],
 	'blog'        => ['label' => __('Blog', 'momentum-admin'), 'icon' => 'dashicons-admin-post', 'url' => home_url('/admin/blog/')],
 	'traducciones' => ['label' => __('Traducciones', 'momentum-admin'), 'icon' => 'dashicons-translation', 'url' => home_url('/admin/traducciones/')],
+	'estadisticas' => ['label' => __('Estadísticas', 'momentum-admin'), 'icon' => 'dashicons-chart-line', 'url' => home_url('/admin/estadisticas/')],
 ];
 ?>
 <button type="button" class="momentum-admin-menu-toggle" id="momentum-admin-menu-toggle" aria-controls="momentum-admin-sidebar" aria-expanded="false">

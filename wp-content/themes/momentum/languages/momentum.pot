@@ -100,31 +100,51 @@ msgid "Hasta $20,000/mes"
 msgstr ""
 
 #: inc/property-query.php:28
-msgid "$20,000 - $35,000/mes"
+msgid "$20,000 - $30,000/mes"
 msgstr ""
 
 #: inc/property-query.php:29
-msgid "$35,000 - $50,000/mes"
+msgid "$30,000 - $40,000/mes"
 msgstr ""
 
 #: inc/property-query.php:30
-msgid "Más de $50,000/mes"
+msgid "$40,000 - $50,000/mes"
+msgstr ""
+
+#: inc/property-query.php:31
+msgid "$50,000 - $60,000/mes"
+msgstr ""
+
+#: inc/property-query.php:32
+msgid "Más de $60,000/mes"
 msgstr ""
 
 #: inc/property-query.php:36
-msgid "Hasta $3,000,000"
+msgid "Hasta $6,000,000"
 msgstr ""
 
 #: inc/property-query.php:37
-msgid "$3,000,000 - $6,000,000"
-msgstr ""
-
-#: inc/property-query.php:38
 msgid "$6,000,000 - $9,000,000"
 msgstr ""
 
+#: inc/property-query.php:38
+msgid "$9,000,000 - $12,000,000"
+msgstr ""
+
 #: inc/property-query.php:39
-msgid "Más de $9,000,000"
+msgid "$12,000,000 - $15,000,000"
+msgstr ""
+
+#: inc/property-query.php:40
+msgid "$15,000,000 - $18,000,000"
+msgstr ""
+
+#: inc/property-query.php:41
+msgid "$18,000,000 - $21,000,000"
+msgstr ""
+
+#: inc/property-query.php:42
+msgid "Más de $21,000,000"
 msgstr ""
 
 #. translators: %d: número de página, para el aria-label de la página actual en la paginación
@@ -160,8 +180,11 @@ msgid "Ir a la última página"
 msgstr ""
 
 #: page-asesoria.php:14
-#: template-parts/home/services.php:37
 msgid "Asesoría"
+msgstr ""
+
+#: template-parts/home/services.php:37
+msgid "Seguros"
 msgstr ""
 
 #: page-asesoria.php:15
@@ -175,7 +198,7 @@ msgid "Blog"
 msgstr ""
 
 #: page-blog.php:15
-msgid "Ideas, tendencias y consejos sobre bienes raíces en Lomas de Cocoyoc y Morelos."
+msgid "Ideas, tendencias y consejos sobre bienes raíces en Lomas de Cocoyoc."
 msgstr ""
 
 #: page-blog.php:20
@@ -376,7 +399,7 @@ msgid "Inmobiliaria especializada en Lomas de Cocoyoc, Morelos"
 msgstr ""
 
 #: template-parts/home/about.php:40
-msgid "En Momentum Cocoyoc tenemos más de 10 años de experiencia ayudando a familias e inversionistas a comprar, vender, rentar y construir en una de las zonas con mayor plusvalía de Morelos."
+msgid "En Momentum Cocoyoc tenemos más de 20 años de experiencia ayudando a familias e inversionistas a comprar, vender, rentar y construir en una de las zonas con mayor plusvalía del país."
 msgstr ""
 
 #: template-parts/home/about.php:44
@@ -408,7 +431,7 @@ msgid "¿Dónde se encuentra Lomas de Cocoyoc?"
 msgstr ""
 
 #: template-parts/home/faq.php:13
-msgid "Lomas de Cocoyoc es un fraccionamiento residencial ubicado en el municipio de Yautepec, Morelos, muy cerca de Oaxtepec y a poco más de una hora de la Ciudad de México."
+msgid "Lomas de Cocoyoc es un fraccionamiento ubicado en el municipio de Atlatlahucan, Morelos, a solo 90 minutos de la Ciudad de México. Es único en su tipo y de los más grandes del país, una mini-ciudad en crecimiento planeada para tener calidad de vida, en un medio en equilibrio con la naturaleza, sin sacrificar las comodidades de la urbanización."
 msgstr ""
 
 #: template-parts/home/faq.php:16
@@ -416,7 +439,7 @@ msgid "¿Qué tipos de propiedades manejan?"
 msgstr ""
 
 #: template-parts/home/faq.php:17
-msgid "Trabajamos con casas y departamentos en venta y renta, así como terrenos residenciales dentro y alrededor de Lomas de Cocoyoc."
+msgid "Trabajamos con casas en venta y renta, así como terrenos residenciales dentro y alrededor de Lomas de Cocoyoc."
 msgstr ""
 
 #: template-parts/home/faq.php:20
@@ -492,15 +515,11 @@ msgid "Inmobiliaria especializada en Lomas de Cocoyoc"
 msgstr ""
 
 #: template-parts/home/hero.php:22
-msgid "Casas, Terrenos y Propiedades en Venta en Lomas de Cocoyoc"
+msgid "Casas y Terrenos en Venta en Lomas de Cocoyoc"
 msgstr ""
 
 #: template-parts/home/hero.php:25
 msgid "Te acompañamos en cada paso para que encuentres la propiedad ideal para ti y tu familia."
-msgstr ""
-
-#: template-parts/home/hero.php:28
-msgid "Conoce más"
 msgstr ""
 
 #: template-parts/home/intro-video.php:20
@@ -556,7 +575,7 @@ msgid "Experiencia local"
 msgstr ""
 
 #: template-parts/home/trust-bar.php:14
-msgid "Más de 10 años en el mercado inmobiliario de Lomas de Cocoyoc."
+msgid "Más de 20 años en el mercado inmobiliario de Lomas de Cocoyoc."
 msgstr ""
 
 #: template-parts/home/trust-bar.php:18
@@ -564,7 +583,7 @@ msgid "Conocimiento de la zona"
 msgstr ""
 
 #: template-parts/home/trust-bar.php:19
-msgid "Sabemos lo que hace especial a Lomas y sus alrededores."
+msgid "Sabemos lo que hace especial a Lomas de Cocoyoc y sus alrededores."
 msgstr ""
 
 #: template-parts/home/trust-bar.php:23
@@ -797,17 +816,18 @@ msgstr ""
 msgid "Estado"
 msgstr ""
 
-#: template-parts/property/info-general.php:22
-msgid "Annual Property Tax"
+#: template-parts/property/header.php:31
+msgid "Annual Property Tax: %s"
+msgstr ""
+
+#: inc/helpers.php
+msgid "Estimated amounts in USD."
 msgstr ""
 
 #: template-parts/property/info-general.php:32
 msgid "Información general"
 msgstr ""
 
-#: template-parts/property/map.php:24
-msgid "Aquí va imagen de amenidades del fraccionamiento"
-msgstr ""
 
 #: template-parts/property/similar.php:43
 msgid "Propiedades similares"
@@ -834,7 +854,7 @@ msgid "Contactar ahora"
 msgstr ""
 
 #: template-parts/site-footer.php:34
-msgid "Inmobiliaria especializada en Lomas de Cocoyoc. Compra, venta, renta de propiedades, terrenos y construcción de viviendas."
+msgid "Inmobiliaria especializada en Lomas de Cocoyoc. Compra, venta, renta de propiedades, terrenos y construcción de casas residenciales."
 msgstr ""
 
 #: template-parts/site-footer.php:70
@@ -842,7 +862,7 @@ msgid "Lun - Vie: 9:00 - 18:00"
 msgstr ""
 
 #: template-parts/site-footer.php:71
-msgid "Sáb: 9:00 - 14:00"
+msgid "Sáb: 10:00 - 15:00"
 msgstr ""
 
 #. translators: %s: año actual, para el aviso de derechos reservados del footer

@@ -143,6 +143,14 @@ add_action('init', 'momentum_register_terreno_meta');
  */
 function momentum_save_terreno_meta($post_id)
 {
+	// Mismo motivo que la guarda equivalente en momentum_save_propiedad_meta()
+	// (inc/cpt/propiedades.php): evita que el wp_update_post() de
+	// Momentum_Property_Translation_Service::sync_textual_fields() sobre la
+	// traducción en inglés reprocese el $_POST de la ficha en español.
+	if (class_exists('Momentum_Property_Translation_Service') && Momentum_Property_Translation_Service::is_syncing()) {
+		return;
+	}
+
 	if (
 		! isset($_POST['momentum_terreno_meta_nonce'])
 		|| ! wp_verify_nonce($_POST['momentum_terreno_meta_nonce'], 'momentum_terreno_meta_save')

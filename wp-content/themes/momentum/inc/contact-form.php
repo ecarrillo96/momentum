@@ -50,7 +50,7 @@ function momentum_handle_contact_form()
 	// Si el admin deja vacío el correo en Admin > General, cae al valor
 	// original -este envío no puede quedarse sin destinatario en silencio-.
 	$sent = wp_mail(
-		momentum_get_email() ?: 'info@momentumcocoyoc.com',
+		momentum_get_email() ?: 'momentumcocoyoc.ventas@gmail.com',
 		'Nuevo mensaje de contacto — Momentum Cocoyoc',
 		$body,
 		["Reply-To: {$nombre} <{$email}>"]

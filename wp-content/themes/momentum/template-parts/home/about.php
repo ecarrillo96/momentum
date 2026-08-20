@@ -9,13 +9,16 @@ if (! defined('ABSPATH')) {
 }
 
 $stats = [
-	['icon' => 'check', 'value' => '+10', 'label' => __('años de experiencia', 'momentum')],
-	['icon' => 'home',  'value' => '+250', 'label' => __('propiedades comercializadas', 'momentum')],
+	['icon' => 'check', 'value' => '+20', 'label' => __('años de experiencia', 'momentum')],
+	['icon' => 'home',  'value' => '+500', 'label' => __('propiedades comercializadas', 'momentum')],
 	['icon' => 'heart', 'value' => '100%', 'label' => __('compromiso con nuestros clientes', 'momentum')],
 ];
 
-// Foto representativa de la zona (misma galería de imágenes de propiedades).
-$image_id = 66;
+// Editable desde Admin > General > Inicio (Momentum_Admin_Content_Pages en
+// el plugin momentum-admin); ver inc/page-content-fields.php. Compartida
+// entre idiomas (momentum_get_shared_page_meta()). El 1062 es el fallback
+// -la foto nocturna de la fachada actual- si el campo se vaciara.
+$image_id = (int) momentum_get_shared_page_meta(get_queried_object_id(), 'home_about_image') ?: 1062;
 
 // Sin foto en el hero (template-parts/home/hero.php es solo texto), esta es
 // la primera imagen visible de la home -confirmado como el elemento LCP
@@ -37,7 +40,7 @@ $image_id = 66;
 			<h2><?php esc_html_e('Inmobiliaria especializada en Lomas de Cocoyoc, Morelos', 'momentum'); ?></h2>
 
 			<p>
-				<?php esc_html_e('En Momentum Cocoyoc tenemos más de 10 años de experiencia ayudando a familias e inversionistas a comprar, vender, rentar y construir en una de las zonas con mayor plusvalía de Morelos.', 'momentum'); ?>
+				<?php esc_html_e('En Momentum Cocoyoc tenemos más de 20 años de experiencia ayudando a familias e inversionistas a comprar, vender, rentar y construir en una de las zonas con mayor plusvalía del país.', 'momentum'); ?>
 			</p>
 
 			<p>

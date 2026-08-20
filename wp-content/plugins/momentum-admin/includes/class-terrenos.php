@@ -70,7 +70,7 @@ class Momentum_Admin_Terrenos
 		$accion = isset($_GET['accion']) ? sanitize_key(wp_unslash($_GET['accion'])) : 'listar';
 
 		if ($accion === 'nueva') {
-			self::render_form(0);
+			self::start_new_draft();
 
 			return;
 		}
@@ -82,6 +82,38 @@ class Momentum_Admin_Terrenos
 		}
 
 		self::render_list();
+	}
+
+	/**
+	 * Ver Momentum_Admin_Properties::start_new_draft() -mismo problema y
+	 * misma solución, replicada aquí porque Terrenos tiene su propio
+	 * manejador de acciones: crear el auto-draft antes de mostrar el
+	 * formulario "nueva", para que exista un post_id real desde el primer
+	 * momento en que se abre el selector de medios y el filtro upload_dir
+	 * de momentum-property-media-organizer tenga algo que resolver.
+	 */
+	private static function start_new_draft(): void
+	{
+		$redirect_base = self::base_url();
+
+		if (! current_user_can(Momentum_Admin_Permissions::CAPABILITY)) {
+			wp_safe_redirect(add_query_arg('error', 'permisos', $redirect_base));
+			exit;
+		}
+
+		$new_id = wp_insert_post([
+			'post_type'   => self::POST_TYPE,
+			'post_status' => 'auto-draft',
+			'post_title'  => __('Auto Draft'),
+		], true);
+
+		if (is_wp_error($new_id)) {
+			wp_safe_redirect(add_query_arg('error', 'guardado', $redirect_base));
+			exit;
+		}
+
+		wp_safe_redirect(add_query_arg(['accion' => 'editar', 'id' => (int) $new_id], $redirect_base));
+		exit;
 	}
 
 	// -----------------------------------------------------------------
@@ -107,17 +139,31 @@ class Momentum_Admin_Terrenos
 
 		$post_id = isset($_POST['momentum_terreno_id']) ? absint($_POST['momentum_terreno_id']) : 0;
 		$is_new  = $post_id === 0;
+		// Ver Momentum_Admin_Properties::handle_save() -mismo tratamiento-:
+		// con start_new_draft(), $post_id ya viene de un auto-draft real en el
+		// caso normal de "primer guardado" de una ficha nueva.
+		$was_auto_draft = false;
 
-		if (! $is_new && (get_post_type($post_id) !== self::POST_TYPE || ! current_user_can('edit_post', $post_id))) {
-			wp_safe_redirect(add_query_arg('error', 'permisos', $redirect_base));
-			exit;
+		if (! $is_new) {
+			if (get_post_type($post_id) !== self::POST_TYPE || ! current_user_can('edit_post', $post_id)) {
+				wp_safe_redirect(add_query_arg('error', 'permisos', $redirect_base));
+				exit;
+			}
+
+			$existing_post  = get_post($post_id);
+			$was_auto_draft = $existing_post instanceof WP_Post && $existing_post->post_status === 'auto-draft';
 		}
 
 		$title   = isset($_POST['momentum_terreno_title']) ? sanitize_text_field(wp_unslash($_POST['momentum_terreno_title'])) : '';
 		$status  = (isset($_POST['momentum_terreno_status']) && in_array($_POST['momentum_terreno_status'], ['publish', 'draft'], true))
 			? sanitize_key($_POST['momentum_terreno_status'])
 			: 'draft';
-		$content = isset($_POST['momentum_terreno_content']) ? wp_kses_post(wp_unslash($_POST['momentum_terreno_content'])) : '';
+		// Ver Momentum_Admin_Properties::handle_save() -mismo motivo-:
+		// normaliza '\r\n' de un <textarea> real a '\n' antes de guardar, para
+		// no romper la huella de sincronización de traducción.
+		$content = isset($_POST['momentum_terreno_content'])
+			? wp_kses_post(momentum_normalize_line_endings(wp_unslash($_POST['momentum_terreno_content'])))
+			: '';
 
 		$form_target = $is_new
 			? add_query_arg('accion', 'nueva', $redirect_base)
@@ -153,6 +199,17 @@ class Momentum_Admin_Terrenos
 			'post_type'    => self::POST_TYPE,
 		];
 
+		// La imagen destacada se guarda de forma procedural MÁS ABAJO, después
+		// de wp_insert_post()/wp_update_post() -que ya dispara la sincronización
+		// de traducción vía el hook 'save_post_terrenos'-. Sin diferir ese
+		// disparo automático, la traducción copiaría la imagen ANTERIOR (o
+		// ninguna, en una ficha nueva) en vez de la que se está guardando en
+		// este mismo formulario. Ver Momentum_Property_Translation_Service::$external_trigger_pending
+		// (mismo bug ya corregido para Propiedades, ver class-properties.php).
+		if (class_exists('Momentum_Property_Translation_Service')) {
+			Momentum_Property_Translation_Service::defer_auto_trigger();
+		}
+
 		if ($is_new) {
 			$result = wp_insert_post($postarr, true);
 		} else {
@@ -174,8 +231,25 @@ class Momentum_Admin_Terrenos
 
 		self::save_featured_image($post_id);
 
+		// Ver Momentum_Admin_Properties::handle_save() -mismo mecanismo-:
+		// promueve imágenes que hayan caído en terrenos/pendiente-{ID}/ hacia
+		// terrenos/{CODIGO}/ ahora que el código ya quedó guardado.
+		if (class_exists('Momentum_PMO_Upload_Directory')) {
+			Momentum_PMO_Upload_Directory::promote_pending_uploads($post_id);
+		}
+
+		$treated_as_new = $is_new || $was_auto_draft;
+
+		// Ahora sí, con la imagen destacada ya guardada: dispara la
+		// sincronización de traducción explícitamente y reactiva el hook
+		// normal para la siguiente petición.
+		if (class_exists('Momentum_Property_Translation_Service')) {
+			Momentum_Property_Translation_Service::handle_save($post_id, get_post($post_id), ! $treated_as_new);
+			Momentum_Property_Translation_Service::resume_auto_trigger();
+		}
+
 		wp_safe_redirect(add_query_arg(
-			['accion' => 'editar', 'id' => $post_id, 'mensaje' => $is_new ? 'creada' : 'actualizada'],
+			['accion' => 'editar', 'id' => $post_id, 'mensaje' => $treated_as_new ? 'creada' : 'actualizada'],
 			$redirect_base
 		));
 		exit;

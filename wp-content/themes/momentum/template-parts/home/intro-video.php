@@ -6,13 +6,23 @@
  * lo destapa en cuanto corre, salvo que sessionStorage indique que el
  * visitante ya lo vio u omitió en esta sesión (así no se repite en cada
  * página vista del mismo visitante).
+ *
+ * El video NO se carga con el HTML inicial: preload="none" y sin `src` en
+ * las <source> (van en `data-src`) para que el navegador no descargue ni un
+ * byte de video hasta que assets/js/intro-video.js decida reproducirlo. El
+ * `poster` sí se pinta de inmediato -es una imagen aparte, ~135 KB- y ocupa
+ * el mismo espacio que ocupará el video (`width`/`height` fijos, además del
+ * aspect-ratio ya definido en intro-video.css), así que no hay salto de
+ * layout entre el poster y el primer fotograma real.
  */
 
 if (! defined('ABSPATH')) {
 	exit;
 }
 
-$video_url = momentum_get_intro_video_url();
+$video_url      = momentum_get_intro_video_url();
+$video_webm_url = momentum_get_intro_video_webm_url();
+$poster_url     = momentum_get_intro_video_poster_url();
 ?>
 <div class="momentum-intro-video" data-momentum-intro-video hidden>
 	<div class="momentum-intro-video__frame">
@@ -23,13 +33,19 @@ $video_url = momentum_get_intro_video_url();
 
 		<video
 			class="momentum-intro-video__player"
-			src="<?php echo esc_url($video_url); ?>"
 			data-momentum-intro-player
-			autoplay
 			muted
 			playsinline
 			controls
-			preload="auto"
-		></video>
+			preload="none"
+			width="960"
+			height="540"
+			<?php if ($poster_url !== '') : ?>poster="<?php echo esc_url($poster_url); ?>"<?php endif; ?>
+		>
+			<?php if ($video_webm_url !== '') : ?>
+				<source data-src="<?php echo esc_url($video_webm_url); ?>" type="video/webm">
+			<?php endif; ?>
+			<source data-src="<?php echo esc_url($video_url); ?>" type="video/mp4">
+		</video>
 	</div>
 </div>

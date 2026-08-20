@@ -9,20 +9,13 @@ if (! defined('ABSPATH')) {
 
 $data = momentum_get_propiedad(get_the_ID());
 
+// Annual Property Tax vive en el header de la ficha (template-parts/property/header.php),
+// junto al precio -no aquí-, para la versión en inglés.
 $rows = [
 	__('Clave', 'momentum')             => $data['codigo_propiedad'],
 	__('Tipo de operación', 'momentum') => momentum_get_tipo_operacion_label($data['tipo_operacion']),
 	__('Estado', 'momentum')            => momentum_get_estado_label($data['estado']),
 ];
-
-// Taxes solo se muestra fuera del idioma por defecto (oculto en español,
-// visible en inglés y en cualquier otro idioma que se agregue más adelante
-// -no hardcodeado a 'en'-), y solo si hay un monto capturado.
-$show_taxes = momentum_current_language() !== momentum_default_language() && $data['taxes_usd'] > 0;
-
-if ($show_taxes) {
-	$rows[__('Annual Property Tax', 'momentum')] = '$' . number_format($data['taxes_usd'], 0, '.', ',') . ' USD';
-}
 
 $rows = array_filter($rows);
 
@@ -40,8 +33,4 @@ if (! $rows) {
 			</div>
 		<?php endforeach; ?>
 	</dl>
-
-	<?php if ($show_taxes) : ?>
-		<p class="momentum-property-info-general__note"><?php echo esc_html(momentum_usd_estimate_note()); ?></p>
-	<?php endif; ?>
 </div>

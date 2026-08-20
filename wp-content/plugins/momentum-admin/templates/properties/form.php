@@ -39,6 +39,21 @@ $action_url = $is_edit
 	<a class="momentum-admin-link" href="<?php echo esc_url(home_url('/admin/propiedades/')); ?>">&larr; <?php esc_html_e('Volver al listado', 'momentum-admin'); ?></a>
 </div>
 
+<?php
+/**
+ * Único punto de integración con wp-content/plugins/momentum-property-media-organizer/:
+ * le da a ese plugin (si está activo) el ID de la propiedad que se está
+ * editando, para que pueda avisar sobre el código y decirle a wp.media a
+ * qué inmueble pertenece cualquier imagen que se suba desde este
+ * formulario. No-op si ese plugin no está activo (do_action() sobre un
+ * hook sin listeners no hace nada), así que este archivo no depende de él
+ * para funcionar.
+ */
+if ($is_edit) {
+	do_action('momentum_admin_after_page_header', $post_id);
+}
+?>
+
 <?php if ($mensaje_code && isset($mensajes[$mensaje_code])) : ?>
 	<p class="momentum-admin-alert momentum-admin-alert--success"><?php echo esc_html($mensajes[$mensaje_code]); ?></p>
 <?php endif; ?>
@@ -71,7 +86,7 @@ $action_url = $is_edit
 
 		<div class="momentum-admin-field">
 			<label for="momentum_precio"><?php esc_html_e('Precio (MXN)', 'momentum-admin'); ?></label>
-			<input type="number" step="0.01" min="0" id="momentum_precio" name="momentum_precio" value="<?php echo esc_attr($values['precio']); ?>">
+			<input type="number" step="1" min="0" id="momentum_precio" name="momentum_precio" value="<?php echo esc_attr($values['precio']); ?>">
 		</div>
 
 		<div class="momentum-admin-field">

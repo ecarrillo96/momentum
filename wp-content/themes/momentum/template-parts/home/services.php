@@ -34,7 +34,7 @@ $services = [
 	],
 	[
 		'icon'  => 'compass',
-		'title' => __('Asesoría', 'momentum'),
+		'title' => __('Seguros', 'momentum'),
 		'text'  => __('Acompañamiento legal, financiero e inmobiliario en cada operación.', 'momentum'),
 		'slug'  => 'asesoria',
 	],

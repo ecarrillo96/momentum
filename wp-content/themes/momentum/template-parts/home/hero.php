@@ -19,13 +19,11 @@ $features = [
 		<div class="momentum-hero__content">
 			<span class="momentum-hero__eyebrow"><?php esc_html_e('Inmobiliaria especializada en Lomas de Cocoyoc', 'momentum'); ?></span>
 
-			<h1><?php esc_html_e('Casas, Terrenos y Propiedades en Venta en Lomas de Cocoyoc', 'momentum'); ?></h1>
+			<h1><?php esc_html_e('Casas y Terrenos en Venta en Lomas de Cocoyoc', 'momentum'); ?></h1>
 
 			<p>
 				<?php esc_html_e('Te acompañamos en cada paso para que encuentres la propiedad ideal para ti y tu familia.', 'momentum'); ?>
 			</p>
-
-			<a class="momentum-btn momentum-btn--accent" href="#sobre-momentum"><?php esc_html_e('Conoce más', 'momentum'); ?></a>
 		</div>
 
 		<div class="momentum-hero__features">
