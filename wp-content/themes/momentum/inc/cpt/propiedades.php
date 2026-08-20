@@ -69,19 +69,19 @@ add_action('init', 'momentum_register_cpt_propiedades');
 function momentum_propiedad_meta_schema()
 {
 	return [
-		'precio'           => ['type' => 'number', 'label' => 'Precio (MXN)'],
+		'precio'           => ['type' => 'number', 'label' => 'Precio (MXN)', 'nonnegative' => true],
 		'tipo_operacion'   => ['type' => 'string', 'label' => 'Tipo de operación', 'options' => ['Venta', 'Renta']],
 		// Deprecado: ya no se usa en formularios, listados ni la página pública.
 		// Se conserva registrado para no perder los valores históricos guardados.
 		'tipo_propiedad'   => ['type' => 'string', 'label' => 'Tipo de propiedad', 'options' => ['Casa', 'Departamento', 'Terreno'], 'deprecated' => true],
-		'recamaras'        => ['type' => 'number', 'label' => 'Recámaras'],
+		'recamaras'        => ['type' => 'number', 'label' => 'Recámaras', 'nonnegative' => true],
 		// Texto libre a propósito: el cliente captura formatos como "6 2/2"
 		// (baños completos + medios baños) que no se pueden representar como
 		// número. No se filtra, ordena ni calcula nada por este campo, así que
 		// no hace falta forzarlo a numérico.
 		'banos'            => ['type' => 'string', 'label' => 'Baños'],
-		'terreno_m2'       => ['type' => 'number', 'label' => 'Terreno (m²)'],
-		'construccion_m2'  => ['type' => 'number', 'label' => 'Construcción (m²)'],
+		'terreno_m2'       => ['type' => 'number', 'label' => 'Terreno (m²)', 'nonnegative' => true],
+		'construccion_m2'  => ['type' => 'number', 'label' => 'Construcción (m²)', 'nonnegative' => true],
 		// Deprecado: reemplazado por 'zona'. Se conserva registrado por los mismos motivos.
 		'ubicacion'        => ['type' => 'string', 'label' => 'Ubicación', 'deprecated' => true],
 		'estado'           => ['type' => 'string', 'label' => 'Estado de la propiedad', 'options' => ['Disponible', 'Apartada', 'Preventa', 'Vendida', 'Rentada', 'Remate']],

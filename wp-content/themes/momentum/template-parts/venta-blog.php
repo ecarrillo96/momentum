@@ -46,7 +46,7 @@ if (! $blog_query->have_posts()) {
 				</span>
 
 				<span class="momentum-sidebar-blog__info">
-					<span class="momentum-sidebar-blog__title"><?php the_title(); ?></span>
+					<span class="momentum-sidebar-blog__title"><?php echo esc_html(get_the_title()); ?></span>
 					<span class="momentum-sidebar-blog__link"><?php esc_html_e('Leer más →', 'momentum'); ?></span>
 				</span>
 			</a>

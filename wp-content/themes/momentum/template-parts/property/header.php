@@ -25,7 +25,7 @@ $show_taxes = momentum_current_language() !== momentum_default_language() && $da
 <section class="momentum-property-header">
 	<div class="momentum-container">
 		<div class="momentum-property-header__top">
-			<h1><?php the_title(); ?></h1>
+			<h1><?php echo esc_html(get_the_title()); ?></h1>
 			<div class="momentum-property-header__price">
 				<?php echo esc_html(momentum_get_property_price_display($data)); ?>
 				<?php if ($show_taxes) : ?>

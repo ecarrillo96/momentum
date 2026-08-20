@@ -128,3 +128,34 @@ function momentum_invalidate_rank_math_sitemap_cache(int $post_id): void
 
 	\RankMath\Sitemap\Cache::invalidate_storage(get_post_type($post_id));
 }
+
+/**
+ * Misma invalidación que arriba, pero para el borrado PERMANENTE
+ * (wp_delete_post($id, true)): ese camino nunca dispara 'save_post_*'
+ * -solo lo hacen inserción/actualización, incluida la papelera, que
+ * internamente reutiliza wp_update_post()-, así que sin este hook aparte
+ * una ficha borrada definitivamente sin pasar antes por papelera se
+ * quedaba en el sitemap XML hasta que algún otro guardado (de cualquier
+ * ficha del mismo CPT) refrescara la caché por casualidad -detectado en
+ * la auditoría CRUD automatizada del 2026-08-20 con un registro de
+ * prueba eliminado directo, sin papelera-.
+ *
+ * 'deleted_post' (no 'before_delete_post'): pasa el objeto $post ya
+ * capturado como segundo argumento desde WP 5.5, así que no depende de
+ * poder leer get_post_type() sobre un ID que para ese momento ya no
+ * existe en la base de datos.
+ */
+add_action('deleted_post', 'momentum_invalidate_rank_math_sitemap_cache_on_delete', 20, 2);
+
+function momentum_invalidate_rank_math_sitemap_cache_on_delete(int $post_id, WP_Post $post): void
+{
+	if (! in_array($post->post_type, ['propiedades', 'terrenos'], true)) {
+		return;
+	}
+
+	if (! class_exists('\RankMath\Sitemap\Cache')) {
+		return;
+	}
+
+	\RankMath\Sitemap\Cache::invalidate_storage($post->post_type);
+}

@@ -56,7 +56,7 @@ if (! $query->have_posts()) {
 
 					<div class="momentum-blog-card__body">
 						<h3 class="momentum-blog-card__title">
-							<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+							<a href="<?php the_permalink(); ?>"><?php echo esc_html(get_the_title()); ?></a>
 						</h3>
 
 						<p class="momentum-blog-card__excerpt"><?php echo esc_html(wp_trim_words(get_the_excerpt(), 20)); ?></p>
