@@ -244,6 +244,15 @@ class Momentum_Admin_Properties
 
 		self::save_featured_image($post_id);
 
+		// El hook de 'save_post_propiedades' que limpia la destacada de la
+		// galería (momentum_strip_featured_image_from_gallery(), en
+		// inc/cpt/propiedades.php) ya corrió arriba, dentro de
+		// wp_insert_post()/wp_update_post(), pero todavía con la destacada
+		// ANTERIOR -set_post_thumbnail() de la línea de arriba corre después
+		// de ese hook, no antes-, así que se repite aquí ahora que la
+		// destacada nueva ya quedó guardada.
+		momentum_strip_featured_image_from_gallery($post_id);
+
 		// El código (codigo_propiedad) ya quedó guardado por
 		// momentum_save_propiedad_meta() dentro del wp_insert_post()/
 		// wp_update_post() de arriba. Si esta ficha subió imágenes ANTES de

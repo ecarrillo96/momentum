@@ -176,6 +176,51 @@ function momentum_sanitize_gallery_ids($value)
 }
 
 /**
+ * Quita la imagen destacada de la galería si quedó duplicada ahí -no
+ * debería estar en ambos lados a la vez-. Detectado en auditoría (2026-08-22,
+ * ficha MC-102): ~80% del catálogo migrado (94 de 118 fichas) tenía la
+ * destacada repetida dentro de 'galeria', probablemente arrastrado de la
+ * importación original de contenido, no de un guardado nuevo desde este
+ * formulario -pero nada impedía que un guardado futuro lo repitiera, así
+ * que se limpia aquí en cada guardado, no solo una vez sobre los datos
+ * existentes-.
+ *
+ * Enganchado a 'save_post_propiedades'/'save_post_terrenos' en prioridad
+ * 40 -después de que la meta ya se guardó (prioridad 10) y después de que
+ * Momentum_Property_Translation_Service sincronizó 'galeria' hacia la
+ * traducción (prioridad 30)-, así que limpia tanto la ficha que se acaba
+ * de guardar como su traducción, sin lógica aparte para cada una.
+ *
+ * No cubre el flujo del panel propio (Momentum_Admin_Properties/Terrenos):
+ * ahí la imagen destacada se guarda con set_post_thumbnail() DESPUÉS de
+ * este mismo hook (ver el comentario en handle_save() de esas clases), así
+ * que en el momento en que este hook corre para ese guardado todavía no
+ * hay imagen destacada nueva que comparar. Por eso ambas clases llaman
+ * esta misma función otra vez, explícitamente, justo después de guardar la
+ * imagen destacada -mismo saneamiento, sin duplicar la lógica-.
+ */
+function momentum_strip_featured_image_from_gallery(int $post_id): void
+{
+	$thumbnail_id = get_post_thumbnail_id($post_id);
+
+	if (! $thumbnail_id) {
+		return;
+	}
+
+	$gallery_ids = momentum_get_galeria_ids($post_id);
+
+	if (! in_array($thumbnail_id, $gallery_ids, true)) {
+		return;
+	}
+
+	$gallery_ids = array_values(array_diff($gallery_ids, [$thumbnail_id]));
+
+	update_post_meta($post_id, 'galeria', implode(',', $gallery_ids));
+}
+add_action('save_post_propiedades', 'momentum_strip_featured_image_from_gallery', 40);
+add_action('save_post_terrenos', 'momentum_strip_featured_image_from_gallery', 40);
+
+/**
  * Valores permitidos de un campo con opciones, sea lista indexada
  * (['Venta','Renta']) u opciones slug => label ('options_map', ej. 'zona').
  */

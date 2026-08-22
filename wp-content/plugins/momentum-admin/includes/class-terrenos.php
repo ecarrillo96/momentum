@@ -231,6 +231,12 @@ class Momentum_Admin_Terrenos
 
 		self::save_featured_image($post_id);
 
+		// Ver Momentum_Admin_Properties::handle_save() -mismo motivo-: el
+		// hook de 'save_post_terrenos' que limpia la destacada de la
+		// galería ya corrió con la destacada ANTERIOR, así que se repite
+		// aquí ahora que la nueva ya quedó guardada.
+		momentum_strip_featured_image_from_gallery($post_id);
+
 		// Ver Momentum_Admin_Properties::handle_save() -mismo mecanismo-:
 		// promueve imágenes que hayan caído en terrenos/pendiente-{ID}/ hacia
 		// terrenos/{CODIGO}/ ahora que el código ya quedó guardado.
