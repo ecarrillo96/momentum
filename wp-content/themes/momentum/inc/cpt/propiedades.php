@@ -612,6 +612,67 @@ function momentum_delete_child_attachments_on_permanent_delete(int $post_id): vo
 add_action('before_delete_post', 'momentum_delete_child_attachments_on_permanent_delete');
 
 /**
+ * Al eliminar PERMANENTEMENTE una Propiedad/Terreno, elimina también su
+ * traducción vinculada (si existe) -antes quedaba huérfana: la auditoría
+ * CRUD (2026-08) encontró 15+ traducciones vacías acumuladas de sesiones
+ * de prueba anteriores, cada una del mismo origen: se borraba la ficha en
+ * un idioma con wp_delete_post() directo, sin tocar su par-. Comportamiento
+ * confirmado como el esperado por el cliente el 2026-08-22 -antes era una
+ * decisión de negocio sin documentar, no se tocaba a propósito-.
+ *
+ * Guard de reentrancia ($processing, estático): borrar la traducción
+ * dispara este mismo hook para ella, que encuentra al post ORIGINAL como
+ * su propia traducción -todavía no se borra de la base de datos hasta que
+ * termina este hook, así que get_post() lo sigue viendo como existente- e
+ * intentaría volver a eliminarlo. Sin este guard, terminaría en un loop
+ * infinito entre los dos posts.
+ *
+ * Prioridad 5, no la 10 por defecto: Polylang engancha su propia limpieza
+ * (PLL_CRUD_Posts::delete_post) también en 'before_delete_post' a
+ * prioridad 10, y se registra ANTES que este archivo -por orden de carga
+ * de plugin vs. tema-, así que con la prioridad por defecto ya había
+ * roto la relación de traducción para cuando esta función corría
+ * (confirmado en pruebas: pll_get_post_translations() volvía solo el
+ * propio post, sin su par). A prioridad 5 esta función lee la relación
+ * todavía intacta.
+ */
+function momentum_delete_linked_translation_on_permanent_delete(int $post_id): void
+{
+	static $processing = [];
+
+	if (isset($processing[$post_id])) {
+		return;
+	}
+
+	if (! in_array(get_post_type($post_id), ['propiedades', 'terrenos'], true)) {
+		return;
+	}
+
+	if (! function_exists('pll_get_post_translations')) {
+		return;
+	}
+
+	$processing[$post_id] = true;
+
+	$current_lang = pll_get_post_language($post_id);
+
+	foreach (pll_get_post_translations($post_id) as $lang => $translation_id) {
+		$translation_id = (int) $translation_id;
+
+		if ($lang === $current_lang || $translation_id === 0 || $translation_id === $post_id) {
+			continue;
+		}
+
+		if (get_post($translation_id)) {
+			wp_delete_post($translation_id, true);
+		}
+	}
+
+	unset($processing[$post_id]);
+}
+add_action('before_delete_post', 'momentum_delete_linked_translation_on_permanent_delete', 5);
+
+/**
  * true si $attachment_id aparece como imagen destacada o en la galería de
  * alguna Propiedad/Terreno DISTINTA de $exclude_post_id. Consulta directa
  * (sin WP_Query) porque 'galeria' guarda una lista de IDs separada por

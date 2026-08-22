@@ -167,7 +167,20 @@ function momentum_seo_listing_description(int $post_id, string $post_type): stri
 
 	if ($post_type === 'terrenos') {
 		$caracteristicas = trim((string) get_post_meta($post_id, 'caracteristicas', true));
-		$caracteristicas = $caracteristicas !== '' ? preg_replace('/\s*\n+\s*/', ' ', $caracteristicas) : '';
+
+		if ($caracteristicas !== '') {
+			// Cada línea del campo 'Características' es una característica
+			// distinta -unirlas solo con espacio las leía como una sola
+			// oración corrida (ej. "Terreno plano Listo para construir").
+			// rtrim(',.;') por línea: evita "; ." o ";;" si alguien ya
+			// puntuó la línea a mano.
+			$lineas = array_filter(array_map(
+				static fn (string $linea): string => rtrim(trim($linea), ',.;'),
+				preg_split('/\n+/', $caracteristicas)
+			), static fn (string $linea): bool => $linea !== '');
+
+			$caracteristicas = $lineas !== [] ? implode('; ', $lineas) . '.' : '';
+		}
 
 		return trim(implode(' ', array_filter([$lead, $caracteristicas])));
 	}
