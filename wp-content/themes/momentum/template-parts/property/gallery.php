@@ -31,6 +31,14 @@ foreach ($gallery_ids as $id) {
 	}
 }
 
+// 'sizes' reales por elemento -mismo criterio que ya usa
+// template-parts/property-card.php: describir el ancho renderizado real
+// según el CSS (property.css), no dejar que el navegador adivine a partir
+// del tamaño intrínseco de la imagen, que casi siempre sobreestima-.
+$gallery_main_sizes    = '(max-width: 680px) calc(100vw - 32px), (max-width: 1280px) calc(100vw - 48px), 1232px';
+$gallery_thumb_sizes   = '(max-width: 680px) 50vw, (max-width: 1280px) 25vw, 299px';
+$lightbox_thumb_sizes  = '52px';
+
 $images = [];
 foreach ($image_ids as $id) {
 	// wp_get_attachment_image_src() (unlike _url()) also returns the
@@ -47,6 +55,8 @@ foreach ($image_ids as $id) {
 		continue; // adjunto inválido o borrado: se omite sin romper el layout
 	}
 
+	$large_size = wp_get_attachment_image_src($id, '1536x1536') ? '1536x1536' : 'large';
+
 	// 'thumbnail' (150x150) alcanza para la tira pequeña del lightbox (52px),
 	// pero se ve borrosa estirada en la tira grande de la galería (~300px de
 	// ancho); esa usa 'medium_large' para mantenerse nítida.
@@ -58,12 +68,15 @@ foreach ($image_ids as $id) {
 		'large'                => $large_src[0],
 		'large_width'          => $large_src[1],
 		'large_height'         => $large_src[2],
+		'large_srcset'         => wp_get_attachment_image_srcset($id, $large_size) ?: '',
 		'thumb'                => $thumb_src ? $thumb_src[0] : $large_src[0],
 		'thumb_width'          => $thumb_src ? $thumb_src[1] : $large_src[1],
 		'thumb_height'         => $thumb_src ? $thumb_src[2] : $large_src[2],
+		'thumb_srcset'         => $thumb_src ? (wp_get_attachment_image_srcset($id, 'thumbnail') ?: '') : '',
 		'gallery_thumb'        => $gallery_thumb_src ? $gallery_thumb_src[0] : $large_src[0],
 		'gallery_thumb_width'  => $gallery_thumb_src ? $gallery_thumb_src[1] : $large_src[1],
 		'gallery_thumb_height' => $gallery_thumb_src ? $gallery_thumb_src[2] : $large_src[2],
+		'gallery_thumb_srcset' => $gallery_thumb_src ? (wp_get_attachment_image_srcset($id, 'medium_large') ?: '') : '',
 		'alt'                  => momentum_property_image_alt($id, $property_id),
 		'title'                => get_the_title($id),
 	];
@@ -94,6 +107,10 @@ $remaining  = max(0, $total - 1 - 4);
 		>
 			<img
 				src="<?php echo esc_url($main['large']); ?>"
+				<?php if ($main['large_srcset']) : ?>
+				srcset="<?php echo esc_attr($main['large_srcset']); ?>"
+				sizes="<?php echo esc_attr($gallery_main_sizes); ?>"
+				<?php endif; ?>
 				width="<?php echo esc_attr((string) $main['large_width']); ?>"
 				height="<?php echo esc_attr((string) $main['large_height']); ?>"
 				alt="<?php echo esc_attr($main['alt']); ?>"
@@ -131,6 +148,10 @@ $remaining  = max(0, $total - 1 - 4);
 				>
 					<img
 						src="<?php echo esc_url($image['gallery_thumb']); ?>"
+						<?php if ($image['gallery_thumb_srcset']) : ?>
+						srcset="<?php echo esc_attr($image['gallery_thumb_srcset']); ?>"
+						sizes="<?php echo esc_attr($gallery_thumb_sizes); ?>"
+						<?php endif; ?>
 						width="<?php echo esc_attr((string) $image['gallery_thumb_width']); ?>"
 						height="<?php echo esc_attr((string) $image['gallery_thumb_height']); ?>"
 						alt="<?php echo esc_attr($image['alt']); ?>"
@@ -177,6 +198,10 @@ $remaining  = max(0, $total - 1 - 4);
 				)); ?>">
 					<img
 						src="<?php echo esc_url($image['thumb']); ?>"
+						<?php if ($image['thumb_srcset']) : ?>
+						srcset="<?php echo esc_attr($image['thumb_srcset']); ?>"
+						sizes="<?php echo esc_attr($lightbox_thumb_sizes); ?>"
+						<?php endif; ?>
 						width="<?php echo esc_attr((string) $image['thumb_width']); ?>"
 						height="<?php echo esc_attr((string) $image['thumb_height']); ?>"
 						alt="<?php echo esc_attr($image['alt']); ?>"
