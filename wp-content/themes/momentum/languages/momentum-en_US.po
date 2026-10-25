@@ -855,6 +855,14 @@ msgstr "Our team is ready to help you find the perfect property."
 msgid "Contactar ahora"
 msgstr "Contact Now"
 
+#: template-parts/sidebar-cta-sell.php:16
+msgid "¿Quieres vender tu propiedad?"
+msgstr "Want to sell your property?"
+
+#: template-parts/sidebar-cta-sell.php:17
+msgid "Nosotros somos tu mejor opción, tenemos el equipo necesario para vender tu propiedad."
+msgstr "We're your best choice — we have the team you need to sell your property."
+
 #: template-parts/site-footer.php:34
 msgid "Inmobiliaria especializada en Lomas de Cocoyoc. Compra, venta, renta de propiedades, terrenos y construcción de casas residenciales."
 msgstr "Real estate agency specialized in Lomas de Cocoyoc. Buying, selling, renting properties and land, and residential home construction."

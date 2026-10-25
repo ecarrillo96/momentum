@@ -29,6 +29,7 @@ class Momentum_Admin_Router
 		'blog',
 		'traducciones',
 		'estadisticas',
+		'guias',
 	];
 
 	public static function init(): void
@@ -208,6 +209,10 @@ class Momentum_Admin_Router
 
 			case 'estadisticas':
 				Momentum_GA4_Admin::render();
+				break;
+
+			case 'guias':
+				Momentum_Admin_Guias::render();
 				break;
 		}
 

@@ -22,6 +22,22 @@ if (! defined('ABSPATH')) {
 
 const MOMENTUM_SETTINGS_GROUP = 'momentum_general';
 
+/*
+ * Grupo separado para la pantalla "SEO y traducción" (general-seo.php).
+ *
+ * WordPress core (wp-admin/options.php) procesa TODAS las opciones
+ * registradas en un grupo cada vez que se guarda CUALQUIER formulario que
+ * apunte a ese grupo -no solo los campos presentes en ese formulario en
+ * particular-. Si "Configuración general" (general.php) y "SEO y
+ * traducción" (general-seo.php) compartieran un solo grupo, guardar
+ * cualquiera de las dos pantallas reenviaría "vacío" para los campos de la
+ * OTRA pantalla (no están en el $_POST de la que sí se envió), y los
+ * sanitizadores de esos campos los guardarían como cadena vacía: esto era
+ * la causa raíz de que el teléfono/redes o el Measurement ID de GA4
+ * "se borraran solos" al guardar la otra pantalla.
+ */
+const MOMENTUM_SETTINGS_GROUP_SEO = 'momentum_general_seo';
+
 /**
  * Valores por defecto usados SOLO como fallback de lectura (get_option) si
  * la opción nunca se ha guardado -no se escriben en la base de datos-. Para
@@ -44,11 +60,14 @@ function momentum_settings_defaults(): array
 		'momentum_phone_2'       => '735 166 4461',
 		'momentum_address'       => "Estación vieja #10, Int. 3, Centro, Oaxtepec\nC.P. 62738, Yautepec, Morelos",
 		'momentum_email'         => 'momentumcocoyoc.ventas@gmail.com',
-		// GA4/Search Console: sin default -a propósito, nunca se rellena un
-		// ID/código de ejemplo aquí. Vacío = integración no conectada todavía;
-		// ver inc/seo-integrations.php, que no imprime nada mientras estén así.
-		'momentum_ga_measurement_id' => '',
-		'momentum_gsc_verification'  => '',
+		// GA4/Search Console/Ads/Meta Pixel: sin default -a propósito, nunca se
+		// rellena un ID/código de ejemplo aquí. Vacío = integración no
+		// conectada todavía; ver inc/seo-integrations.php, que no imprime nada
+		// mientras estén así.
+		'momentum_ga_measurement_id'    => '',
+		'momentum_gsc_verification'     => '',
+		'momentum_ga_ads_conversion_id' => '',
+		'momentum_meta_pixel_id'        => '',
 		'momentum_auto_publish_translations' => '0',
 		// Vacío = todavía no hay video en inglés subido; el sitio sigue
 		// mostrando el mismo video en español a los visitantes en inglés
@@ -295,6 +314,58 @@ function momentum_sanitize_gsc_verification($value)
 }
 
 /**
+ * ID de conversión de Google Ads, formato "AW-XXXXXXXXXX" (lo entrega
+ * Google Ads al crear una etiqueta de conversión/remarketing). Mismo
+ * criterio que momentum_sanitize_ga_measurement_id(): en mayúsculas,
+ * formato validado, rechaza y conserva el valor anterior si no cumple.
+ */
+function momentum_sanitize_ga_ads_conversion_id($value)
+{
+	$raw = strtoupper(trim((string) $value));
+
+	if ($raw === '') {
+		return '';
+	}
+
+	if (! preg_match('/^AW-[0-9]{5,15}$/', $raw)) {
+		add_settings_error(
+			'momentum_ga_ads_conversion_id',
+			'momentum_ga_ads_conversion_id_invalid',
+			__('El ID de conversión de Google Ads debe tener el formato AW-XXXXXXXXXX (lo entrega Google Ads al crear la etiqueta).', 'momentum-admin')
+		);
+
+		return get_option('momentum_ga_ads_conversion_id', '');
+	}
+
+	return $raw;
+}
+
+/**
+ * ID numérico del Meta Pixel (Facebook/Instagram Ads Manager > Orígenes de
+ * datos > Píxeles). Solo dígitos, longitud típica 15-16 caracteres.
+ */
+function momentum_sanitize_meta_pixel_id($value)
+{
+	$raw = trim((string) $value);
+
+	if ($raw === '') {
+		return '';
+	}
+
+	if (! preg_match('/^[0-9]{10,20}$/', $raw)) {
+		add_settings_error(
+			'momentum_meta_pixel_id',
+			'momentum_meta_pixel_id_invalid',
+			__('El ID del Meta Pixel debe ser solo números (lo encuentras en Meta Events Manager > Orígenes de datos > tu píxel).', 'momentum-admin')
+		);
+
+		return get_option('momentum_meta_pixel_id', '');
+	}
+
+	return $raw;
+}
+
+/**
  * Casilla "publicar traducciones automáticamente". Se apoya en un input
  * type="hidden" con el mismo name puesto ANTES de la casilla en el template
  * -patrón estándar de WordPress para checkboxes en Settings API-: si la
@@ -376,25 +447,45 @@ function momentum_general_settings_fields(): array
 		'momentum_phone_2'       => 'momentum_sanitize_phone_2',
 		'momentum_address'       => 'momentum_sanitize_address',
 		'momentum_email'         => 'momentum_sanitize_email_setting',
+	];
+}
+
+/**
+ * Campos de la pantalla "SEO y traducción" (general-seo.php) — grupo
+ * MOMENTUM_SETTINGS_GROUP_SEO, separado de momentum_general_settings_fields()
+ * a propósito (ver comentario junto a la constante).
+ */
+function momentum_general_seo_settings_fields(): array
+{
+	return [
 		'momentum_ga_measurement_id' => 'momentum_sanitize_ga_measurement_id',
 		'momentum_gsc_verification'  => 'momentum_sanitize_gsc_verification',
+		'momentum_ga_ads_conversion_id' => 'momentum_sanitize_ga_ads_conversion_id',
+		'momentum_meta_pixel_id'        => 'momentum_sanitize_meta_pixel_id',
 		'momentum_auto_publish_translations'  => 'momentum_sanitize_auto_publish_translations',
 		'momentum_translation_api_key_deepl'  => 'momentum_sanitize_translation_api_key_deepl',
 		'momentum_intro_video_url_en'         => 'momentum_sanitize_intro_video_url_en',
 	];
 }
 
+/**
+ * Nombres de TODOS los campos de ambas pantallas (general.php +
+ * general-seo.php) — se usa solo para filtrar get_settings_errors() a los
+ * campos propios de este módulo, no para registrar nada, así que no
+ * importa que mezcle los dos grupos.
+ */
 function momentum_general_settings_field_names(): array
 {
-	return array_keys(momentum_general_settings_fields());
+	return array_merge(
+		array_keys(momentum_general_settings_fields()),
+		array_keys(momentum_general_seo_settings_fields())
+	);
 }
 
 function momentum_register_general_settings(): void
 {
-	$fields = momentum_general_settings_fields();
-
-	foreach ($fields as $option_name => $callback) {
-		register_setting(MOMENTUM_SETTINGS_GROUP, $option_name, [
+	$args_for = static function (string $callback): array {
+		return [
 			'type'              => 'string',
 			'sanitize_callback' => $callback,
 			/*
@@ -416,7 +507,15 @@ function momentum_register_general_settings(): void
 			 * Momentum_Admin_Permissions::CAPABILITY en todo el panel.
 			 */
 			'capability'        => 'manage_options',
-		]);
+		];
+	};
+
+	foreach (momentum_general_settings_fields() as $option_name => $callback) {
+		register_setting(MOMENTUM_SETTINGS_GROUP, $option_name, $args_for($callback));
+	}
+
+	foreach (momentum_general_seo_settings_fields() as $option_name => $callback) {
+		register_setting(MOMENTUM_SETTINGS_GROUP_SEO, $option_name, $args_for($callback));
 	}
 }
 add_action('admin_init', 'momentum_register_general_settings');
@@ -506,6 +605,24 @@ function momentum_get_ga_measurement_id(): string
 function momentum_get_gsc_verification(): string
 {
 	return (string) get_option('momentum_gsc_verification', '');
+}
+
+/**
+ * '' mientras nadie haya conectado Google Ads todavía -mismo criterio que
+ * momentum_get_ga_measurement_id().
+ */
+function momentum_get_ga_ads_conversion_id(): string
+{
+	return (string) get_option('momentum_ga_ads_conversion_id', '');
+}
+
+/**
+ * '' mientras nadie haya conectado el Meta Pixel todavía -mismo criterio
+ * que momentum_get_ga_measurement_id().
+ */
+function momentum_get_meta_pixel_id(): string
+{
+	return (string) get_option('momentum_meta_pixel_id', '');
 }
 
 // -----------------------------------------------------------------

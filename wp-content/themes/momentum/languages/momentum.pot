@@ -853,6 +853,14 @@ msgstr ""
 msgid "Contactar ahora"
 msgstr ""
 
+#: template-parts/sidebar-cta-sell.php:16
+msgid "¿Quieres vender tu propiedad?"
+msgstr ""
+
+#: template-parts/sidebar-cta-sell.php:17
+msgid "Nosotros somos tu mejor opción, tenemos el equipo necesario para vender tu propiedad."
+msgstr ""
+
 #: template-parts/site-footer.php:34
 msgid "Inmobiliaria especializada en Lomas de Cocoyoc. Compra, venta, renta de propiedades, terrenos y construcción de casas residenciales."
 msgstr ""

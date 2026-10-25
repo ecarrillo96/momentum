@@ -21,7 +21,6 @@ get_template_part('template-parts/property/gallery');
 			<?php
 			get_template_part('template-parts/property/description');
 			get_template_part('template-parts/property/features');
-			get_template_part('template-parts/property/drone-video');
 			get_template_part('template-parts/property/video');
 			?>
 		</div>

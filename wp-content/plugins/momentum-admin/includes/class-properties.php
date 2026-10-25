@@ -214,6 +214,17 @@ class Momentum_Admin_Properties
 			'post_type'    => self::POST_TYPE,
 		];
 
+		// WordPress NO regenera el slug (post_name) a partir del título en un
+		// wp_update_post() sobre un post que ya tiene uno -eso solo pasa la
+		// primera vez, con post_name vacío-. Sin esto, cambiar el título de
+		// una ficha ya guardada (ej. de "Propiedad MC-776" a un título real)
+		// dejaba la URL para siempre con el slug viejo/genérico. Se regenera
+		// solo cuando el título realmente cambió, para no tocar la URL en
+		// guardados que no editan el título.
+		if (! $is_new && $existing_post instanceof WP_Post && $existing_post->post_title !== $title) {
+			$postarr['post_name'] = wp_unique_post_slug(sanitize_title($title), $post_id, $status, self::POST_TYPE, 0);
+		}
+
 		// La imagen destacada se guarda de forma procedural MÁS ABAJO, después
 		// de wp_insert_post()/wp_update_post() -que ya dispara la sincronización
 		// de traducción vía el hook 'save_post_propiedades'-. Sin diferir ese
@@ -339,6 +350,8 @@ class Momentum_Admin_Properties
 		$search         = isset($_GET['buscar']) ? sanitize_text_field(wp_unslash($_GET['buscar'])) : '';
 		$estado         = isset($_GET['estado']) ? sanitize_text_field(wp_unslash($_GET['estado'])) : '';
 		$tipo_operacion = isset($_GET['tipo_operacion']) ? sanitize_text_field(wp_unslash($_GET['tipo_operacion'])) : '';
+		$zona           = isset($_GET['zona']) ? sanitize_text_field(wp_unslash($_GET['zona'])) : '';
+		$visibilidad    = isset($_GET['visibilidad']) ? sanitize_key(wp_unslash($_GET['visibilidad'])) : '';
 		$paged          = isset($_GET['pg']) ? max(1, absint($_GET['pg'])) : 1;
 
 		// Whitelist contra las opciones reales del esquema (evita valores arbitrarios).
@@ -347,6 +360,15 @@ class Momentum_Admin_Properties
 		}
 		if ($tipo_operacion !== '' && ! in_array($tipo_operacion, $schema['tipo_operacion']['options'], true)) {
 			$tipo_operacion = '';
+		}
+		if ($zona !== '' && ! isset($schema['zona']['options_map'][$zona])) {
+			$zona = '';
+		}
+		// Mismos dos valores que ofrece el campo "Visibilidad" del formulario
+		// de edición (self::guardar()); 'pending' no es seleccionable ahí, así
+		// que tampoco es un valor válido de filtro.
+		if (! in_array($visibilidad, ['publish', 'draft'], true)) {
+			$visibilidad = '';
 		}
 
 		$meta_query = ['relation' => 'AND'];
@@ -357,10 +379,13 @@ class Momentum_Admin_Properties
 		if ($tipo_operacion !== '') {
 			$meta_query[] = ['key' => 'tipo_operacion', 'value' => $tipo_operacion, 'compare' => '='];
 		}
+		if ($zona !== '') {
+			$meta_query[] = ['key' => 'zona', 'value' => $zona, 'compare' => '='];
+		}
 
 		$query_args = [
 			'post_type'      => self::POST_TYPE,
-			'post_status'    => ['publish', 'draft', 'pending'],
+			'post_status'    => $visibilidad !== '' ? $visibilidad : ['publish', 'draft', 'pending'],
 			'posts_per_page' => 20,
 			'paged'          => $paged,
 			'orderby'        => 'date',
@@ -407,6 +432,8 @@ class Momentum_Admin_Properties
 			'search'         => $search,
 			'estado'         => $estado,
 			'tipo_operacion' => $tipo_operacion,
+			'zona'           => $zona,
+			'visibilidad'    => $visibilidad,
 			'paged'          => $paged,
 		];
 	}
@@ -415,8 +442,39 @@ class Momentum_Admin_Properties
 	{
 		$result = self::query_properties();
 		$schema = momentum_propiedad_meta_schema();
+		$total_registradas = self::count_registered();
 
 		include MOMENTUM_ADMIN_PATH . 'templates/properties/list.php';
+	}
+
+	/**
+	 * Total de propiedades registradas (publicadas + borrador + pendientes,
+	 * mismo alcance que query_properties()), sin importar filtros de
+	 * búsqueda activos -para el contador del encabezado del listado-.
+	 *
+	 * Filtrado al idioma por defecto: wp_count_posts() contaría cada
+	 * propiedad DOS veces en un sitio multilingüe (la ficha en español y su
+	 * traducción en inglés son posts 'propiedades' independientes), lo que
+	 * duplicaría el número que ve el administrador.
+	 */
+	private static function count_registered(): int
+	{
+		if (! momentum_is_multilingual()) {
+			$counts = wp_count_posts(self::POST_TYPE);
+
+			return (int) ($counts->publish ?? 0) + (int) ($counts->draft ?? 0) + (int) ($counts->pending ?? 0);
+		}
+
+		$query = new WP_Query([
+			'post_type'      => self::POST_TYPE,
+			'post_status'    => ['publish', 'draft', 'pending'],
+			'lang'           => momentum_default_language(),
+			'posts_per_page' => 1,
+			'fields'         => 'ids',
+			'no_found_rows'  => false,
+		]);
+
+		return (int) $query->found_posts;
 	}
 
 	// -----------------------------------------------------------------

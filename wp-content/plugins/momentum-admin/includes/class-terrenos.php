@@ -199,6 +199,14 @@ class Momentum_Admin_Terrenos
 			'post_type'    => self::POST_TYPE,
 		];
 
+		// Ver Momentum_Admin_Properties::handle_save() -mismo motivo-:
+		// WordPress no regenera el slug a partir del título en un
+		// wp_update_post() sobre un post que ya tiene post_name, así que se
+		// regenera aquí explícitamente cuando el título realmente cambió.
+		if (! $is_new && $existing_post instanceof WP_Post && $existing_post->post_title !== $title) {
+			$postarr['post_name'] = wp_unique_post_slug(sanitize_title($title), $post_id, $status, self::POST_TYPE, 0);
+		}
+
 		// La imagen destacada se guarda de forma procedural MÁS ABAJO, después
 		// de wp_insert_post()/wp_update_post() -que ya dispara la sincronización
 		// de traducción vía el hook 'save_post_terrenos'-. Sin diferir ese
@@ -320,17 +328,24 @@ class Momentum_Admin_Terrenos
 
 		$search = isset($_GET['buscar']) ? sanitize_text_field(wp_unslash($_GET['buscar'])) : '';
 		$estado = isset($_GET['estado']) ? sanitize_text_field(wp_unslash($_GET['estado'])) : '';
+		$zona   = isset($_GET['zona']) ? sanitize_text_field(wp_unslash($_GET['zona'])) : '';
 		$paged  = isset($_GET['pg']) ? max(1, absint($_GET['pg'])) : 1;
 
 		// Whitelist contra las opciones reales del esquema (evita valores arbitrarios).
 		if ($estado !== '' && ! in_array($estado, $schema['estado']['options'], true)) {
 			$estado = '';
 		}
+		if ($zona !== '' && ! isset($schema['zona']['options_map'][$zona])) {
+			$zona = '';
+		}
 
 		$meta_query = ['relation' => 'AND'];
 
 		if ($estado !== '') {
 			$meta_query[] = ['key' => 'estado', 'value' => $estado, 'compare' => '='];
+		}
+		if ($zona !== '') {
+			$meta_query[] = ['key' => 'zona', 'value' => $zona, 'compare' => '='];
 		}
 
 		$query_args = [
@@ -381,6 +396,7 @@ class Momentum_Admin_Terrenos
 			'query'  => $query,
 			'search' => $search,
 			'estado' => $estado,
+			'zona'   => $zona,
 			'paged'  => $paged,
 		];
 	}
@@ -389,8 +405,36 @@ class Momentum_Admin_Terrenos
 	{
 		$result = self::query_terrenos();
 		$schema = momentum_terreno_meta_schema();
+		$total_registrados = self::count_registered();
 
 		include MOMENTUM_ADMIN_PATH . 'templates/terrenos/list.php';
+	}
+
+	/**
+	 * Total de terrenos registrados (publicados + borrador + pendientes,
+	 * mismo alcance que query_terrenos()), sin importar filtros de búsqueda
+	 * activos -para el contador del encabezado del listado-. Mismo criterio
+	 * que Momentum_Admin_Properties::count_registered(): filtrado al idioma
+	 * por defecto para no duplicar por la traducción en inglés.
+	 */
+	private static function count_registered(): int
+	{
+		if (! momentum_is_multilingual()) {
+			$counts = wp_count_posts(self::POST_TYPE);
+
+			return (int) ($counts->publish ?? 0) + (int) ($counts->draft ?? 0) + (int) ($counts->pending ?? 0);
+		}
+
+		$query = new WP_Query([
+			'post_type'      => self::POST_TYPE,
+			'post_status'    => ['publish', 'draft', 'pending'],
+			'lang'           => momentum_default_language(),
+			'posts_per_page' => 1,
+			'fields'         => 'ids',
+			'no_found_rows'  => false,
+		]);
+
+		return (int) $query->found_posts;
 	}
 
 	// -----------------------------------------------------------------

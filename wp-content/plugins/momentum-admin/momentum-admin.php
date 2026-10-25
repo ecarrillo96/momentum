@@ -26,6 +26,7 @@ require_once MOMENTUM_ADMIN_PATH . 'includes/class-zonas.php';
 require_once MOMENTUM_ADMIN_PATH . 'includes/class-general.php';
 require_once MOMENTUM_ADMIN_PATH . 'includes/class-content-pages.php';
 require_once MOMENTUM_ADMIN_PATH . 'includes/class-translations.php';
+require_once MOMENTUM_ADMIN_PATH . 'includes/class-guias.php';
 
 // Panel de Estadísticas (Google Analytics Data API). Sin Composer ni SDK
 // oficial de Google -cliente REST propio, ver includes/class-ga4-client.php-.
@@ -53,6 +54,21 @@ require_once MOMENTUM_ADMIN_PATH . 'includes/class-cli-migrate-translations.php'
 // Comando WP-CLI de migración del Blog al sistema de traducción automática
 // ES→EN (no-op fuera de WP-CLI).
 require_once MOMENTUM_ADMIN_PATH . 'includes/class-cli-migrate-blog-translations.php';
+
+// Comando WP-CLI de importación de Propiedades/Terrenos desde el CSV legacy
+// (no-op fuera de WP-CLI).
+require_once MOMENTUM_ADMIN_PATH . 'includes/class-cli-import-properties.php';
+
+// Comando WP-CLI de importación de fotos de Propiedades/Terrenos desde el
+// ZIP de referencia (no-op fuera de WP-CLI).
+require_once MOMENTUM_ADMIN_PATH . 'includes/class-cli-import-property-images.php';
+
+// Comando WP-CLI de importación de Terrenos desde el CSV legacy
+// (no-op fuera de WP-CLI).
+require_once MOMENTUM_ADMIN_PATH . 'includes/class-cli-import-lands.php';
+
+// Comando WP-CLI de importación de imágenes de Terrenos (no-op fuera de WP-CLI).
+require_once MOMENTUM_ADMIN_PATH . 'includes/class-cli-import-terrain-images.php';
 
 Momentum_Admin_Router::init();
 Momentum_Admin_Zonas::init();

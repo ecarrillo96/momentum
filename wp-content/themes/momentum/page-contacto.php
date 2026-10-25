@@ -19,7 +19,7 @@ get_template_part('template-parts/page-hero', null, [
 <section class="momentum-section">
 	<div class="momentum-container momentum-contact-layout">
 		<div class="momentum-contact-layout__main">
-			<?php get_template_part('template-parts/contacto/form'); ?>
+			<?php get_template_part('template-parts/contacto/banner'); ?>
 		</div>
 
 		<aside class="momentum-contact-layout__sidebar">

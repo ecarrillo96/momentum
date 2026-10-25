@@ -28,6 +28,7 @@ $items = [
 	'blog'        => ['label' => __('Blog', 'momentum-admin'), 'icon' => 'dashicons-admin-post', 'url' => home_url('/admin/blog/')],
 	'traducciones' => ['label' => __('Traducciones', 'momentum-admin'), 'icon' => 'dashicons-translation', 'url' => home_url('/admin/traducciones/')],
 	'estadisticas' => ['label' => __('Estadísticas', 'momentum-admin'), 'icon' => 'dashicons-chart-line', 'url' => home_url('/admin/estadisticas/')],
+	'guias'        => ['label' => __('Guías', 'momentum-admin'), 'icon' => 'dashicons-media-document', 'url' => home_url('/admin/guias/')],
 ];
 ?>
 <button type="button" class="momentum-admin-menu-toggle" id="momentum-admin-menu-toggle" aria-controls="momentum-admin-sidebar" aria-expanded="false">

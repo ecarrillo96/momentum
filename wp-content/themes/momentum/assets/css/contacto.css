@@ -10,22 +10,19 @@
 	align-items: stretch;
 }
 
-/* ---------- Form ---------- */
+/* ---------- Banner (replaces the old contact form) ---------- */
 
-.momentum-contact-form {
-	background: var(--momentum-white);
+.momentum-contact-banner {
 	border-radius: var(--momentum-radius);
-	box-shadow: var(--momentum-shadow);
-	padding: 32px;
-	box-sizing: border-box;
+	overflow: hidden;
 	height: 100%;
 }
 
-.momentum-contact-form h3 {
-	font-size: 20px;
-	font-weight: 700;
-	margin: 0 0 22px;
-	color: var(--momentum-black);
+.momentum-contact-banner img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
 }
 
 /* ---------- Contact info card ---------- */
@@ -121,10 +118,6 @@
 }
 
 @media (max-width: 680px) {
-	.momentum-contact-form {
-		padding: 24px;
-	}
-
 	.momentum-map {
 		aspect-ratio: 4 / 5;
 	}

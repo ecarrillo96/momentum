@@ -31,6 +31,7 @@ get_template_part('template-parts/page-hero', null, [
 
 		<aside class="momentum-listing-layout__sidebar">
 			<?php get_template_part('template-parts/sidebar-cta'); ?>
+			<?php get_template_part('template-parts/sidebar-cta-sell'); ?>
 			<?php get_template_part('template-parts/venta-blog'); ?>
 		</aside>
 	</div>

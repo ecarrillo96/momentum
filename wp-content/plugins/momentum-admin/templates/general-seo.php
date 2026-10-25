@@ -27,7 +27,7 @@ $field_class = static function (string $name) use ($field_error): string {
 <?php endif; ?>
 
 <form method="post" action="<?php echo esc_url(admin_url('options.php')); ?>" class="momentum-admin-form" id="momentum-general-seo-form">
-	<?php settings_fields(MOMENTUM_SETTINGS_GROUP); ?>
+	<?php settings_fields(MOMENTUM_SETTINGS_GROUP_SEO); ?>
 
 	<section class="momentum-admin-settings-section">
 		<h2><?php esc_html_e('SEO — Analítica y verificación de Google', 'momentum-admin'); ?></h2>
@@ -48,6 +48,24 @@ $field_class = static function (string $name) use ($field_error): string {
 				<p class="momentum-admin-field-hint"><?php esc_html_e('En Search Console, elige el método "Etiqueta HTML" y pega aquí el código (o la etiqueta completa, ambas funcionan). Déjalo vacío si todavía no vas a verificar la propiedad.', 'momentum-admin'); ?></p>
 				<?php if ($field_error('momentum_gsc_verification') !== '') : ?>
 					<p class="momentum-admin-field-error"><?php echo esc_html($field_error('momentum_gsc_verification')); ?></p>
+				<?php endif; ?>
+			</div>
+
+			<div class="<?php echo esc_attr($field_class('momentum_ga_ads_conversion_id')); ?>">
+				<label for="momentum_ga_ads_conversion_id"><?php esc_html_e('Google Ads — ID de conversión', 'momentum-admin'); ?></label>
+				<input type="text" id="momentum_ga_ads_conversion_id" name="momentum_ga_ads_conversion_id" value="<?php echo esc_attr($values['momentum_ga_ads_conversion_id']); ?>" placeholder="AW-XXXXXXXXXX" maxlength="20">
+				<p class="momentum-admin-field-hint"><?php esc_html_e('Lo obtienes en Google Ads (Herramientas > Conversiones > tu etiqueta). Déjalo vacío si todavía no tienes una campaña conectada.', 'momentum-admin'); ?></p>
+				<?php if ($field_error('momentum_ga_ads_conversion_id') !== '') : ?>
+					<p class="momentum-admin-field-error"><?php echo esc_html($field_error('momentum_ga_ads_conversion_id')); ?></p>
+				<?php endif; ?>
+			</div>
+
+			<div class="<?php echo esc_attr($field_class('momentum_meta_pixel_id')); ?>">
+				<label for="momentum_meta_pixel_id"><?php esc_html_e('Meta Pixel — ID', 'momentum-admin'); ?></label>
+				<input type="text" id="momentum_meta_pixel_id" name="momentum_meta_pixel_id" value="<?php echo esc_attr($values['momentum_meta_pixel_id']); ?>" placeholder="ej. 714452449728716" maxlength="20">
+				<p class="momentum-admin-field-hint"><?php esc_html_e('Lo obtienes en Meta Events Manager (Orígenes de datos > tu píxel). Déjalo vacío si todavía no vas a hacer seguimiento con Meta/Facebook Ads.', 'momentum-admin'); ?></p>
+				<?php if ($field_error('momentum_meta_pixel_id') !== '') : ?>
+					<p class="momentum-admin-field-error"><?php echo esc_html($field_error('momentum_meta_pixel_id')); ?></p>
 				<?php endif; ?>
 			</div>
 		</div>

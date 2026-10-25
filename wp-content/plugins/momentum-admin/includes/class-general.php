@@ -101,6 +101,8 @@ class Momentum_Admin_General
 			'momentum_email'         => momentum_get_email(),
 			'momentum_ga_measurement_id' => momentum_get_ga_measurement_id(),
 			'momentum_gsc_verification'  => momentum_get_gsc_verification(),
+			'momentum_ga_ads_conversion_id' => momentum_get_ga_ads_conversion_id(),
+			'momentum_meta_pixel_id'        => momentum_get_meta_pixel_id(),
 			'momentum_intro_video_url_en' => momentum_get_intro_video_url_en(),
 			'momentum_auto_publish_translations' => momentum_auto_publish_translations_enabled() ? '1' : '0',
 			// Nunca la key cruda aquí -solo una pista enmascarada para el

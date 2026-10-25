@@ -1,7 +1,8 @@
 <?php
 /**
- * @var array $result Resultado de Momentum_Admin_Terrenos::query_terrenos()
- * @var array $schema momentum_terreno_meta_schema()
+ * @var array $result             Resultado de Momentum_Admin_Terrenos::query_terrenos()
+ * @var array $schema             momentum_terreno_meta_schema()
+ * @var int   $total_registrados  Total de terrenos registrados (sin filtros)
  */
 if (! defined('ABSPATH')) {
 	exit;
@@ -26,10 +27,21 @@ $errores = [
 	'papelera' => __('No se pudo eliminar el terreno.', 'momentum-admin'),
 ];
 
-$has_filters = $result['search'] !== '' || $result['estado'] !== '';
+$has_filters = $result['search'] !== '' || $result['estado'] !== '' || $result['zona'] !== '';
 ?>
 <div class="momentum-admin-page-header">
-	<h1><?php esc_html_e('Terrenos', 'momentum-admin'); ?></h1>
+	<h1>
+		<?php esc_html_e('Terrenos', 'momentum-admin'); ?>
+		<span class="momentum-admin-count-badge">
+			<?php
+			printf(
+				/* translators: %d: número total de terrenos registrados */
+				esc_html(_n('%d registrado', '%d registrados', $total_registrados, 'momentum-admin')),
+				(int) $total_registrados
+			);
+			?>
+		</span>
+	</h1>
 	<a class="momentum-admin-button" href="<?php echo esc_url(add_query_arg('accion', 'nueva', home_url('/admin/terrenos/'))); ?>">
 		<?php esc_html_e('+ Nuevo terreno', 'momentum-admin'); ?>
 	</a>
@@ -56,6 +68,13 @@ $has_filters = $result['search'] !== '' || $result['estado'] !== '';
 		<option value=""><?php esc_html_e('Todos los estados', 'momentum-admin'); ?></option>
 		<?php foreach ($schema['estado']['options'] as $option) : ?>
 			<option value="<?php echo esc_attr($option); ?>" <?php selected($result['estado'], $option); ?>><?php echo esc_html($option); ?></option>
+		<?php endforeach; ?>
+	</select>
+
+	<select name="zona">
+		<option value=""><?php esc_html_e('Toda zona', 'momentum-admin'); ?></option>
+		<?php foreach ($schema['zona']['options_map'] as $slug => $label) : ?>
+			<option value="<?php echo esc_attr($slug); ?>" <?php selected($result['zona'], $slug); ?>><?php echo esc_html($label); ?></option>
 		<?php endforeach; ?>
 	</select>
 
@@ -147,6 +166,7 @@ if ($total_pages > 1) :
 	$base_args = array_filter([
 		'buscar' => $result['search'],
 		'estado' => $result['estado'],
+		'zona'   => $result['zona'],
 	], static function ($value) {
 		return $value !== '';
 	});

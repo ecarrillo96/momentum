@@ -518,6 +518,19 @@ body.momentum-admin-body {
 	font-size: 11px;
 }
 
+.momentum-admin-count-badge {
+	display: inline-block;
+	margin-left: 8px;
+	padding: 3px 10px;
+	border-radius: 999px;
+	background: var(--momentum-bg);
+	border: 1px solid var(--momentum-border);
+	color: var(--momentum-text-muted);
+	font-size: 13px;
+	font-weight: 400;
+	vertical-align: middle;
+}
+
 .momentum-admin-badge.is-publicado {
 	background: #e3f5ee;
 	border-color: #bfe6d7;

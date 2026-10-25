@@ -1,7 +1,8 @@
 <?php
 /**
- * @var array    $result Resultado de Momentum_Admin_Properties::query_properties()
- * @var array    $schema momentum_propiedad_meta_schema()
+ * @var array $result             Resultado de Momentum_Admin_Properties::query_properties()
+ * @var array $schema             momentum_propiedad_meta_schema()
+ * @var int   $total_registradas  Total de propiedades registradas (sin filtros)
  */
 if (! defined('ABSPATH')) {
 	exit;
@@ -26,10 +27,21 @@ $errores = [
 	'papelera' => __('No se pudo eliminar la propiedad.', 'momentum-admin'),
 ];
 
-$has_filters = $result['search'] !== '' || $result['estado'] !== '' || $result['tipo_operacion'] !== '';
+$has_filters = $result['search'] !== '' || $result['estado'] !== '' || $result['tipo_operacion'] !== '' || $result['zona'] !== '' || $result['visibilidad'] !== '';
 ?>
 <div class="momentum-admin-page-header">
-	<h1><?php esc_html_e('Propiedades', 'momentum-admin'); ?></h1>
+	<h1>
+		<?php esc_html_e('Propiedades', 'momentum-admin'); ?>
+		<span class="momentum-admin-count-badge">
+			<?php
+			printf(
+				/* translators: %d: número total de propiedades registradas */
+				esc_html(_n('%d registrada', '%d registradas', $total_registradas, 'momentum-admin')),
+				(int) $total_registradas
+			);
+			?>
+		</span>
+	</h1>
 	<a class="momentum-admin-button" href="<?php echo esc_url(add_query_arg('accion', 'nueva', home_url('/admin/propiedades/'))); ?>">
 		<?php esc_html_e('+ Nueva propiedad', 'momentum-admin'); ?>
 	</a>
@@ -64,6 +76,19 @@ $has_filters = $result['search'] !== '' || $result['estado'] !== '' || $result['
 		<?php foreach ($schema['tipo_operacion']['options'] as $option) : ?>
 			<option value="<?php echo esc_attr($option); ?>" <?php selected($result['tipo_operacion'], $option); ?>><?php echo esc_html($option); ?></option>
 		<?php endforeach; ?>
+	</select>
+
+	<select name="zona">
+		<option value=""><?php esc_html_e('Toda zona', 'momentum-admin'); ?></option>
+		<?php foreach ($schema['zona']['options_map'] as $slug => $label) : ?>
+			<option value="<?php echo esc_attr($slug); ?>" <?php selected($result['zona'], $slug); ?>><?php echo esc_html($label); ?></option>
+		<?php endforeach; ?>
+	</select>
+
+	<select name="visibilidad">
+		<option value=""><?php esc_html_e('Toda visibilidad', 'momentum-admin'); ?></option>
+		<option value="publish" <?php selected($result['visibilidad'], 'publish'); ?>><?php esc_html_e('Publicada', 'momentum-admin'); ?></option>
+		<option value="draft" <?php selected($result['visibilidad'], 'draft'); ?>><?php esc_html_e('No publicada', 'momentum-admin'); ?></option>
 	</select>
 
 	<button type="submit" class="momentum-admin-button momentum-admin-button--secondary"><?php esc_html_e('Filtrar', 'momentum-admin'); ?></button>
@@ -155,6 +180,8 @@ if ($total_pages > 1) :
 		'buscar'         => $result['search'],
 		'estado'         => $result['estado'],
 		'tipo_operacion' => $result['tipo_operacion'],
+		'zona'           => $result['zona'],
+		'visibilidad'    => $result['visibilidad'],
 	], static function ($value) {
 		return $value !== '';
 	});
